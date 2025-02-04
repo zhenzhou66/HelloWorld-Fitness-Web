@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -15,9 +15,6 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import classes from "../Dashboard.module.css";
-import TAM2024 from "./TAM2024.json";
-import TAM2025 from "./TAM2025.json";
-import TAMempty from "./TAMempty.json";
 
 ChartJS.register(
   CategoryScale,
@@ -28,16 +25,21 @@ ChartJS.register(
   Legend
 );
 
-const dataSets = { 2024: TAM2024, 2025: TAM2025 };
+const getAvailableYears = () => {
+  const currentYear = new Date().getFullYear();
+  return [currentYear - 2, currentYear - 1, currentYear];
+};
 
 const MiddleContent = () => {
-  const [selectedYear, setSelectedYear] = useState("2024");
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear().toString());
+  const [chartData, setChartData] = useState([]);
 
-  const handleYearChange = (event) => {
-    setSelectedYear(event.target.value);
-  };
-
-  const chartData = dataSets[selectedYear] || TAMempty;
+  useEffect(() => {
+    fetch(`http://localhost:5000/api/dashboard/active-members/${selectedYear}`)
+      .then((response) => response.json())
+      .then((data) => setChartData(data))
+      .catch((error) => console.error("Error fetching data:", error));
+  }, [selectedYear]);
 
   return (
     <div className={classes.MiddleContent} style={{ height: "350px" }}>
@@ -61,7 +63,7 @@ const MiddleContent = () => {
                 id="year-select"
                 value={selectedYear}
                 label="Year"
-                onChange={handleYearChange}
+                onChange={(e) => setSelectedYear(e.target.value)}
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     "& fieldset": {
@@ -76,9 +78,11 @@ const MiddleContent = () => {
                   },
                 }}
               >
-                <MenuItem value={"2023"}>2023</MenuItem>
-                <MenuItem value={"2024"}>2024</MenuItem>
-                <MenuItem value={"2025"}>2025</MenuItem>
+                {getAvailableYears().map((year) => (
+                  <MenuItem key={year} value={year.toString()}>
+                    {year}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Box>

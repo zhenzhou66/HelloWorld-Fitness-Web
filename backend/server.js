@@ -34,8 +34,8 @@ app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
 
-const memberRoutes = require('./routes/members');
-app.use('/api', memberRoutes);
-
 const authRoutes = require('./routes/auth');
 app.use('/auth', authRoutes);
+
+const dashboardRoutes = require('./routes/dashboard');
+app.use('/api/dashboard', dashboardRoutes);
