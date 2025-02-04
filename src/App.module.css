@@ -1,0 +1,165 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.App {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  background-color: #f8f9fb;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f8f9fb;
+}
+.Sidebar {
+  z-index: 1000;
+  padding: 0px;
+  height: 100vh; /* Ensure the sidebar spans the full height of the viewport */
+  width: 230px;
+  background-color: rgb(255, 255, 255);
+  display: flex;
+  flex-direction: column; /* Stack the elements vertically */
+}
+
+.logo {
+  width: 60%;
+  height: auto;
+  margin-top: 35px;
+  margin-left: 20px; /* Add spacing around the logo */
+  object-fit: contain; /* Ensure the image scales properly */
+}
+
+.SidebarList {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  align-items: center; /* Center items horizontally */
+  overflow-y: auto; /* Enable scrolling if the content overflows */
+  box-sizing: border-box;
+}
+
+.SidebarList .row {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  color: rgb(126, 120, 120);
+  list-style-type: none;
+  font-family: "Roboto", sans-serif;
+  position: relative;
+  transition: 0.3s ease-in-out;
+  box-sizing: border-box;
+}
+
+.SidebarList .row::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 2px solid transparent;
+  transition: border-color 0.4s ease-in-out;
+  box-sizing: border-box;
+}
+
+.SidebarList .row:hover::before {
+  border-color: rgb(247, 188, 188); /* Border color */
+}
+
+.SidebarList .row:hover {
+  background-color: #d0d1d3;
+  cursor: pointer;
+}
+
+.row .icon {
+  flex: 20%;
+  display: grid;
+  place-items: center;
+}
+
+.row .title {
+  flex: 80%;
+}
+
+.Header {
+  margin-top: 25px;
+  width: 100%;
+  margin: 10px;
+  font-family: "Roboto", sans-serif;
+  background-color: rgba(255, 255, 255, 0);
+}
+
+.Header p {
+  margin-top: 10px;
+}
+
+.Profile {
+  width: 245px;
+  border-radius: 5px;
+  margin: 10px;
+  padding: 10px;
+  color: rgb(0, 0, 0);
+  font-family: "Roboto", sans-serif;
+  background-color: rgb(255, 255, 255);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.ProfileContent {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  width: 100%;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.pfp img {
+  width: 60px; /* Adjust image size */
+  height: 60px;
+  border-radius: 50%; /* Make the image circular */
+  object-fit: cover; /* Ensure the image fits well */
+}
+
+.name {
+  font-size: 16px;
+  font-weight: bold;
+  font-family: "Roboto", sans-serif;
+}
+
+.AppContent {
+  flex: 1;
+  padding: 20px;
+  font-family: "Roboto", sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  height: 100vh;
+  width: 100%;
+}
+
+.HeaderProfile {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.PageContent {
+  display: flex;
+  width: 100%;
+  flex: 1;
+  font-family: "Roboto", sans-serif;
+}

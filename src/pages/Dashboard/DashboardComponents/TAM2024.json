@@ -1,0 +1,14 @@
+[
+  { "label": "Jan", "Amount": 100 },
+  { "label": "Feb", "Amount": 200 },
+  { "label": "Mar", "Amount": 300 },
+  { "label": "Apr", "Amount": 400 },
+  { "label": "May", "Amount": 500 },
+  { "label": "Jun", "Amount": 600 },
+  { "label": "Jul", "Amount": 300 },
+  { "label": "Aug", "Amount": 400 },
+  { "label": "Sep", "Amount": 400 },
+  { "label": "Oct", "Amount": 600 },
+  { "label": "Nov", "Amount": 100 },
+  { "label": "Dec", "Amount": 200 }
+]
