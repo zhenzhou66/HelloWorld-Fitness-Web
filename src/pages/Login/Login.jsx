@@ -6,12 +6,38 @@ import logo from "../../assets/logo.png";
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState('');
 
   const navigate = useNavigate();
-  const handleLogin = () => {
-    navigate("/Dashboard");
+
+  const handleLogin = async () => {
+    try {
+        const response = await fetch('http://localhost:5000/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, password }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            // Login to admin dashboard
+            alert('Login successful!');
+            navigate("/Dashboard"); 
+        } else {
+            setError(data.message);
+        }
+    } catch (err) {
+        console.error('Login error:', err);
+        setError('Something went wrong. Please try again later.');
+    }
   };
-  const error = "";
+  // const handleLogin = () => {
+  //   navigate("/Dashboard");
+  // };
+
   return (
     <div className={classes["login-container"]}>
       <div className={classes["login-left-panel"]}>
