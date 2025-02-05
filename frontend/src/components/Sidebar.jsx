@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import classes from "../App.module.css";
 import { SidebarData } from "./SidebarData";
-import logo from "../assets/logo.png";
+import logo from "../assets/logo-black.png";
 
 function Sidebar() {
   const navigate = useNavigate();

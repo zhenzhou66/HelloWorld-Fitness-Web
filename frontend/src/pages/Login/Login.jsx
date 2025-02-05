@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import classes from "./Login.module.css";
-import logo from "../../assets/logo.png";
+import logo from "../../assets/logo-white.png";
 
 const Login = () => {
   const [username, setUsername] = useState("");
