@@ -34,9 +34,6 @@ const Login = () => {
         setError('Something went wrong. Please try again later.');
     }
   };
-  // const handleLogin = () => {
-  //   navigate("/Dashboard");
-  // };
 
   return (
     <div className={classes["login-container"]}>

@@ -21,9 +21,9 @@ const Header = () => {
         "Add, Update, Search, View, and Delete trainer records to update the trainer database.",
     },
     "/Memberships": {
-      title: "Membership Plans",
+      title: "Membership Management",
       description:
-        "Manage membership plans & Track membership expiration and send renewal reminders.",
+        "Create, update, search, view, and delete workout plan to keep your Membership plan database accurate and organized.",
     },
     "/Schedules": {
       title: "Class Schedules",
