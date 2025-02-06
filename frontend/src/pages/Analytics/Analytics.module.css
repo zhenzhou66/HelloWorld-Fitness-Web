@@ -1,0 +1,9 @@
+.AnalyticsContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+}
+.componentContainer {
+  margin-top: 20px;
+}

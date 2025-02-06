@@ -98,7 +98,7 @@ const MiddleContent = () => {
               {
                 label: "Total Active Members",
                 data: chartData.map((data) => data.Amount),
-                backgroundColor: "rgba(247, 220, 220, 0.4)",
+                backgroundColor: "rgba(248, 215, 174, 0.4)",
                 borderColor: "rgb(0, 0, 0)",
                 borderWidth: 1,
               },
