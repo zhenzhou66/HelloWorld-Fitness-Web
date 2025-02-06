@@ -21,10 +21,13 @@ body {
   z-index: 1000;
   padding: 0px;
   height: 100vh; /* Ensure the sidebar spans the full height of the viewport */
-  width: 230px;
+  min-width: 190px;
+  width: 14%;
+  max-width: 220px;
   background-color: rgb(255, 255, 255);
   display: flex;
   flex-direction: column; /* Stack the elements vertically */
+  position: fixed;
 }
 
 .logo {
@@ -40,7 +43,7 @@ body {
   width: 100%;
   padding: 0;
   align-items: center; /* Center items horizontally */
-  overflow-y: auto; /* Enable scrolling if the content overflows */
+  overflow-y: hidden; /* Enable scrolling if the content overflows */
   box-sizing: border-box;
 }
 
@@ -140,14 +143,15 @@ body {
 }
 
 .AppContent {
-  flex: 1;
+  flex-grow: 1;
+  margin-left: calc(180px + 2%);
   padding: 20px;
   font-family: "Roboto", sans-serif;
   display: flex;
   flex-direction: column;
   align-items: stretch;
   height: 100vh;
-  width: 100%;
+  width: calc(100% - 17%);
 }
 
 .HeaderProfile {
@@ -158,6 +162,8 @@ body {
 }
 
 .PageContent {
+  margin-top: 50px;
+
   display: flex;
   width: 100%;
   flex: 1;
