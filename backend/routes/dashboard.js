@@ -44,8 +44,8 @@ router.get("/active-members/:year", (req, res) => {
         if (err) return res.status(500).json({ message: "Database error.", error: err });
 
         const data = Array.from({ length: 12 }, (_, i) => ({
-            label: new Date(0, i).toLocaleString("en", { month: "long" }), // Converts month number to name
-            Amount: 0, // Default to zero in case some months have no data
+            label: new Date(0, i).toLocaleString("en", { month: "long" }), 
+            Amount: 0, 
         }));
 
         results.forEach((row) => {

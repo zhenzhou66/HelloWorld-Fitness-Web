@@ -39,3 +39,6 @@ app.use('/auth', authRoutes);
 
 const dashboardRoutes = require('./routes/dashboard');
 app.use('/api/dashboard', dashboardRoutes);
+
+const membershipRoutes = require('./routes/memberships');
+app.use('/api/memberships', membershipRoutes);
