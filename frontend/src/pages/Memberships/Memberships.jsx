@@ -46,7 +46,7 @@ export default function Memberships() {
     }
     setIsModalOpen(!isModalOpen);
   };
-
+  
   const handleInputChange = (e) => {
     if (editMembership) {
       setEditMembership({ ...editMembership, [e.target.name]: e.target.value });
@@ -125,7 +125,7 @@ export default function Memberships() {
           onChange={(e) => setSearch(e.target.value)} 
           className={styles.searchInput} 
         />
-        <button className={styles.addButton} onClick={toggleModal}>+ Membership</button>
+        <button className={styles.addButton} onClick={() => toggleModal()}>+ Membership</button>
       </div>
 
       <table className={styles.table}>
