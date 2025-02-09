@@ -31,7 +31,9 @@ const getAvailableYears = () => {
 };
 
 const MiddleContent = () => {
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear().toString());
+  const [selectedYear, setSelectedYear] = useState(
+    new Date().getFullYear().toString()
+  );
   const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
@@ -42,7 +44,7 @@ const MiddleContent = () => {
   }, [selectedYear]);
 
   return (
-    <div className={classes.MiddleContent} style={{ height: "350px" }}>
+    <div className={classes.MiddleContent}>
       <div
         style={{
           display: "flex",
@@ -88,7 +90,7 @@ const MiddleContent = () => {
           </Box>
         </div>
       </div>
-      <div style={{ width: "80vw", marginLeft: "20px", overflowX: "auto" }}>
+      <div style={{ width: "70vw", marginLeft: "20px", overflowX: "auto" }}>
         <Bar
           data={{
             labels: chartData.map((data) => data.label),
@@ -96,7 +98,7 @@ const MiddleContent = () => {
               {
                 label: "Total Active Members",
                 data: chartData.map((data) => data.Amount),
-                backgroundColor: "rgba(247, 220, 220, 0.4)",
+                backgroundColor: "rgba(248, 215, 174, 0.4)",
                 borderColor: "rgb(0, 0, 0)",
                 borderWidth: 1,
               },
@@ -118,7 +120,7 @@ const MiddleContent = () => {
               },
             },
           }}
-          style={{ height: "400px" }}
+          style={{ width: "65%", height: "400px" }}
         />
       </div>
     </div>
