@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import styles from "./Members.module.css";
-import SearchIcon from "@mui/icons-material/Search";
 import FemaleIcon from '@mui/icons-material/Female';
 import MaleIcon from '@mui/icons-material/Male';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
+import { Trash, Edit, X } from "lucide-react";
 
 const Members = () => {
     const [members, setMembers] = useState([
@@ -105,17 +105,26 @@ const Members = () => {
 
     // For Add New Member
     const [isModalOpen, setModalOpen] = useState(false);
-    const [formData, setFormData] = useState({ name: "", email: "", phone: "", gender: "Male" });
+    const [formData, setFormData] = useState({ name: "", email: "", phone: "", gender: "Male", dob: "", height: "", weight: "", membershipPlan: "Standard Monthly", fitnessGoals: [],});
 
     const openModal = () => setModalOpen(true);
     const closeModal = () => {
             setModalOpen(false);
-            setFormData({ name: "", email: "", phone: "", gender: "Male" });
+            setFormData({ name: "", email: "", phone: "", gender: "Male", dob: "", height: "", weight: "", membershipPlan: "Standard Monthly", fitnessGoals: [],});
         };
     
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     }
+
+    const handleGoalChange = (goal) => {
+        setFormData((prevData) => {
+            const goals = prevData.fitnessGoals.includes(goal)
+            ? prevData.fitnessGoals.filter((g) => g !== goal)
+            : [...prevData.fitnessGoals, goal];
+            return { ...prevData, fitnessGoals: goals };
+        });
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -127,8 +136,10 @@ const Members = () => {
         };
 
         setMembers([...members, newMember]);
+        console.log("Form Submitted", newMember);
+        alert("Member succeddfully added!");
         closeModal();
-    }
+    };
 
     // For Select All Function
     const handleSelectAll = (event) => {
@@ -182,13 +193,14 @@ const Members = () => {
         setCurrentPage(pageNumber);
     }
 
+    const [step, setStep] = useState(1);
+
     return (
         <div className={styles.memberContent}>
             <div className={styles.memberFunction}>
                 <h3 className={styles.memberTitle}>All Members</h3>
                 <div className={styles.memberActions}>
                     <div className={styles.searchContainer}>
-                        <SearchIcon className={styles.searchIcon} />
                         <input type="text" className={styles.searchInput} placeholder="Search" />
                     </div>
                 <button className={styles.addMemberButton} onClick={openModal}>+ Add Member</button>
@@ -199,22 +211,28 @@ const Members = () => {
             <table className={styles.memberTable}>
                 <thead>
                     <tr>
-                        <th>
-                            <input type="checkbox" checked={SelectAll} onChange={handleSelectAll} />
-                            User ID</th>
+                        <th className={styles.checkboxuserid}>
+                            <div className={styles.checkboxContainer}>
+                                <input type="checkbox" checked={SelectAll} onChange={handleSelectAll} />
+                                <span>User ID</span>
+                            </div>
+                        </th>
                         <th>Username</th>
                         <th>Gender</th>
                         <th>Phone Number</th>
                         <th>Date Joined</th>
-                        <th className={styles.actionsText}>Actions</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {currentMembers.map((member) => (
                         <tr key={member.userid}>
-                            <td>
-                                <input type="checkbox" checked={selectedMembers[member.userid] || false} onChange={(e) => handleSelectMember(e, member.userid)}/>
-                                {member.userid}</td>
+                            <td className={styles.checkboxuserid}>
+                                <div className={styles.checkboxContainer}>
+                                    <input type="checkbox" checked={selectedMembers[member.userid] || false} onChange={(e) => handleSelectMember(e, member.userid)}/>
+                                    <span>{member.userid}</span>
+                                </div>
+                                </td>
                                 <td>
                                     <div className={styles.mprofileContainer}>
                                         <img src={member.mprofilePicture} alt="Profile" className={styles.profilePicture} />
@@ -244,8 +262,12 @@ const Members = () => {
                             <td>{member.phone}</td>
                             <td>{member.dateJoined}</td>
                             <td>
-                                <button className={styles.editButton} onClick={() => openEditModal(member)}></button>
-                                <button className={styles.deleteButton} onClick={handleDeleteClick}></button>
+                                <button className={styles.editButton} onClick={() => openEditModal(member)}>
+                                    <Edit size={20} />
+                                </button>
+                                <button className={styles.deleteButton} onClick={handleDeleteClick}>
+                                    <Trash size={20} />
+                                </button>
                             </td>
                         </tr>
                     ))}
@@ -281,47 +303,124 @@ const Members = () => {
             {isModalOpen && (
                 <div className={styles.overlay} onClick={closeModal}>
                     <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-                        <PersonAddAlt1Icon className={styles.AddMemberIcon} />
-                        <span>Add New Member</span>
-                        <form onSubmit={handleSubmit}>
-                            <table className={styles.progressTable}>
-                                <tbody>
-                                    <tr>
-                                        <td className={styles.progress1}></td>
-                                        <td><p className={styles.PersonalInfo}>Personal Information</p></td>
+
+                        <div className={styles.modalHeader}>
+                            <PersonAddAlt1Icon className={styles.AddMemberIcon} />
+                            <span className={styles.textstyle}>Add New Member</span>
+                            <X className={styles.XButton} onClick={closeModal} />
+                        </div>
+                    
+                        <div className={styles.progressTabs}>
+                            <div className={`${styles.tab} ${
+                                step === 1 ? styles.activeTab : styles.inactiveTab
+                                }`}
+                                >
+                                    Personal Information
+                                </div>
+                            <div className={`${styles.tab} ${
+                                step === 2 ? styles.activeTab : styles.inactiveTab
+                            }`}
+                            >
+                                Fitness Goals
+                            </div>
+                        </div>
+
+                        <form onSubmit={handleSubmit} className={styles.formContainer}>    
+                            <div className={styles.formGrid}>
+                                {step == 1 ? (
+                                    <>
+                                        <div className={styles.leftColumn}>
+                                            <label>Name:</label>
+                                            <input type="text" name="name" placeholder="Name as per IC" value={formData.name} onChange={handleChange} required />
+
+                                            <label>Email:</label>
+                                            <input type="email" name="email" placeholder="Email Address" value={formData.email} onChange={handleChange} required />
+
+                                            <label>Phone Number:</label>
+                                            <input type="text" name="phone" placeholder="Your phone number" value={formData.phone} onChange={handleChange} required />
+                                
+                                            <label>Username:</label>
+                                            <input type="text" name="username" placeholder="Set your username" value={formData.username} onChange={handleChange} required />
+
+                                            <label>Password:</label>
+                                            <input type="password" name="password" placeholder="Set your password" value={formData.password} onChange={handleChange} required />
+                                        </div>
+
+                                        <div className={styles.rightColumn}>
+                                            <label className={styles.genderContainer}>
+                                                <label className={styles.genderLabel}>Gender:</label>
+                                                <div className={styles.radioGroup}>
+                                                <label className={styles.radioLabel}>
+                                                    <input type="radio" name="gender" value="Male" checked={formData.gender === "Male"} onChange={handleChange} 
+                                                />
+                                                Male
+                                                </label>
+                                                <label className={styles.radioLabel}>
+                                                    <input type="radio" name="gender" value="Female" checked={formData.gender === "Female"} onChange={handleChange}
+                                                    />
+                                                    Female
+                                                </label>
+                                                </div>
+                                            </label>
                                         
-                                    </tr>
-                                <div className={styles.progress2}></div>
-                                <span className={styles.FitnessGoals}>Fitness Goals</span>
-                                </tbody>
-                            </table>
-                            <div className={styles.formGroup}>
-                            <label>Name:</label>
-                            <input type="text" name="name" value={formData.name} onChange={handleChange} required />
+                                        
+                                        <label>Date of Birth:</label>
+                                        <input type="date" name="dob" value={formData.dob} onChange={handleChange} required 
+                                        />
+                                    </div>
+                                    </>
+                                ) : (
+                                    <div className={styles.fitnessGoals}>
+                                        <div className={styles.heightWeightContainer}>
+                                            <div className={styles.inputGroup}>
+                                                <label>Height:</label>
+                                                <input type="number" name="height" placeholder="Enter Height" value={formData.height} onChange={handleChange} required />
+                                                <span className={styles.unit}>cm</span>
+                                            </div>
+                                            <div className={styles.inputGroup}>
+                                                <label>Weight:</label>
+                                                <input type="number" name="weight" placeholder="Enter weight" value={formData.weight} onChange={handleChange} required />
+                                                <span className={styles.unit}>kg</span>
+                                            </div>
+                                        </div>
+
+                                        <label>Membership Plan:</label>
+                                        <select name="membershipPlan" value={formData.addnmembershipPlan} onChange={handleChange} className={styles.addnmembershipDropdown}
+                                        >
+                                            <option>Standard Monthly</option>
+                                            <option>Premium Monthly</option>
+                                            <option>Standard Yearly</option>
+                                            <option>Premium Yearly</option>
+                                        </select>
+
+                                        <label>What are your fitness goals?</label>
+                                        <div className={styles.fitnessGoalsOption}>
+                                            {["Loss Weight", "Muscle Mass Gain", "Gain Weight", "Shape Body", "Others"].map((goal) => (
+                                                <label key={goal} className={styles.goalOption}>
+                                                    <input type="checkbox" value={goal} checked={formData.fitnessGoals.includes(goal)} onChange={() => handleGoalChange(goal)}
+                                                    />
+                                                    {goal}    
+                                                </label>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    )}
+                                    
                             </div>
 
-                            <div className={styles.formGroup}>
-                            <label>Email:</label>
-                            <input type="email" name="email" value={formData.email} onChange={handleChange} required />
-                            </div>
-
-                            <div className={styles.formGroup}>
-                            <label>Phone:</label>
-                            <input type="text" name="phone" value={formData.phone} onChange={handleChange} required />
-                            </div>
-
-                            <div className={styles.formGroup}>
-                            <label>Gender:</label>
-                            <select name="gender" value={formData.gender} onChange={handleChange}>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                            </select>
-                            </div>
-
-                            <div className={styles.modalButtons}>
-                                <button type="submit">Add Member</button>
-                                <button type="button" className={styles.closeBtn} onClick={closeModal}>
-                                    Cancel
+                            <div className={styles.footerbutton}>
+                                {step > 1 && (
+                                    <button type="button" className={styles.cancelButton} onClick={() => setStep(step -1)}
+                                    >
+                                    Back
+                                    </button>
+                                )}
+                                <button 
+                                    type={step === 2 ? "Add Member" : "button"}
+                                    className={styles.nextButton}
+                                    onClick={step < 2 ? () => setStep(step + 1) : null}
+                                    >
+                                        {step === 2 ? "Submit" : "Next"}
                                 </button>
                             </div>
                         </form>

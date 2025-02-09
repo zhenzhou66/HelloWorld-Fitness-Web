@@ -1,5 +1,6 @@
 .memberContent {
   background-color: #f9f9f9;
+  width: 100%;
 }
 
 .memberHeader {
@@ -17,27 +18,23 @@
     color: #6D6D6D;
   }
   
-  .actionsText {
-    color: transparent;
-  }
-  
   .searchInput {
     font-family: "Roboto", sans-serif;
-    margin-right: 10px;
-    padding: 5px;
+    margin: 0;
     border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 5px;
+    padding: 5px 10px;
+    height: 35px;
   }
   
   .addMemberButton {
     font-family: "Roboto", sans-serif;
-    padding: 5px 15px;
+    padding: 5px;
     background-color: orange;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 14px;
     transition: background-color 0.3s;
   }
     
@@ -52,17 +49,20 @@
     
   .memberTable th,
   .memberTable td {
-    border: 0px solid #ccc; /*Later need to delete*/
     box-sizing: border-box;
-    padding: 10px;
+    padding: 8px;
     text-align: left;
     vertical-align: middle;
   }
+
+.memberTable td {
+  vertical-align: middle;
+}
   
-  tr {
-    height: auto;
-  }
-  
+th, td {
+  padding: 5px;
+}
+
   td {
     padding: 0;
     margin: 0;
@@ -84,42 +84,49 @@
     border-radius: 50%;
     transition: background-color 0.3s;
   }
-    
+
   .editButton:hover,
   .deleteButton:hover {
-    background-color: #f2f2f2;
-  }
-    
-  .editButton::before {
-    content: "✏️";
-  }
-    
-  .deleteButton::before {
-    content: "🗑️";
+    color: #ff5733;
   }
   
   .memberFunction {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 10px;
   }
   
+.checkboxuserid {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  vertical-align: middle;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+input[type="checkbox"] {
+  margin-right: 5px;
+}
+
+.checkboxContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.checkboxuserid input[type="checkbox"] {
+  margin: 0;
+}
+
   .memberTitle {
     font-family: "Roboto", sans-serif;
     font-size: 18px;
     font-weight: bold;
     color: #333;
     margin: 0;
-  }
-  
-  .searchInput {
-    padding: 8px 8px 8px 35px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    outline: none;
-    width: 100%;
-    box-sizing: border-box;
   }
   
   .memberActions {
@@ -130,19 +137,11 @@
   }
   
   .searchContainer {
-    position: relative;
-    display: inline-block;
     width: 250px;
-  }
-  
-  .searchIcon {
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #888;
-    font-size: 18px;
-    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
   }
   
   .mprofileContainer {
@@ -200,11 +199,9 @@
     height: auto;
     min-height: 50px;
   }
-  
-  .memberTable th input[type="checkbox"],
-  .memberTable td input[type="checkbox"] {
-      margin-right: 5px; /* Adds space between checkbox and text */
-      cursor: pointer;
+
+  .memberTable th {
+    height: 50px;
   }
   
   .modalOverlayDeleteM {
@@ -226,11 +223,29 @@
     border-radius: 8px;
     text-align: center;
   }
+
+  .cancelButton {
+    background: white;
+    border: 1px solid #ff5733;
+    color: #ff5733;
+    padding: 8px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .nextButton {
+    background: #ff5733;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
   
   .modalButtons {
-    margin-top: 10px;
+    margin-top: 20px;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
   }
   
   .cancelDeleteButton {
@@ -256,13 +271,12 @@
 
 .deleteMemberButton {
   font-family: "Roboto", sans-serif;
-  padding: 5px 15px;
+  padding: 5px;
   background-color: rgb(242, 69, 69);
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 14px;
   transition: background-color 0.3s;
 }
 
@@ -286,13 +300,18 @@
 .modal {
   background: white;
   padding: 20px;
-  border-radius: 8px;
-  width: 400px;
+  border-radius: 10px;
+  max-width: 500px;
+  width: 100%;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.modal h2 {
-  margin-bottom: 10px;
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 18px;
+  font-weight: bold;
 }
 
 .modalButtons {
@@ -316,14 +335,163 @@
   margin-bottom: 10px;
 }
 
-.progress1 {
-  background-color: #ff8c00;
-  width: 50%;
-  border-radius: 15px;
+.progressTabs {
   display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  border-bottom: 1px solid #ddd;
 }
 
-@media (max-width: 600px) {
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 5px 0;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.activeTab {
+  color: #ff5733;
+  border-bottom: 3px solid #ff5733;
+}
+
+.inactiveTab {
+  color: #aaa;
+  border-bottom: 3px solid #ddd;
+}
+
+.formGrid {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.leftColumn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rightColumn {
+  width: 150px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+input, select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.progress1 {
+  justify-content: flex-start;
+}
+
+.progress2 {
+  justify-content: flex-end;
+}
+
+.genderContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.radioGroup {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.genderLabel {
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.fitnessGoals {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+}
+
+.heightWeightContainer {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.inputGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.inputGroup input {
+  width: 125px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 16px;
+}
+
+.unit {
+  font-size: 16px;
+  font-weight: bold;
+  color: #666;
+}
+
+.addnmembershipDropdown {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.fitnessGoalsOption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.goalOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.goalOption input {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.footerbutton {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+@media (max-width: 1024px) {
   .memberHeader {
     flex-direction: column;
     text-align: center;
@@ -331,12 +499,13 @@
 
   .searchContainer {
     width: 100%;
+    max-width: 250px;
   }
 
   .addMemberButton,
   .deleteMemberButton {
     width: 100%;
-    font-size: 12px;
+    max-width: 250px;
   }
 
   .memberTable {
@@ -345,9 +514,11 @@
     white-space: nowrap;
   }
 
-  .mprofileContainer {
+  .formGrid {
     flex-direction: column;
-    align-items: center;
-    text-align: center;
+  }
+
+  .leftColumn, .rightColumn {
+    width: 100%;
   }
 }
