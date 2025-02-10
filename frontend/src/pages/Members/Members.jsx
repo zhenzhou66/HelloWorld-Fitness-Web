@@ -154,48 +154,68 @@ const Members = () => {
     const [selectedMembers, setSelectedMembers] = useState({});
 
     const handleSelectAll = (event) => {
-        setSelectAll(event.target.checked);
-        const newSelectedMembers ={};
+        const isChecked = event.target.checked;
+        setSelectAll(isChecked);
+    
+        const updatedMembers = {};
         currentMembers.forEach(member => {
-            newSelectedMembers[member.user_id] = event.target.checked;
+            updatedMembers[member.user_id] = isChecked;
         });
-        setSelectedMembers(newSelectedMembers);
+    
+        setSelectedMembers(updatedMembers);
     };
 
     const handleSelectMember = (event, user_id) => {
-        setSelectedMembers({
-            ...selectedMembers,
-            [user_id]: event.target.checked,
+        const isChecked = event.target.checked;
+    
+        setSelectedMembers((prev) => {
+            const updatedMembers = { ...prev, [user_id]: isChecked };
+    
+            const allSelected = Object.values(updatedMembers).every((val) => val === true);
+            setSelectAll(allSelected);
+    
+            return updatedMembers;
         });
     };
 
     // For Delete Member
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [membersToDelete, setMembersToDelete] = useState([]);
 
-    const handleDeleteClick = () => {
-        const selectedMembersIds = Object.keys(selectedMembers).filter(user_id => selectedMembers[user_id]);
+    const handleDeleteClick = (user_id = null) => {
+        let selectedMembersIds;
     
-        if (selectedMembersIds.length === 0) {
-            alert("Please select at least one member to delete.");
-            return;
+        if (user_id) {
+            selectedMembersIds = [user_id];
+        } else {
+            selectedMembersIds = Object.keys(selectedMembers).filter(id => selectedMembers[id]);
+            
+            if (selectedMembersIds.length === 0) {
+                alert("Please select at least one member to delete.");
+                return;
+            }
         }
-    
+        setMembersToDelete(selectedMembersIds);
+        setShowDeleteConfirm(true);
+    };
+
+    const handleDelete = () => {
         fetch(`http://localhost:5000/api/members/delete`, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ members_ids: selectedMembersIds }),
+            body: JSON.stringify({ user_ids: membersToDelete }),
         })
-        .then((response) => response.json())
-        .then((data) => {
+        .then(response => response.json())
+        .then(data => {
             alert(data.message);
             fetchMembers(); 
             setSelectedMembers({});
             setSelectAll(false);
             setShowDeleteConfirm(false);
+            setMembersToDelete([]);
         })
-        .catch((error) => {
+        .catch(error => {
             console.error("Error deleting memberships:", error);
-            setShowDeleteConfirm(false);
         });
     };    
 
@@ -292,7 +312,7 @@ const Members = () => {
                         />
                     </div>
                 <button className={styles.addMemberButton} onClick={openModal}>+ Add Member</button>
-                <button className={styles.deleteMemberButton} onClick={handleDeleteClick}>🗑️ Delete Selected</button>
+                <button className={styles.deleteMemberButton} onClick={() => handleDeleteClick(null)}>🗑️ Delete Selected</button>
                 </div>
             </div>
 
@@ -353,7 +373,7 @@ const Members = () => {
                                 <button className={styles.editButton} onClick={() => openEditModal(member)}>
                                     <Edit size={20} />
                                 </button>
-                                <button className={styles.deleteButton} onClick={handleDeleteClick}>
+                                <button className={styles.deleteButton} onClick={() => handleDeleteClick(member.user_id)}>
                                     <Trash size={20} />
                                 </button>
                             </td>
@@ -379,7 +399,7 @@ const Members = () => {
             </div>
 
             {/* For Admin to Delete Member(Overlay) */}
-            {showDeleteConfirm && (
+            {/* {showDeleteConfirm && (
                 <div className={styles.modalOverlayDeleteM}>
                     <div className={styles.modalDeleteM}>
                         <h3>🗑️</h3>
@@ -387,6 +407,26 @@ const Members = () => {
                         <div className={styles.modalButtons}>
                             <button className={styles.cancelDeleteButton} onClick={() => setShowDeleteConfirm(false)}>No, Cancel</button>
                             <button className={styles.confirmDeleteButton} onClick={confirmDelete}>Yes, Delete</button>
+                        </div>
+                    </div>
+                </div>
+            )} */}
+
+            {showDeleteConfirm && (
+                <div className={styles.modalOverlayDeleteM}>
+                    <div className={styles.modalDeleteM} style={{ textAlign: "center" }}>
+                        <button className={styles.closeButton} onClick={() => setShowDeleteConfirm(false)}>
+                        <X size={24} />
+                        </button>
+                        <Trash className={styles.deleteIcon} size={40}/>
+                        <p style={{ marginBottom: "30px" }}>Are you sure you want to delete this member?</p>
+                        <div className={styles.modalButtons}>
+                            <button className={styles.cancelDeleteButton} onClick={() => setShowDeleteConfirm(false)}>
+                                No, cancel
+                            </button>
+                            <button className={styles.confirmDeleteButton} onClick={handleDelete}>
+                                Yes, I'm sure
+                            </button>
                         </div>
                     </div>
                 </div>

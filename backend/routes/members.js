@@ -56,20 +56,24 @@ router.post('/add', upload.single('profilePicture'), (req, res) => {
 });
 
 router.delete('/delete', (req, res) => {
-    const { user_ids } = req.body; 
+    let { user_ids } = req.body; 
 
-    if (!user_ids || user_ids.length === 0) {
+    if (!user_ids) {
         return res.status(400).json({ message: "No members selected for deletion." });
+    }
+
+    if (!Array.isArray(user_ids)) {
+        user_ids = [user_ids];
     }
 
     const deleteQuery = `
         DELETE FROM user
-        WHERE user_id IN (?)
+        WHERE user_id IN (${user_ids.map(() => '?').join(',')}) 
     `;
 
-    db.query(deleteQuery, [user_ids], (err, result) => {
+    db.query(deleteQuery, user_ids, (err, result) => {
         if (err) {
-            return res.status(500).json({ message: 'Database error while deleting members.' });
+            return res.status(500).json({ message: 'Database error while deleting members.', error: err });
         }
         if (result.affectedRows > 0) {
             res.status(200).json({ message: 'Members deleted successfully!' });
@@ -78,5 +82,6 @@ router.delete('/delete', (req, res) => {
         }
     });
 });
+
 
 module.exports = router;

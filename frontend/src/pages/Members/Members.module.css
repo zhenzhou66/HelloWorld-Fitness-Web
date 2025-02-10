@@ -221,7 +221,9 @@ input[type="checkbox"] {
     background: white;
     padding: 20px;
     border-radius: 8px;
+    width: 400px;
     text-align: center;
+    position: relative;
   }
 
   .cancelButton {
@@ -245,28 +247,37 @@ input[type="checkbox"] {
   .modalButtons {
     margin-top: 20px;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
   }
   
   .cancelDeleteButton {
-    background: gray;
-    color: white;
-    padding: 8px 15px;
-    border: none;
+    background: transparent;
+    color: black;
+    padding: 10px;
+    border: 1px black solid;
     cursor: pointer;
     border-radius: 5px;
-    margin-left: 10px;
+    width: 40%;
+    transition:0.3s;
+  }
+
+  .cancelDeleteButton:hover{
+    background-color: #d8d7d7;
   }
   
   .confirmDeleteButton {
-    background: red;
+    background: #ff7f50;
     color: white;
-    padding: 8px 15px;
+    padding: 10px;
     border: none;
     cursor: pointer;
-    margin-right: 10px;
+    width: 40%;
     border-radius: 5px;
-    margin-left: 10px;
+    transition:0.3s;
+  }
+
+  .confirmDeleteButton:hover{
+    background-color: #ff5733;
   }
 
 .deleteMemberButton {
@@ -510,6 +521,21 @@ input, select {
   width: 500px;
   max-width: 90%;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.deleteIcon{
+  color: #555;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.closeButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 
 @media (max-width: 1024px) {
