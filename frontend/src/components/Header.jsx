@@ -23,7 +23,7 @@ const Header = () => {
     "/Memberships": {
       title: "Membership Management",
       description:
-        "Create, update, search, view, and delete workout plan to keep your Membership plan database accurate and organized.",
+        "Create, update, search, view, and delete membership plans to update membership database.",
     },
     "/Schedules": {
       title: "Class Schedules",

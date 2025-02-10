@@ -145,17 +145,20 @@ export default function Memberships() {
               <td>{plan.plan_name}</td>
               <td>{plan.description}</td>
               <td>${plan.price}</td>
-              <td className={styles.actions}>
-                <Edit
-                  className={styles.icon}
-                  size={20}
-                  onClick={() => toggleModal(plan)}
-                />
-                <Trash
-                  className={styles.icon}
-                  size={20}
-                  onClick={() => handleDeleteClick(plan)}
-                />
+              <td >
+                <div className={styles.actions}>
+                  <Edit
+                    className={styles.icon}
+                    size={20}
+                    onClick={() => toggleModal(plan)}
+                  />
+                  <Trash
+                    className={styles.icon}
+                    size={20}
+                    onClick={() => handleDeleteClick(plan)}
+                  />
+                </div>
+                
               </td>
             </tr>
           ))}
