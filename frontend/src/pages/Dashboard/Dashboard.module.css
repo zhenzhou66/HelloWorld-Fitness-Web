@@ -39,8 +39,8 @@
   justify-content: center;
   width: 30%;
   min-width: 220px;
-  border: 1px solid black;
-  background-color: rgb(252, 229, 200);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: rgb(255, 255, 255);
   border-radius: 5px;
 }
 

@@ -66,19 +66,6 @@ const MiddleContent = () => {
                 value={selectedYear}
                 label="Year"
                 onChange={(e) => setSelectedYear(e.target.value)}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": {
-                      borderColor: "red", // Default border color
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "#dcdcdc", // Border color when hovered
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#ff7f7f", // Border color when focused
-                    },
-                  },
-                }}
               >
                 {getAvailableYears().map((year) => (
                   <MenuItem key={year} value={year.toString()}>

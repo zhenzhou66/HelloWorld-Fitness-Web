@@ -162,7 +162,7 @@ body {
 }
 
 .PageContent {
-  margin-top: 50px;
+  margin-top: 10px;
   border: 2px solid black;
   display: flex;
   width: 100%;
