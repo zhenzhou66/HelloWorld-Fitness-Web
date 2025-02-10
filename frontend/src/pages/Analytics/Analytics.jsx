@@ -7,7 +7,7 @@ import GymAtd from "./PageGymAtd/GymAtd";
 import NavBar from "./NavBar/NavBar";
 
 function Analytics() {
-  const [selectedComponent, setSelectedComponent] = useState("ComponentOne");
+  const [selectedComponent, setSelectedComponent] = useState("PageOne");
 
   const renderComponent = () => {
     switch (selectedComponent) {

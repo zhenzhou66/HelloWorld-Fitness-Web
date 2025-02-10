@@ -6,13 +6,20 @@
 
 .navButton {
   padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
+  background-color: transparent;
+  color: grey;
   border: none;
-  border-radius: 5px;
+  border-bottom: 2px solid transparent;
   cursor: pointer;
+  transition: color 0.3s, border-bottom 0.3s;
 }
 
 .navButton:hover {
-  background-color: #0056b3;
+  color: pink;
+  border-bottom: 2px solid pink;
+}
+
+.navButton.active {
+  color: orange;
+  border-bottom: 2px solid orange;
 }
