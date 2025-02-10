@@ -55,4 +55,28 @@ router.post('/add', upload.single('profilePicture'), (req, res) => {
     });
 });
 
+router.delete('/delete', (req, res) => {
+    const { user_ids } = req.body; 
+
+    if (!user_ids || user_ids.length === 0) {
+        return res.status(400).json({ message: "No members selected for deletion." });
+    }
+
+    const deleteQuery = `
+        DELETE FROM user
+        WHERE user_id IN (?)
+    `;
+
+    db.query(deleteQuery, [user_ids], (err, result) => {
+        if (err) {
+            return res.status(500).json({ message: 'Database error while deleting members.' });
+        }
+        if (result.affectedRows > 0) {
+            res.status(200).json({ message: 'Members deleted successfully!' });
+        } else {
+            res.status(404).json({ message: 'No members found to delete.' });
+        }
+    });
+});
+
 module.exports = router;
