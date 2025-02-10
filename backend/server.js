@@ -25,15 +25,6 @@ db.connect((err) => {
     }
 });
 
-app.get('/', (req, res) => {
-    res.send('Server is running!');
-});
-
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});
-
 const authRoutes = require('./routes/auth');
 app.use('/auth', authRoutes);
 
@@ -42,3 +33,17 @@ app.use('/api/dashboard', dashboardRoutes);
 
 const membershipRoutes = require('./routes/memberships');
 app.use('/api/memberships', membershipRoutes);
+
+const membersRoutes = require('./routes/members');
+app.use('/api/members', membersRoutes);
+
+app.use('/uploads', express.static('uploads'));
+
+app.get('/', (req, res) => {
+    res.send('Server is running!');
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+});
