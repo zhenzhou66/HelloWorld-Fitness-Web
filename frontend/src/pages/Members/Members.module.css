@@ -1,50 +1,55 @@
 .memberContent {
   background-color: #f9f9f9;
   width: 100%;
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+  overflow-x: auto;
+  font-family: "Roboto", sans-serif;
+  box-sizing: border-box;
+}
+  
+.memberFunction {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap:10px;
 }
 
-.memberHeader {
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+.membersCount{
+  font-weight: lighter;
+  color:#787878;
 }
-  
-.memberHeader h2, p {
-  font-family: "Roboto", sans-serif;
-  margin-bottom: 10px;
-}
-  
-  .memberHeader p, th {
-    color: #6D6D6D;
-  }
-  
+
   .searchInput {
     font-family: "Roboto", sans-serif;
-    margin: 0;
-    border: 1px solid #ddd;
+    border: 1px solid #ccc;
     border-radius: 5px;
-    padding: 5px 10px;
-    height: 35px;
+    padding: 8px;
+    width: 100%;
+    max-width: 300px;
   }
   
   .addMemberButton {
     font-family: "Roboto", sans-serif;
-    padding: 5px;
-    background-color: orange;
+    padding: 8px 16px;
+    background-color: #ff7f50;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: 0.3s;
   }
     
   .addMemberButton:hover {
-    background-color: #ff8c00;
+    background-color: #ff5733;
   }
     
   .memberTable {
     width: 100%;
     border-collapse: collapse;
+    background: white;
   }
     
   .memberTable th,
@@ -74,26 +79,29 @@ th, td {
     background-color: #efefef;
     font-weight: bold;
   }
+
+  .memberTable tr:hover{
+    background: #f9f9f9;
+  }
+
+  .actions {
+    display: flex; 
+    gap: 10px;
+    justify-content: space-around;
+  }
   
   .editButton,
   .deleteButton {
     background: none;
     border: none;
     cursor: pointer;
-    padding: 5px;
-    border-radius: 50%;
-    transition: background-color 0.3s;
+    transition: 0.3s;
+    color: #555;
   }
 
   .editButton:hover,
   .deleteButton:hover {
     color: #ff5733;
-  }
-  
-  .memberFunction {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
   }
   
 .checkboxuserid {
@@ -120,28 +128,17 @@ input[type="checkbox"] {
 .checkboxuserid input[type="checkbox"] {
   margin: 0;
 }
-
-  .memberTitle {
-    font-family: "Roboto", sans-serif;
-    font-size: 18px;
-    font-weight: bold;
-    color: #333;
-    margin: 0;
-  }
   
   .memberActions {
-    padding: 10px;
     display: flex;
+    justify-content: space-between;
+    align-items: center;
     gap: 10px;
     margin-left: auto;
   }
   
   .searchContainer {
-    width: 250px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
+    width: 300px;
   }
   
   .mprofileContainer {
@@ -222,8 +219,10 @@ input[type="checkbox"] {
     padding: 20px;
     border-radius: 8px;
     width: 400px;
+    height: 90%;
     text-align: center;
     position: relative;
+    overflow-y: scroll;
   }
 
   .cancelButton {
@@ -282,13 +281,13 @@ input[type="checkbox"] {
 
 .deleteMemberButton {
   font-family: "Roboto", sans-serif;
-  padding: 5px;
+  padding: 8px 16px;
   background-color: rgb(242, 69, 69);
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: 0.3s;
 }
 
 .deleteMemberButton:hover {
@@ -315,6 +314,9 @@ input[type="checkbox"] {
   max-width: 500px;
   width: 100%;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow-y: scroll;
+  height: 90%;
+  position: relative;
 }
 
 .modalHeader {
@@ -411,12 +413,12 @@ input, select {
 .genderContainer {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: left;
 }
 
 .radioGroup {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   gap: 15px;
 }
 
@@ -428,8 +430,9 @@ input, select {
 }
 
 .genderLabel {
-  font-weight: bold;
+  /* font-weight: bold; */
   white-space: nowrap;
+  text-align: left;
 }
 
 .fitnessGoals {
@@ -519,8 +522,11 @@ input, select {
   padding: 20px;
   border-radius: 10px;
   width: 500px;
+  height: 90%;
   max-width: 90%;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow-y: scroll;
 }
 
 .deleteIcon{
@@ -536,6 +542,26 @@ input, select {
   background: none;
   border: none;
   cursor: pointer;
+}
+
+.buttonSection{
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.profileSection{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.profilePicture{
+  border-radius: 50%;
+  height: 80px;
+  width: 80px;
 }
 
 @media (max-width: 1024px) {

@@ -114,10 +114,10 @@ export default function Memberships() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <p className={styles.subtitle}>
+        <h3>
           All Membership Plan&nbsp;&nbsp;
           <span className={styles.membershipCount}>({memberships.membershipCount})</span>
-        </p>
+        </h3>
         <input 
           type="text" 
           placeholder="Search" 
@@ -125,7 +125,7 @@ export default function Memberships() {
           onChange={(e) => setSearch(e.target.value)} 
           className={styles.searchInput} 
         />
-        <button className={styles.addButton} onClick={() => toggleModal()}>+ Membership</button>
+        <button className={styles.addButton} onClick={() => toggleModal()}>Add Membership</button>
       </div>
 
       <table className={styles.table}>

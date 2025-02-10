@@ -4,12 +4,18 @@ const db = require('../db');
 
 router.get('/display', (req, res) => {
     const membersDetails = 'SELECT * FROM user WHERE role = ?';
+    const membersCount = 'SELECT COUNT(*) AS membersCount FROM user WHERE role = ?';
 
     db.query(membersDetails, ["member"], (err, detailResult) => {
         if (err) return res.status(500).json({ message: 'Database error in fetching user details.' });
         
-        res.status(200).json({
-            membersDetails: detailResult || []
+        db.query(membersCount, ["member"], (err, countResult) => {
+            if (err) return res.status(500).json({ message: 'Database error in members query.' });
+            
+            res.status(200).json({
+                membersDetails: detailResult || [],
+                membersCount: countResult[0].membersCount || 0
+            });
         });
     });
 });
@@ -83,5 +89,26 @@ router.delete('/delete', (req, res) => {
     });
 });
 
+router.put('/update/:id', (req, res) => {
+    const { id } = req.params;
+    const { name, email, phone, membershipPlan } = req.body;
+
+    const updateQuery = `
+        UPDATE user
+        SET name = ?, email = ?, phone = ?, membershipPlan = ?
+        WHERE user_id = ?
+    `;
+
+    db.query(updateQuery, [name, email, phone, membershipPlan, id], (err, result) => {
+        if (err) {
+            return res.status(500).json({ message: 'Database error while updating member.' });
+        }
+        if (result.affectedRows > 0) {
+            res.status(200).json({ message: 'Member updated successfully!' });
+        } else {
+            res.status(404).json({ message: 'Member not found.' });
+        }
+    });
+});
 
 module.exports = router;

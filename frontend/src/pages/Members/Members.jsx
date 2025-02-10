@@ -6,7 +6,7 @@ import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import { Trash, Edit, X } from "lucide-react";
 
 const Members = () => {
-    const [members, setMembers] = useState([]);
+    const [members, setMembers] = useState({ membersDetails: [], membersCount: 0 });
     const [filteredMembers, setFilteredMembers] = useState([]); 
 
     // Fetching users
@@ -14,8 +14,8 @@ const Members = () => {
         fetch("http://localhost:5000/api/members/display")
             .then((response) => response.json())
             .then((data) => {
-                setMembers(data.membersDetails || []);
-                setFilteredMembers(data.membersDetails || []); 
+                setMembers(data);
+                setFilteredMembers(data.membersDetails); 
             })
             .catch((error) => console.error("Error fetching members:", error));
     }, []);
@@ -32,15 +32,15 @@ const Members = () => {
 
     useEffect(() => {
         if (search.trim() === "") {
-            setFilteredMembers(members); 
+            setFilteredMembers(members.membersDetails); 
         } else {
             setFilteredMembers(
-                members.filter((member) => 
+                members.membersDetails.filter((member) => 
                     member.username.toLowerCase().includes(search.toLowerCase())
                 )
             );
         }
-    }, [search, members]);
+    }, [search, members.membersDetails]);
 
     //Fetch membership plans
     const [membershipPlans, setMembershipPlans] = useState([]);
@@ -234,59 +234,117 @@ const Members = () => {
     };
 
     const handleSave = (updatedMember) => {
-        closeEditModal();
-    }
+        fetch(`http://localhost:5000/api/members/update/${updatedMember.user_id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(updatedMember),
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message); 
+            closeEditModal();
+            fetchMembers(); 
+        })
+        .catch(error => {
+            console.error("Error updating member:", error);
+        });
+    };
+    
 
     const EditMemberModal = ({ member, onClose, onSave }) => {
-        const [editedMember, setEditedMember] = useState(member);
-
+        const [editedMember, setEditedMember] = useState({ ...member });
+    
         const handleChange = (e) => {
             const { name, value } = e.target;
-            setEditedMember({ ...editedMember, [name]: value });
+            setEditedMember(prevState => ({ ...prevState, [name]: value }));
         };
-
+    
         const handleSubmit = (e) => {
             e.preventDefault();
             onSave(editedMember);
         };
-
+    
         return (
             <div className={styles.editOverlay}>
                 <div className={styles.editContent}>
-                    <span>Edit Member Information</span>
-                    <X className={styles.XeditmButton} onClick={closeModal} />
-
+                    <X className={styles.closeButton} onClick={onClose} />
+                    <h2>Edit Member Information</h2>
                     <div className={styles.profileSection}>
-                        <img src="/profile-placeholder.png" alt="Profile" className={styles.profilePicture} />
+                        <img src={`http://localhost:5000/uploads/${editedMember.profile_picture}`} alt="Profile" className={styles.profilePicture} />
+                        <div>
+                            <label>Username:</label>
+                            <input type="text" name="username" value={editedMember.username} readonly/>
+                        </div>
                     </div>
-
+                    <hr />
                     <h3>Personal Information</h3>
-                    <form onSubmit={(e) => { e.preventDefault(); onSave(editedMember); }}>
-                        <label>Name</label>
+                    <form onSubmit={handleSubmit}>
+                        <label>Name:</label>
                         <input type="text" name="name" value={editedMember.name} onChange={handleChange} />
-                        <label>Email</label>
+                        <label>Gender:</label>
+                        <div className={styles.radioGroup}>
+                            <label className={styles.radioLabel}>
+                                <input type="radio" name="gender" value="Male" checked={editedMember.gender === "Male"} onChange={handleChange} 
+                                />
+                                Male
+                            </label>
+                            <label className={styles.radioLabel}>
+                                <input type="radio" name="gender" value="Female" checked={editedMember.gender === "Female"} onChange={handleChange}
+                                />
+                                Female
+                            </label>
+                        </div>                        
+                        <label>Date of Birth:</label>
+                        <input type="date" name="dob" value={editedMember.date_of_birth} onChange={handleChange} />
+                        <label>Email:</label>
                         <input type="email" name="email" value={editedMember.email} onChange={handleChange} />
-                        <label>Phone</label>
-                        <input type="text" name="phone" value={editedMember.phone} onChange={handleChange} />
-                        <label>Membership Plan</label>
-                        <select name="membershipPlan" value={editedMember.membershipPlan} onChange={handleChange}>
+                        <label>Phone Number:</label>
+                        <input type="text" name="phone" value={editedMember.contact_number} onChange={handleChange} />
+                        <hr />
+                        <h3>Fitness Information</h3>
+                        <div className={styles.heightWeightContainer}>
+                            <div className={styles.inputGroup}>
+                                <label>Height:</label>
+                                <input type="number" name="height" placeholder="Enter Height" value={editedMember.height} onChange={handleChange} required />
+                                <span className={styles.unit}>cm</span>
+                            </div>
+                            <div className={styles.inputGroup}>
+                                <label>Weight:</label>
+                                <input type="number" name="weight" placeholder="Enter weight" value={editedMember.weight} onChange={handleChange} required />
+                                <span className={styles.unit}>kg</span>
+                            </div>
+                        </div>
+                        <label>Membership Plan:</label>
+                        <select name="membershipPlan" value={editedMember.membership_plan} onChange={handleChange}>
                             {membershipPlans.map((plan) => (
                                 <option key={plan.membership_id} value={plan.membership_id}>{plan.plan_name}</option>
                             ))}
                         </select>
-                        <button type="submit" className={styles.editUpdateBtn}>Update</button>
-                        <button type="button" onClick={onClose} className={styles.editCancelBtn}>Cancel</button>
+                        <label>Fitness goals:</label>
+                        <div className={styles.fitnessGoalsOption}>
+                            {["Loss Weight", "Muscle Mass Gain", "Gain Weight", "Shape Body", "Others"].map((goal) => (
+                                <label key={goal} className={styles.goalOption}>
+                                    <input type="checkbox" value={goal} checked={formData.fitnessGoals.includes(goal)} onChange={() => handleGoalChange(goal)}
+                                    />
+                                    {goal}    
+                                </label>
+                            ))}
+                        </div>
+                        <div className={styles.buttonSection}>
+                            <button type="button" onClick={onClose} className={styles.cancelDeleteButton}>Cancel</button>
+                            <button type="submit" className={styles.confirmDeleteButton}>Update</button>
+                        </div>
                     </form>
                 </div>
             </div>
-        )
-    }
+        );
+    };    
 
     // Bottom Page Function
     const [currentPage, setCurrentPage] = useState(1);
     const membersPerPage = 9;
 
-    const totalPages = Math.ceil(members.length / membersPerPage);
+    const totalPages = Math.ceil(members.membersCount / membersPerPage);
     const startIndex = (currentPage - 1) * membersPerPage;
     const endIndex = startIndex + membersPerPage;
     const currentMembers = filteredMembers.slice(startIndex, endIndex);
@@ -300,7 +358,9 @@ const Members = () => {
     return (
         <div className={styles.memberContent}>
             <div className={styles.memberFunction}>
-                <h3 className={styles.memberTitle}>All Members</h3>
+                <h3 className={styles.memberTitle}>All Members&nbsp;&nbsp;
+                    <span className={styles.membersCount}>({members.membersCount})</span>
+                </h3>
                 <div className={styles.memberActions}>
                     <div className={styles.searchContainer}>
                         <input 
@@ -311,8 +371,8 @@ const Members = () => {
                         placeholder="Search" 
                         />
                     </div>
-                <button className={styles.addMemberButton} onClick={openModal}>+ Add Member</button>
-                <button className={styles.deleteMemberButton} onClick={() => handleDeleteClick(null)}>🗑️ Delete Selected</button>
+                    <button className={styles.addMemberButton} onClick={openModal}>Add Member</button>
+                    <button className={styles.deleteMemberButton} onClick={() => handleDeleteClick(null)}>Delete Selected</button>
                 </div>
             </div>
 
@@ -370,12 +430,14 @@ const Members = () => {
                             <td>{member.contact_number}</td>
                             <td>{formatDate(member.date_joined)}</td>
                             <td>
-                                <button className={styles.editButton} onClick={() => openEditModal(member)}>
-                                    <Edit size={20} />
-                                </button>
-                                <button className={styles.deleteButton} onClick={() => handleDeleteClick(member.user_id)}>
-                                    <Trash size={20} />
-                                </button>
+                                <div className={styles.actions}>
+                                    <button className={styles.editButton} onClick={() => openEditModal(member)}>
+                                        <Edit size={20} />
+                                    </button>
+                                    <button className={styles.deleteButton} onClick={() => handleDeleteClick(member.user_id)}>
+                                        <Trash size={20} />
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     ))}
@@ -399,19 +461,6 @@ const Members = () => {
             </div>
 
             {/* For Admin to Delete Member(Overlay) */}
-            {/* {showDeleteConfirm && (
-                <div className={styles.modalOverlayDeleteM}>
-                    <div className={styles.modalDeleteM}>
-                        <h3>🗑️</h3>
-                        <p>Are you sure you want to delete this member?</p>
-                        <div className={styles.modalButtons}>
-                            <button className={styles.cancelDeleteButton} onClick={() => setShowDeleteConfirm(false)}>No, Cancel</button>
-                            <button className={styles.confirmDeleteButton} onClick={confirmDelete}>Yes, Delete</button>
-                        </div>
-                    </div>
-                </div>
-            )} */}
-
             {showDeleteConfirm && (
                 <div className={styles.modalOverlayDeleteM}>
                     <div className={styles.modalDeleteM} style={{ textAlign: "center" }}>
