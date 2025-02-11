@@ -5,18 +5,18 @@ import { Trash, Edit } from "lucide-react";
 const Schedules = () => {
   // Static data for demonstration
   const classes = {
-    class_id: "101",
-    class_name: "Yoga Class",
-    description: "Relaxing yoga session",
+    class_id: "1",
+    class_name: "Yoga Flow",
+    description: "A relaxing yoga session focused on flexibility and...",
     class_image: "https://via.placeholder.com/50",
-    schedule_date: "2023-10-15",
-    start_time: "10:00 AM",
-    end_time: "11:00 AM",
+    schedule_date: "2025-01-20",
+    start_time: "08:00 AM",
+    end_time: "09:00 AM",
   };
 
   const user = {
     profile_picture: "https://via.placeholder.com/50",
-    name: "John Doe",
+    name: "Ali",
   };
 
   return (
@@ -27,7 +27,7 @@ const Schedules = () => {
           <div className={styles.searchContainer}>
             <input type="text" className={styles.searchInput} placeholder="Search" />
           </div>
-          <button className={styles.addClass}>+ Add Class</button>
+          <button className={styles.addClass}>Add Class</button>
         </div>
       </div>
 

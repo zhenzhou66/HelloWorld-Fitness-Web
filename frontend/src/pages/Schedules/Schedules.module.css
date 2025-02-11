@@ -1,6 +1,12 @@
 .schedulesContent {
     background-color: #f9f9f9;
     width: 100%;
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+    overflow-x: auto;
+    font-family: "Roboto", sans-serif;
+    box-sizing: border-box;
 }
 
 .schedulesFunction {
@@ -25,34 +31,35 @@
 }
 
 .searchContainer {
-    width: 250px;
+    width: 300px;
+    height: 30px;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
 }
 
 .searchInput {
     font-family: "Roboto", sans-serif;
-    margin: 0;
-    border: 1px solid #ddd;
+    border: 1px solid #ccc;
     border-radius: 5px;
-    padding: 5px 10px;
-    height: 35px;
+    padding: 8px 16px;
+    width: 100%;
+    max-width: 300px;
+    height: 100%;
+    box-sizing: border-box;
 }
 
 .addClass {
     font-family: "Roboto", sans-serif;
-    padding: 5px;
-    background-color: orange;
+    padding: 8px 16px;
+    background-color: #ff7f50;
     color: white;
     border: none;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: 0.3s;
 }
 
 .addClass:hover {
-    background-color: #ff8c00;
+    background-color: #ff5733;
 }
 
 .schedulesTable {
