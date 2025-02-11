@@ -13,7 +13,7 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import Members from "./pages/Members/Members";
 import Trainers from "./pages/Trainers";
 import Memberships from "./pages/Memberships/Memberships";
-import Schedules from "./pages/Schedules";
+import Schedules from "./pages/Schedules/Schedules";
 import Analytics from "./pages/Analytics/Analytics";
 import Billing from "./pages/Billing";
 import Announcements from "./pages/Announcements";
