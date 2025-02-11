@@ -286,8 +286,8 @@ const Members = () => {
                             <input type="text" name="username" value={editedMember.username} readonly/>
                         </div>
                     </div>
-                    <hr />
-                    <h3>Personal Information</h3>
+                    <hr className={styles.edithr} />
+                    <h3 className={styles.edith3text}>Personal Information</h3>
                     <form onSubmit={handleSubmit}>
                         <label>Name:</label>
                         <input type="text" name="name" value={editedMember.name} onChange={handleChange} />
@@ -310,8 +310,8 @@ const Members = () => {
                         <input type="email" name="email" value={editedMember.email} onChange={handleChange} />
                         <label>Phone Number:</label>
                         <input type="text" name="phone" value={editedMember.contact_number} onChange={handleChange} />
-                        <hr />
-                        <h3>Fitness Information</h3>
+                        <hr className={styles.edithr}/>
+                        <h3 className={styles.edith3text}>Fitness Information</h3>
                         <div className={styles.heightWeightContainer}>
                             <div className={styles.inputGroup}>
                                 <label>Height:</label>

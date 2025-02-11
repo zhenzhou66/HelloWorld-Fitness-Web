@@ -26,9 +26,11 @@
     font-family: "Roboto", sans-serif;
     border: 1px solid #ccc;
     border-radius: 5px;
-    padding: 8px;
+    padding: 8px 16px;
     width: 100%;
     max-width: 300px;
+    height: 100%;
+    box-sizing: border-box;
   }
   
   .addMemberButton {
@@ -139,6 +141,8 @@ input[type="checkbox"] {
   
   .searchContainer {
     width: 300px;
+    height: 30px;
+    display: flex;
   }
   
   .mprofileContainer {
@@ -562,6 +566,16 @@ input, select {
   border-radius: 50%;
   height: 80px;
   width: 80px;
+}
+
+.edith3text {
+  margin-top: 20px;
+  margin-bottom: 15px;
+}
+
+.edithr {
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 @media (max-width: 1024px) {
