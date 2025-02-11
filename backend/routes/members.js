@@ -30,6 +30,17 @@ router.get('/membership-plans', (req, res) => {
     });
 });
 
+router.get('/membership-info/:user_id', (req, res) => {
+    const { user_id } = req.params; 
+    const query = 'SELECT * FROM user_membership WHERE user_id = ?';
+    db.query(query, [user_id], (err, results) => {
+        if (err) {
+            return res.status(500).json({ message: 'Database error while fetching membership plans.' });
+        }
+        res.json(results);
+    });
+});
+
 const multer = require('multer');
 const path = require('path');
 

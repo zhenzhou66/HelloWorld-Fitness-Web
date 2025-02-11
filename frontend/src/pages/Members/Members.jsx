@@ -225,6 +225,16 @@ const Members = () => {
 
     const openEditModal = (member) => {
         setSelectedMember(member);
+        fetch(`http://localhost:5000/api/members/membership-info/${member.user_id}`, {
+            method: "GET",
+        })
+        .then(response => response.json())
+        .then(data => { 
+            
+        })
+        .catch(error => {
+            console.error("Error fetching membership information:", error);
+        });
         setIsEditModalOpen(true);
     };
 
