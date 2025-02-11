@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 10, 2025 at 06:27 AM
+-- Generation Time: Feb 11, 2025 at 08:53 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -149,8 +149,8 @@ CREATE TABLE `feedback` (
   `trainer_id` int(11) NOT NULL,
   `class_id` int(11) NOT NULL,
   `feedback_date` date NOT NULL,
-  `trainer_rating` int(11) NOT NULL,
-  `class_rating` int(11) NOT NULL,
+  `trainer_rating` int(11) DEFAULT NULL,
+  `class_rating` int(11) DEFAULT NULL,
   `comments` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -361,12 +361,12 @@ CREATE TABLE `user` (
   `email` varchar(50) NOT NULL,
   `password` varchar(20) NOT NULL,
   `contact_number` varchar(20) NOT NULL,
-  `date_of_birth` date DEFAULT NULL,
+  `date_of_birth` date NOT NULL,
   `profile_picture` varchar(255) DEFAULT NULL,
   `height` decimal(5,1) NOT NULL,
   `weight` decimal(5,1) NOT NULL,
   `fitness_goals` text NOT NULL,
-  `date_joined` date DEFAULT NULL
+  `date_joined` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
