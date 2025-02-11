@@ -1,0 +1,198 @@
+.schedulesContent {
+    background-color: #f9f9f9;
+    width: 100%;
+}
+
+.schedulesFunction {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.schedulesTitle {
+    font-family: "Roboto", sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+}
+
+.schedulesAction {
+    padding: 10px;
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.searchContainer {
+    width: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.searchInput {
+    font-family: "Roboto", sans-serif;
+    margin: 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 5px 10px;
+    height: 35px;
+}
+
+.addClass {
+    font-family: "Roboto", sans-serif;
+    padding: 5px;
+    background-color: orange;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.addClass:hover {
+    background-color: #ff8c00;
+}
+
+.schedulesTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.schedulesTable th,
+.schedulesTable td {
+    box-sizing: border-box;
+    padding: 8px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.schedulesTable td {
+    vertical-align: middle;
+}
+
+th, td {
+    padding: 5px;
+}
+
+td {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    vertical-align: middle;
+}
+
+.schedulesTable th {
+    background-color: #efefef;
+    font-weight: bold;
+}
+
+.checkboxclassid {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    vertical-align: middle;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.checkboxContainer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.classdetailsContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.classImage {
+    width: 80px;
+    height: 60px;
+    object-fit: cover;
+}
+
+.classDetails {
+    display: flex;
+    flex-direction: column;
+}
+
+.className {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.classDescription {
+    font-size: 12px;
+    color: #666;
+}
+
+.scheduleDate {
+    color: #666;
+}
+
+.classStartTime,
+.classEndTime {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+}
+
+.dash {
+    display: block;
+    font-size: 12px;
+    font-weight: normal;
+    text-align: center;
+    color: #666;
+}
+
+.assignedTrainerContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.trainerImage {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.trainerName {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    margin-top: 4px;
+}
+
+.editButton,
+.deleteButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: background-color 0.3s;
+}
+
+.editButton:hover,
+.deleteButton:hover {
+    color: #ff5733;
+}
+
+input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+.checkboxclassid input[type="checkbox"] {
+    margin: 0;
+}
