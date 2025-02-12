@@ -61,14 +61,26 @@ const upload = multer({
 router.post('/add', upload.single('profilePicture'), (req, res) => {
     const { name, email, phone, username, password, gender, dob, height, weight, membershipPlan, fitnessGoals, dateJoined } = req.body;
     const profilePicture = req.file ? `profile_pictures/${req.file.filename}` : null;
-    
-    const insertUserQuery = 'INSERT INTO user (username, role, name, gender, email, password, contact_number, date_of_birth, profile_picture, height, weight, fitness_goals, date_joined) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
-    db.query(insertUserQuery, [username, "member", name, gender, email, password, phone, dob, profilePicture, height, weight, fitnessGoals, dateJoined], (err, result) => {
+    const checkUsernameQuery = 'SELECT username FROM user WHERE username = ?';
+
+    db.query(checkUsernameQuery, [username], (err, results) => {
         if (err) {
-            return res.status(500).json({ message: 'Database error while adding member.' });
+            return res.status(500).json({ message: 'Database error while checking username.' });
         }
-        res.status(201).json({ message: 'Member added successfully!', membershipId: result.insertId });
+
+        if (results.length > 0) {
+            return res.status(400).json({ message: 'Username already exists. Please choose another one.' });
+        }
+
+        const insertUserQuery = 'INSERT INTO user (username, role, name, gender, email, password, contact_number, date_of_birth, profile_picture, height, weight, fitness_goals, date_joined) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+
+        db.query(insertUserQuery, [username, "member", name, gender, email, password, phone, dob, profilePicture, height, weight, fitnessGoals, dateJoined], (err, result) => {
+            if (err) {
+                return res.status(500).json({ message: 'Database error while adding member.' });
+            }
+            res.status(201).json({ message: 'Member added successfully!', membershipId: result.insertId });
+        });
     });
 });
 

@@ -128,13 +128,19 @@ const Members = () => {
             method,
             body: formDataToSend,
         })
-        .then((response) => response.json())
-        .then((data) => {
-            alert('Member added successfully');
+        .then(async (response) => {
+            const data = await response.json();
+    
+            if (!response.ok) {
+                throw new Error(data.message || "An error occurred while adding the member.");
+            }
+    
+            alert(data.message); // Show success message
             fetchMembers();
             closeModal();
         })
         .catch((error) => {
+            alert(error.message); // Show backend error message
             console.error(error);
         });
     };
@@ -364,6 +370,16 @@ const Members = () => {
     }
 
     const [step, setStep] = useState(1);
+
+    const handleNextStep = () => {
+        if (step === 1) {
+            if (!formData.name || !formData.email || !formData.phone || !formData.username || !formData.password || !formData.gender || !formData.dob) {
+                alert("Please fill in all required fields before proceeding.");
+                return;
+            }
+        }
+        setStep(step + 1);
+    };
 
     return (
         <div className={styles.memberContent}>
@@ -599,19 +615,33 @@ const Members = () => {
 
                             <div className={styles.footerbutton}>
                                 {step > 1 && (
-                                <button type="button" className={styles.cancelButton} onClick={() => setStep(step -1)}
-                                >
-                                Back
-                                </button>
+                                    <button 
+                                        type="button" 
+                                        className={styles.cancelButton} 
+                                        onClick={() => setStep(step - 1)}
+                                    >
+                                        Back
+                                    </button>
                                 )}
-                                <button 
-                                type={step === 2 ? "Add Member" : "button"}
-                                className={styles.nextButton}
-                                onClick={step < 2 ? () => setStep(step + 1) : null}
-                                >
-                                {step === 2 ? "Submit" : "Next"}
-                                </button>
+
+                                {step < 2 ? (
+                                    <button 
+                                        type="button" 
+                                        className={styles.nextButton}
+                                        onClick={handleNextStep} // Ensures validation before proceeding
+                                    >
+                                        Next
+                                    </button>
+                                ) : (
+                                    <button 
+                                        type="submit" 
+                                        className={styles.nextButton} 
+                                    >
+                                        Submit
+                                    </button>
+                                )}
                             </div>
+
                         </form>
                     </div>
                 </div>
