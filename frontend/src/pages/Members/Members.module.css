@@ -1,8 +1,6 @@
 .memberContent {
   background-color: #f9f9f9;
   width: 100%;
-  max-width: 1200px;
-  margin: auto;
   padding: 20px;
   overflow-x: auto;
   font-family: "Roboto", sans-serif;
@@ -11,10 +9,8 @@
   
 .memberFunction {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
-  gap:10px;
+  margin-bottom: 20px
 }
 
 .membersCount{
@@ -22,45 +18,57 @@
   color:#787878;
 }
 
-  .searchInput {
-    font-family: "Roboto", sans-serif;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 8px 16px;
-    width: 100%;
-    max-width: 300px;
-    height: 100%;
-    box-sizing: border-box;
-  }
+.memberActions {
+  padding: 10px;
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.searchContainer {
+  width: 300px;
+  height: 30px;
+  display: flex;
+}
+
+.searchInput {
+  font-family: "Roboto", sans-serif;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 8px 16px;
+  width: 100%;
+  max-width: 300px;
+  height: 100%;
+  box-sizing: border-box;
+}
   
-  .addMemberButton {
-    font-family: "Roboto", sans-serif;
-    padding: 8px 16px;
-    background-color: #ff7f50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 0.3s;
-  }
+.addMemberButton {
+  font-family: "Roboto", sans-serif;
+  padding: 8px 16px;
+  background-color: #ff7f50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
     
-  .addMemberButton:hover {
-    background-color: #ff5733;
-  }
+.addMemberButton:hover {
+  background-color: #ff5733;
+}
     
-  .memberTable {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-  }
+.memberTable {
+  width: 100%;
+  border-collapse: collapse;
+}
     
-  .memberTable th,
-  .memberTable td {
-    box-sizing: border-box;
-    padding: 8px;
-    text-align: left;
-    vertical-align: middle;
-  }
+.memberTable th,
+.memberTable td {
+  box-sizing: border-box;
+  padding: 8px;
+  text-align: left;
+  vertical-align: middle;
+}
 
 .memberTable td {
   vertical-align: middle;
@@ -70,42 +78,18 @@ th, td {
   padding: 5px;
 }
 
-  td {
-    padding: 0;
-    margin: 0;
-    height: 100%;
-    vertical-align: middle;
-  }
+td {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  vertical-align: middle;
+}
     
-  .memberTable th {
-    background-color: #efefef;
-    font-weight: bold;
-  }
+.memberTable th {
+  background-color: #efefef;
+  font-weight: bold;
+}
 
-  .memberTable tr:hover{
-    background: #f9f9f9;
-  }
-
-  .actions {
-    display: flex; 
-    gap: 10px;
-    justify-content: space-around;
-  }
-  
-  .editButton,
-  .deleteButton {
-    background: none;
-    border: none;
-    cursor: pointer;
-    transition: 0.3s;
-    color: #555;
-  }
-
-  .editButton:hover,
-  .deleteButton:hover {
-    color: #ff5733;
-  }
-  
 .checkboxuserid {
   display: flex;
   align-items: center;
@@ -117,60 +101,76 @@ th, td {
   text-overflow: ellipsis;
 }
 
-input[type="checkbox"] {
-  margin-right: 5px;
-}
-
 .checkboxContainer {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
+.mprofileContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mprofileDetails {
+  display: flex;
+  flex-direction: column;
+}
+
+.mprofilePicture {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.mprofileName {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.mprofileEmail {
+  font-size: 12px;
+  color: #666;
+}
+
+.genderContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+}
+
+.genderLabel {
+  white-space: nowrap;
+  text-align: left;
+}
+
+.editButton,
+.deleteButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  transition: background-color 0.3s;
+}
+
+.editButton:hover,
+.deleteButton:hover {
+  color: #ff5733;
+}
+
+input[type="checkbox"] {
+  margin-right: 5px;
+}
+
 .checkboxuserid input[type="checkbox"] {
   margin: 0;
 }
+
   
-  .memberActions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    margin-left: auto;
-  }
   
-  .searchContainer {
-    width: 300px;
-    height: 30px;
-    display: flex;
-  }
-  
-  .mprofileContainer {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .mprofilePicture {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-  .mprofileDetails {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .mprofileName {
-    font-weight: bold;
-    font-size: 14px;
-  }
-  
-  .mprofileEmail {
-    font-size: 12px;
-    color: #666;
-  }
   
   .pagination {
     display: flex;
@@ -414,12 +414,6 @@ input, select {
   justify-content: flex-end;
 }
 
-.genderContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: left;
-}
-
 .radioGroup {
   display: flex;
   justify-content: space-around;
@@ -431,12 +425,6 @@ input, select {
   align-items: center;
   gap: 5px;
   cursor: pointer;
-}
-
-.genderLabel {
-  /* font-weight: bold; */
-  white-space: nowrap;
-  text-align: left;
 }
 
 .fitnessGoals {

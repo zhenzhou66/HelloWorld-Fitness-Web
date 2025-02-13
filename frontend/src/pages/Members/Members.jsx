@@ -456,14 +456,12 @@ const Members = () => {
                             <td>{member.contact_number}</td>
                             <td>{formatDate(member.date_joined)}</td>
                             <td>
-                                <div className={styles.actions}>
-                                    <button className={styles.editButton} onClick={() => openEditModal(member)}>
-                                        <Edit size={20} />
-                                    </button>
-                                    <button className={styles.deleteButton} onClick={() => handleDeleteClick(member.user_id)}>
-                                        <Trash size={20} />
-                                    </button>
-                                </div>
+                                <button className={styles.editButton} onClick={() => openEditModal(member)}>
+                                    <Edit size={20} />
+                                </button>
+                                <button className={styles.deleteButton} onClick={() => handleDeleteClick(member.user_id)}>
+                                    <Trash size={20} />
+                                </button>
                             </td>
                         </tr>
                     ))}

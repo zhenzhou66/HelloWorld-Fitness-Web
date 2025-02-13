@@ -50,46 +50,48 @@ const Schedules = () => {
         </thead>
 
         <tbody>
-          <tr>
-            <td className={styles.checkboxclassid}>
-              <div className={styles.checkboxContainer}>
-                <input type="checkbox" />
-                <span>{classes.class_id}</span>
-              </div>
-            </td>
-            <td>
-              <div className={styles.classdetailsContainer}>
-                <img src={classes.class_image} alt="Class Image" className={styles.classImage} />
-                <div className={styles.classDetails}>
-                  <span className={styles.className}>{classes.class_name}</span>
-                  <span className={styles.classDescription}>{classes.description}</span>
+          
+            <tr>
+              <td className={styles.checkboxclassid}>
+                <div className={styles.checkboxContainer}>
+                  <input type="checkbox" />
+                  <span>{classes.class_id}</span>
                 </div>
-              </div>
-            </td>
-            <td className={styles.scheduleDate}>{classes.schedule_date}</td>
-            <td>
-              <span className={styles.classStartTime}>{classes.start_time}</span>
-              <span className={styles.dash}>-</span>
-              <span className={styles.classEndTime}>{classes.end_time}</span>
-            </td>
-            <td>
-              <div className={styles.assignedTrainerContainer}>
-                <img src={user.profile_picture} alt="Trainer Profile Picture" className={styles.trainerImage} />
-                <span className={styles.trainerName}>{user.name}</span>
-              </div>
-            </td>
-            <td>
-              <span className={styles.classParticipants}>10 / 20</span>
-            </td>
-            <td>
-              <button className={styles.editButton}>
-                <Edit size={20} />
-              </button>
-              <button className={styles.deleteButton}>
-                <Trash size={20} />
-              </button>
-            </td>
-          </tr>
+              </td>
+              <td>
+                <div className={styles.classdetailsContainer}>
+                  <img src={classes.class_image} alt="Class Image" className={styles.classImage} />
+                  <div className={styles.classDetails}>
+                    <span className={styles.className}>{classes.class_name}</span>
+                    <span className={styles.classDescription}>{classes.description}</span>
+                  </div>
+                </div>
+              </td>
+              <td className={styles.scheduleDate}>{classes.schedule_date}</td>
+              <td>
+                <span className={styles.classStartTime}>{classes.start_time}</span>
+                <span className={styles.dash}>-</span>
+                <span className={styles.classEndTime}>{classes.end_time}</span>
+              </td>
+              <td>
+                <div className={styles.assignedTrainerContainer}>
+                  <img src={user.profile_picture} alt="Trainer Profile Picture" className={styles.trainerImage} />
+                  <span className={styles.trainerName}>{user.name}</span>
+                </div>
+              </td>
+              <td>
+                <span className={styles.classParticipants}>10 / 20</span>
+              </td>
+              <td>
+                <button className={styles.editButton}>
+                  <Edit size={20} />
+                </button>
+                <button className={styles.deleteButton}>
+                  <Trash size={20} />
+                </button>
+              </td>
+            </tr>
+          
         </tbody>
       </table>
     </div>
