@@ -199,5 +199,168 @@ input[type="checkbox"] {
 }
 
 .checkboxclassid input[type="checkbox"] {
-    margin: 0;
+    margin: 20px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+  
+.pagination button {
+    padding: 5px 10px;
+    border: 0px solid #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+  
+.pagination button.active {
+    background-color: #ddd;
+    font-weight: bold;
+}
+  
+.pagination button:hover {
+    background-color: #ff8c00;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.modal {
+    background: white;
+    width: 450px;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.XButton {
+    cursor: pointer;
+    font-size: 24px;
+    color: #555;
+    transition: color 0.2s;
+}
+
+.classHeader {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    margin-bottom: 10px;
+    gap: 10px;
+}
+
+.classHeader input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.classNameTextStyle {
+    text-align: center;
+    display: flex;
+    align-items: center;
+}
+
+.imageUpload {
+    width: 100px;
+    height: 100px;
+    border: 2px dashed #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    background: #f9f9f9;
+    overflow: hidden;
+}
+
+.uploadedImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+  
+.uploadPlaceholder {
+    font-size: 30px;
+    color: #bbb;
+}
+
+textarea {
+    width: 100%;
+    height: 60px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    resize: none;
+    margin-bottom: 10px;
+}
+
+.dateTimeContainer {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+  
+.dateTimeContainer input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.participantTrainerContainer {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+  
+.participantTrainerContainer input,
+.participantTrainerContainer select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.confirmButton {
+    width: 100%;
+    background: #e67e22;
+    color: white;
+    font-size: 16px;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+  
+.confirmButton:hover {
+    background: #d35400;
 }
