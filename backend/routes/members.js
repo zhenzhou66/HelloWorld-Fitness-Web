@@ -30,17 +30,6 @@ router.get('/membership-plans', (req, res) => {
     });
 });
 
-router.get('/membership-info/:user_id', (req, res) => {
-    const { user_id } = req.params; 
-    const query = 'SELECT * FROM user_membership WHERE user_id = ?';
-    db.query(query, [user_id], (err, results) => {
-        if (err) {
-            return res.status(500).json({ message: 'Database error while fetching membership plans.' });
-        }
-        res.json(results);
-    });
-});
-
 const multer = require('multer');
 const path = require('path');
 
@@ -62,6 +51,23 @@ router.post('/add', upload.single('profilePicture'), (req, res) => {
     const { name, email, phone, username, password, gender, dob, height, weight, membershipPlan, fitnessGoals, dateJoined } = req.body;
     const profilePicture = req.file ? `profile_pictures/${req.file.filename}` : null;
 
+    const calculateAge = (dob) => {
+        const birthDate = new Date(dob);
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+    
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+    
+        return age;
+    };
+    
+    if (calculateAge(dob) < 12) {
+        return res.status(400).json({ message: 'You must be at least 12 years old to register.' });
+    }
+
     const checkUsernameQuery = 'SELECT username FROM user WHERE username = ?';
 
     db.query(checkUsernameQuery, [username], (err, results) => {
@@ -79,7 +85,53 @@ router.post('/add', upload.single('profilePicture'), (req, res) => {
             if (err) {
                 return res.status(500).json({ message: 'Database error while adding member.' });
             }
-            res.status(201).json({ message: 'Member added successfully!', membershipId: result.insertId });
+
+            const durationQuery = 'SELECT duration FROM membership WHERE membership_id = ?';
+            db.query(durationQuery, [membershipPlan], (err, result) => {
+                if (err) {
+                    console.error('Error fetching duration:', err);
+                    return;
+                }
+                if (result.length === 0) {
+                    console.log('Membership ID not found!');
+                    return;
+                }
+
+                const duration = result[0].duration;
+                const startDate = new Date();
+                const endDate = new Date();
+                endDate.setMonth(startDate.getMonth() + duration);
+
+                const currentDate = new Date();
+                const status = (currentDate >= startDate && currentDate <= endDate) ? 'Active' : 'Expired';
+
+                const userQuery = 'SELECT user_id FROM user WHERE username = ? LIMIT 1';
+                db.query(userQuery, [username], (err, userResult) => {
+                    if (err) {
+                        console.error('Error fetching user ID:', err);
+                        return;
+                    }
+                    if (userResult.length === 0) {
+                        console.log('User not found!');
+                        return;
+                    }
+
+                    const userId = userResult[0].user_id;
+
+                    const insertQuery = `
+                        INSERT INTO user_membership (membership_id, user_id, start_date, end_date, status) 
+                        VALUES (?, ?, ?, ?, ?)
+                    `;
+                    db.query(insertQuery, [membershipPlan, userId, startDate, endDate, status], (err, insertResult) => {
+                        if (err) {
+                            console.error('Error inserting membership:', err);
+                            return;
+                        }
+                        console.log('User membership added successfully!');
+                        res.status(201).json({ message: 'Member added successfully!'});
+                    });
+                });
+            });
         });
     });
 });
@@ -112,26 +164,68 @@ router.delete('/delete', (req, res) => {
     });
 });
 
-router.put('/update/:id', (req, res) => {
-    const { id } = req.params;
-    const { name, email, phone, membershipPlan } = req.body;
+router.get('/membership-info/:user_id', (req, res) => {
+    const { user_id } = req.params; 
+    const query = `
+        SELECT u.*, um.membership_id 
+        FROM user u 
+        LEFT JOIN user_membership um ON u.user_id = um.user_id 
+        WHERE u.user_id = ?`;
 
-    const updateQuery = `
-        UPDATE user
-        SET name = ?, email = ?, phone = ?, membershipPlan = ?
-        WHERE user_id = ?
-    `;
-
-    db.query(updateQuery, [name, email, phone, membershipPlan, id], (err, result) => {
+    db.query(query, [user_id], (err, results) => {
         if (err) {
-            return res.status(500).json({ message: 'Database error while updating member.' });
+            return res.status(500).json({ message: 'Database error while fetching membership plans.' });
         }
-        if (result.affectedRows > 0) {
-            res.status(200).json({ message: 'Member updated successfully!' });
-        } else {
-            res.status(404).json({ message: 'Member not found.' });
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'User not found.' });
         }
+        res.json(results[0]);
     });
+});
+
+router.put('/update', (req, res) => {
+    const {user_id, username, role, name, gender, email, password, contact_number, date_of_birth, profile_picture, height, weight, fitness_goals, date_joined} = req.body;
+
+    const calculateAge = (dob) => {
+        const birthDate = new Date(dob);
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+    
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+    
+        return age;
+    };
+    
+    if (calculateAge(dob) < 12) {
+        return res.status(400).json({ message: 'You must be at least 12 years old to register.' });
+    }
+
+    const checkUsernameQuery = 'SELECT username FROM user WHERE username = ?';
+    db.query(checkUsernameQuery, [username], (err, result) => {
+        if (err) {
+            return res.status(500).json({ message: 'Username already exists.' });
+        }
+        const updateQuery = `
+        UPDATE user
+        SET username = ?, name = ?, gender = ?, email = ?, password= ?, contact_number = ?, date_of_birth = ?, height = ?, weight = ?, fitness_goals = ?
+        WHERE user_id = ?
+        `;
+
+        db.query(updateQuery, [username, name, gender, email, contact_number, date_of_birth, height, weight, fitness_goals, user_id], (err, result) => {
+            if (err) {
+                return res.status(500).json({ message: 'Database error while updating member.' });
+            }
+            if (result.affectedRows > 0) {
+                res.status(200).json({ message: 'Member updated successfully!' });
+            } else {
+                res.status(404).json({ message: 'Member not found.' });
+            }
+            res.status(200).json({ message: 'Member updated successfully!' });
+        });
+    })
 });
 
 module.exports = router;
