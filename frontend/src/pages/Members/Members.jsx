@@ -118,7 +118,7 @@ const Members = () => {
         formDataToSend.append("weight", formData.weight);
         formDataToSend.append("membershipPlan", formData.membershipPlan);
         formDataToSend.append("fitnessGoals", formData.fitnessGoals.join(", "));
-        formDataToSend.append("dateJoined", new Date().toISOString().split('T')[0]);
+        formDataToSend.append("dateJoined", new Date().toLocaleDateString('en-CA'));
         
         if (formData.profilePicture) {
             formDataToSend.append("profilePicture", formData.profilePicture);
@@ -135,12 +135,12 @@ const Members = () => {
                 throw new Error(data.message || "An error occurred while adding the member.");
             }
     
-            alert(data.message); // Show success message
+            alert(data.message); 
             fetchMembers();
             closeModal();
         })
         .catch((error) => {
-            alert(error.message); // Show backend error message
+            alert(error.message); 
             console.error(error);
         });
     };
@@ -227,30 +227,48 @@ const Members = () => {
 
     // For Edit Member Details
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const[selectedMember, setSelectedMember] = useState(null);
+    const[memberInfo, setMemberInfo] = useState(null);
 
     const openEditModal = (member) => {
-        setSelectedMember(member);
         fetch(`http://localhost:5000/api/members/membership-info/${member.user_id}`, {
             method: "GET",
         })
         .then(response => response.json())
         .then(data => { 
-            
+            setMemberInfo(data);
+            setIsEditModalOpen(true);
         })
         .catch(error => {
             console.error("Error fetching membership information:", error);
-        });
-        setIsEditModalOpen(true);
+        });  
     };
 
     const closeEditModal = () => {
         setIsEditModalOpen(false);
-        setSelectedMember(null);
+        setMemberInfo(null);
     };
 
-    const handleSave = (updatedMember) => {
-        fetch(`http://localhost:5000/api/members/update/${updatedMember.user_id}`, {
+    const handleEditChange = (e) => {
+         const { name, value } = e.target;
+         setMemberInfo(prevState => ({ ...prevState, [name]: value }));
+    };
+
+    const handleEditGoalChange = (goal) => {
+        setMemberInfo(prevState => {
+            const updatedGoals = prevState.fitness_goals.split(', ').includes(goal)
+                ? prevState.fitness_goals.filter(g => g !== goal)
+                : [...prevState.fitness_goals, goal];
+    
+            return { ...prevState, fitness_goals: updatedGoals.join(', ') };
+        });
+    };
+    
+
+    const handleSave = (e, updatedMember) => {
+        e.preventDefault()
+        console.log(updatedMember);
+
+        fetch(`http://localhost:5000/api/members/update`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(updatedMember),
@@ -265,96 +283,6 @@ const Members = () => {
             console.error("Error updating member:", error);
         });
     };
-    
-
-    const EditMemberModal = ({ member, onClose, onSave }) => {
-        const [editedMember, setEditedMember] = useState({ ...member });
-    
-        const handleChange = (e) => {
-            const { name, value } = e.target;
-            setEditedMember(prevState => ({ ...prevState, [name]: value }));
-        };
-    
-        const handleSubmit = (e) => {
-            e.preventDefault();
-            onSave(editedMember);
-        };
-    
-        return (
-            <div className={styles.editOverlay}>
-                <div className={styles.editContent}>
-                    <X className={styles.closeButton} onClick={onClose} />
-                    <h2>Edit Member Information</h2>
-                    <div className={styles.profileSection}>
-                        <img src={`http://localhost:5000/uploads/${editedMember.profile_picture}`} alt="Profile" className={styles.profilePicture} />
-                        <div>
-                            <label>Username:</label>
-                            <input type="text" name="username" value={editedMember.username} readonly/>
-                        </div>
-                    </div>
-                    <hr className={styles.edithr} />
-                    <h3 className={styles.edith3text}>Personal Information</h3>
-                    <form onSubmit={handleSubmit}>
-                        <label>Name:</label>
-                        <input type="text" name="name" value={editedMember.name} onChange={handleChange} />
-                        <label>Gender:</label>
-                        <div className={styles.radioGroup}>
-                            <label className={styles.radioLabel}>
-                                <input type="radio" name="gender" value="Male" checked={editedMember.gender === "Male"} onChange={handleChange} 
-                                />
-                                Male
-                            </label>
-                            <label className={styles.radioLabel}>
-                                <input type="radio" name="gender" value="Female" checked={editedMember.gender === "Female"} onChange={handleChange}
-                                />
-                                Female
-                            </label>
-                        </div>                        
-                        <label>Date of Birth:</label>
-                        <input type="date" name="dob" value={editedMember.date_of_birth} onChange={handleChange} />
-                        <label>Email:</label>
-                        <input type="email" name="email" value={editedMember.email} onChange={handleChange} />
-                        <label>Phone Number:</label>
-                        <input type="text" name="phone" value={editedMember.contact_number} onChange={handleChange} />
-                        <hr className={styles.edithr}/>
-                        <h3 className={styles.edith3text}>Fitness Information</h3>
-                        <div className={styles.heightWeightContainer}>
-                            <div className={styles.inputGroup}>
-                                <label>Height:</label>
-                                <input type="number" name="height" placeholder="Enter Height" value={editedMember.height} onChange={handleChange} required />
-                                <span className={styles.unit}>cm</span>
-                            </div>
-                            <div className={styles.inputGroup}>
-                                <label>Weight:</label>
-                                <input type="number" name="weight" placeholder="Enter weight" value={editedMember.weight} onChange={handleChange} required />
-                                <span className={styles.unit}>kg</span>
-                            </div>
-                        </div>
-                        <label>Membership Plan:</label>
-                        <select name="membershipPlan" value={editedMember.membership_plan} onChange={handleChange}>
-                            {membershipPlans.map((plan) => (
-                                <option key={plan.membership_id} value={plan.membership_id}>{plan.plan_name}</option>
-                            ))}
-                        </select>
-                        <label>Fitness goals:</label>
-                        <div className={styles.fitnessGoalsOption}>
-                            {["Loss Weight", "Muscle Mass Gain", "Gain Weight", "Shape Body", "Others"].map((goal) => (
-                                <label key={goal} className={styles.goalOption}>
-                                    <input type="checkbox" value={goal} checked={formData.fitnessGoals.includes(goal)} onChange={() => handleGoalChange(goal)}
-                                    />
-                                    {goal}    
-                                </label>
-                            ))}
-                        </div>
-                        <div className={styles.buttonSection}>
-                            <button type="button" onClick={onClose} className={styles.cancelDeleteButton}>Cancel</button>
-                            <button type="submit" className={styles.confirmDeleteButton}>Update</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        );
-    };    
 
     // Bottom Page Function
     const [currentPage, setCurrentPage] = useState(1);
@@ -467,10 +395,6 @@ const Members = () => {
                     ))}
                 </tbody>
             </table>
-
-            {isEditModalOpen && (
-                <EditMemberModal member={selectedMember} onClose={closeEditModal} onSave={handleSave} />
-            )}
 
             <div className={styles.pagination}>
                 {Array.from({ length: totalPages }, (_, index) => (
@@ -590,7 +514,7 @@ const Members = () => {
                                         </div>
 
                                         <label>Membership Plan:</label>
-                                        <select name="membershipPlan" value={formData.addnmembershipPlan} onChange={handleChange} className={styles.addnmembershipDropdown}
+                                        <select name="membershipPlan" value={formData.membershipPlan} onChange={handleChange} className={styles.addnmembershipDropdown}
                                         >
                                             {membershipPlans.map((plan) => (
                                                 <option key={plan.membership_id} value={plan.membership_id}>{plan.plan_name}</option>
@@ -626,7 +550,7 @@ const Members = () => {
                                     <button 
                                         type="button" 
                                         className={styles.nextButton}
-                                        onClick={handleNextStep} // Ensures validation before proceeding
+                                        onClick={handleNextStep} 
                                     >
                                         Next
                                     </button>
@@ -640,6 +564,82 @@ const Members = () => {
                                 )}
                             </div>
 
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {isEditModalOpen && (
+                <div className={styles.editOverlay}>
+                    <div className={styles.editContent}>
+                        <X className={styles.closeButton} onClick={closeEditModal} />
+                        <h2>Edit Member Information</h2>
+                        <div className={styles.profileSection}>
+                            <img src={`http://localhost:5000/uploads/${memberInfo.profile_picture}`} alt="Profile" className={styles.profilePicture} />
+                            <div>
+                                <label>Username:</label>
+                                <input type="text" name="username" value={memberInfo.username} onChange={handleEditChange}/>
+                            </div>
+                        </div>
+                        <hr className={styles.edithr} />
+                        <h3 className={styles.edith3text}>Personal Information</h3>
+                        <form onSubmit={() => handleSave(e, memberInfo)}>
+                            <label>Name:</label>
+                            <input type="text" name="name" value={memberInfo.name} onChange={handleEditChange} />
+                            <label>Gender:</label>
+                            <div className={styles.radioGroup}>
+                                <label className={styles.radioLabel}>
+                                    <input type="radio" name="gender" value="Male" checked={memberInfo.gender === "Male"} onChange={handleEditChange} 
+                                    />
+                                    Male
+                                </label>
+                                <label className={styles.radioLabel}>
+                                    <input type="radio" name="gender" value="Female" checked={memberInfo.gender === "Female"} onChange={handleEditChange}
+                                    />
+                                    Female
+                                </label>
+                            </div>                        
+                            <label>Date of Birth:</label>
+                            <input type="date" name="dob" value={new Date(memberInfo.date_of_birth).toLocaleDateString('en-CA')} onChange={handleEditChange} />
+                            <label>Email:</label>
+                            <input type="email" name="email" value={memberInfo.email} onChange={handleEditChange} />
+                            <label>Phone Number:</label>
+                            <input type="text" name="phone" value={memberInfo.contact_number} onChange={handleEditChange}/>
+                            <hr className={styles.edithr}/>
+                            <h3 className={styles.edith3text}>Fitness Information</h3>
+                            <div className={styles.heightWeightContainer}>
+                                <div className={styles.inputGroup}>
+                                    <label>Height:</label>
+                                    <input type="number" name="height" placeholder="Enter Height" value={memberInfo.height} onChange={handleEditChange} required />
+                                    <span className={styles.unit}>cm</span>
+                                </div>
+                                <div className={styles.inputGroup}>
+                                    <label>Weight:</label>
+                                    <input type="number" name="weight" placeholder="Enter weight" value={memberInfo.weight} onChange={handleEditChange} required />
+                                    <span className={styles.unit}>kg</span>
+                                </div>
+                            </div>
+                            <label>Membership Plan:</label>
+                            <select name="membershipPlan" value={memberInfo.membership_id} onChange={handleEditChange}>
+                                {membershipPlans.map((plan) => (
+                                    <option key={plan.membership_id} value={plan.membership_id}>{plan.plan_name}</option>
+                                ))}
+                            </select>
+                            <label>Fitness goals:</label>
+                            <div className={styles.fitnessGoalsOption}>
+                                {["Loss Weight", "Muscle Mass Gain", "Gain Weight", "Shape Body", "Others"].map((goal) => (
+                                    <label key={goal} className={styles.goalOption}>
+                                        <input type="checkbox" value={goal}  checked={memberInfo.fitness_goals.split(', ').includes(goal)} onChange={() => handleEditGoalChange(goal)}
+                                        />
+                                        
+                                        {goal}    
+                                    </label>
+                                ))}
+                            </div>
+                            <div className={styles.buttonSection}>
+                                <button type="button" onClick={closeEditModal} className={styles.cancelDeleteButton}>Cancel</button>
+                                <button type="submit" className={styles.confirmDeleteButton} >Update</button>
+                            </div>
                         </form>
                     </div>
                 </div>
