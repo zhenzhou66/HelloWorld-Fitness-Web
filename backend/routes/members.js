@@ -184,10 +184,10 @@ router.get('/membership-info/:user_id', (req, res) => {
 });
 
 router.put('/update', (req, res) => {
-    const {user_id, username, role, name, gender, email, password, contact_number, date_of_birth, profile_picture, height, weight, fitness_goals, date_joined} = req.body;
+    const {contact_number, date_joined, date_of_birth, email, fitnessGoals, gender, height, membership_id, name, password, profile_picture, role, user_id, username, weight} = req.body;
 
-    const calculateAge = (dob) => {
-        const birthDate = new Date(dob);
+    const calculateAge = (date_of_birth) => {
+        const birthDate = new Date(date_of_birth);
         const today = new Date();
         let age = today.getFullYear() - birthDate.getFullYear();
         const monthDiff = today.getMonth() - birthDate.getMonth();
@@ -199,7 +199,7 @@ router.put('/update', (req, res) => {
         return age;
     };
     
-    if (calculateAge(dob) < 12) {
+    if (calculateAge(date_of_birth) < 12) {
         return res.status(400).json({ message: 'You must be at least 12 years old to register.' });
     }
 

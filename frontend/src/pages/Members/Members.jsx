@@ -256,13 +256,12 @@ const Members = () => {
     const handleEditGoalChange = (goal) => {
         setMemberInfo(prevState => {
             const updatedGoals = prevState.fitness_goals.split(', ').includes(goal)
-                ? prevState.fitness_goals.filter(g => g !== goal)
-                : [...prevState.fitness_goals, goal];
-    
+                ? prevState.fitness_goals.split(', ').filter(g => g !== goal)
+                : [...prevState.fitness_goals.split(', '), goal];
+            
             return { ...prevState, fitness_goals: updatedGoals.join(', ') };
         });
     };
-    
 
     const handleSave = (e, updatedMember) => {
         e.preventDefault()
@@ -280,6 +279,7 @@ const Members = () => {
             fetchMembers(); 
         })
         .catch(error => {
+            alert(error.message); 
             console.error("Error updating member:", error);
         });
     };
@@ -574,18 +574,18 @@ const Members = () => {
                     <div className={styles.editContent}>
                         <X className={styles.closeButton} onClick={closeEditModal} />
                         <h2>Edit Member Information</h2>
-                        <div className={styles.profileSection}>
-                            <img src={`http://localhost:5000/uploads/${memberInfo.profile_picture}`} alt="Profile" className={styles.profilePicture} />
-                            <div>
-                                <label>Username:</label>
-                                <input type="text" name="username" value={memberInfo.username} onChange={handleEditChange}/>
+                        <form onSubmit={(e) => handleSave(e, memberInfo)}>
+                            <div className={styles.profileSection}>
+                                <img src={`http://localhost:5000/uploads/${memberInfo.profile_picture}`} alt="Profile" className={styles.profilePicture} />
+                                <div>
+                                    <label>Username:</label>
+                                    <input type="text" name="username" value={memberInfo.username} onChange={handleEditChange} required/>
+                                </div>
                             </div>
-                        </div>
-                        <hr className={styles.edithr} />
-                        <h3 className={styles.edith3text}>Personal Information</h3>
-                        <form onSubmit={() => handleSave(e, memberInfo)}>
+                            <hr className={styles.edithr} />
+                            <h3 className={styles.edith3text}>Personal Information</h3>
                             <label>Name:</label>
-                            <input type="text" name="name" value={memberInfo.name} onChange={handleEditChange} />
+                            <input type="text" name="name" value={memberInfo.name} onChange={handleEditChange} required/>
                             <label>Gender:</label>
                             <div className={styles.radioGroup}>
                                 <label className={styles.radioLabel}>
@@ -600,11 +600,11 @@ const Members = () => {
                                 </label>
                             </div>                        
                             <label>Date of Birth:</label>
-                            <input type="date" name="dob" value={new Date(memberInfo.date_of_birth).toLocaleDateString('en-CA')} onChange={handleEditChange} />
+                            <input type="date" name="dob" value={new Date(memberInfo.date_of_birth).toLocaleDateString('en-CA')} onChange={handleEditChange} required/>
                             <label>Email:</label>
-                            <input type="email" name="email" value={memberInfo.email} onChange={handleEditChange} />
+                            <input type="email" name="email" value={memberInfo.email} onChange={handleEditChange} required/>
                             <label>Phone Number:</label>
-                            <input type="text" name="phone" value={memberInfo.contact_number} onChange={handleEditChange}/>
+                            <input type="text" name="phone" value={memberInfo.contact_number} onChange={handleEditChange} required/>
                             <hr className={styles.edithr}/>
                             <h3 className={styles.edith3text}>Fitness Information</h3>
                             <div className={styles.heightWeightContainer}>
