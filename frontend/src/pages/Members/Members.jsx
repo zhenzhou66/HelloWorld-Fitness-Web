@@ -220,7 +220,7 @@ const Members = () => {
             setMembersToDelete([]);
         })
         .catch(error => {
-            console.error("Error deleting memberships:", error);
+            console.error("Error deleting members:", error);
         });
     };    
 
@@ -238,7 +238,7 @@ const Members = () => {
             setIsEditModalOpen(true);
         })
         .catch(error => {
-            console.error("Error fetching membership information:", error);
+            console.error("Error fetching member information:", error);
         });  
     };
 

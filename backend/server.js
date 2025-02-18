@@ -37,6 +37,9 @@ app.use('/api/memberships', membershipRoutes);
 const membersRoutes = require('./routes/members');
 app.use('/api/members', membersRoutes);
 
+const trainersRoutes = require('./routes/trainers');
+app.use('/api/trainers', trainersRoutes);
+
 app.use('/uploads', express.static('uploads'));
 
 app.get('/', (req, res) => {
