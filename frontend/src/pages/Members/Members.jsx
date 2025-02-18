@@ -23,7 +23,6 @@ const Members = () => {
     // Formatting date function
     function formatDate(dateString) {
         const date = new Date(dateString);
-        // Convert to local timezone
         return date.toLocaleDateString('en-GB', { timeZone: 'Asia/Kuala_Lumpur' }); 
     }
 
@@ -600,11 +599,11 @@ const Members = () => {
                                 </label>
                             </div>                        
                             <label>Date of Birth:</label>
-                            <input type="date" name="dob" value={new Date(memberInfo.date_of_birth).toLocaleDateString('en-CA')} onChange={handleEditChange} required/>
+                            <input type="date" name="date_of_birth" value={new Date(memberInfo.date_of_birth).toLocaleDateString('en-CA')} onChange={handleEditChange} required/>
                             <label>Email:</label>
                             <input type="email" name="email" value={memberInfo.email} onChange={handleEditChange} required/>
                             <label>Phone Number:</label>
-                            <input type="text" name="phone" value={memberInfo.contact_number} onChange={handleEditChange} required/>
+                            <input type="text" name="contact_number" value={memberInfo.contact_number} onChange={handleEditChange} required/>
                             <hr className={styles.edithr}/>
                             <h3 className={styles.edith3text}>Fitness Information</h3>
                             <div className={styles.heightWeightContainer}>
@@ -620,7 +619,7 @@ const Members = () => {
                                 </div>
                             </div>
                             <label>Membership Plan:</label>
-                            <select name="membershipPlan" value={memberInfo.membership_id} onChange={handleEditChange}>
+                            <select name="membership_id" value={memberInfo.membership_id} onChange={handleEditChange}>
                                 {membershipPlans.map((plan) => (
                                     <option key={plan.membership_id} value={plan.membership_id}>{plan.plan_name}</option>
                                 ))}
