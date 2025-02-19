@@ -69,7 +69,11 @@ const Members = () => {
         fitnessGoals: [],
     });
 
-    const openModal = () => setModalOpen(true);
+    const openModal = () => {
+        setStep(1);
+        setModalOpen(true);
+    };
+    
     const closeModal = () => {
         setModalOpen(false);
         setFormData({
@@ -303,8 +307,8 @@ const Members = () => {
                 alert("Please fill in all required fields before proceeding.");
                 return;
             }
+            setStep((prevStep) => prevStep + 1);
         }
-        setStep(step + 1);
     };
 
     return (
@@ -514,6 +518,7 @@ const Members = () => {
                                         <label>Membership Plan:</label>
                                         <select name="membershipPlan" value={formData.membershipPlan} onChange={handleChange} className={styles.addnmembershipDropdown}
                                         >
+                                            <option value="" disabled selected>Select Membership Plan</option>
                                             {membershipPlans.map((plan) => (
                                                 <option key={plan.membership_id} value={plan.membership_id}>{plan.plan_name}</option>
                                             ))}
@@ -543,21 +548,22 @@ const Members = () => {
                                         Back
                                     </button>
                                 )}
+                                {step === 2 && (
+                                    <button 
+                                        type="submit" 
+                                        className={styles.nextButton} 
+                                    >
+                                        Submit
+                                    </button>
+                                )}
 
-                                {step < 2 ? (
+                                {step === 1 && (
                                     <button 
                                         type="button" 
                                         className={styles.nextButton}
                                         onClick={handleNextStep} 
                                     >
                                         Next
-                                    </button>
-                                ) : (
-                                    <button 
-                                        type="submit" 
-                                        className={styles.nextButton} 
-                                    >
-                                        Submit
                                     </button>
                                 )}
                             </div>

@@ -51,7 +51,6 @@ router.post('/add', upload.single('profilePicture'), async (req, res) => {
     try {
         const { name, email, phone, username, password, gender, dob, height, weight, membershipPlan, fitnessGoals, dateJoined } = req.body;
         const profilePicture = req.file ? `profile_pictures/${req.file.filename}` : null;
-
         // Validate age
         const birthDate = new Date(dob);
         const today = new Date();
@@ -121,9 +120,12 @@ router.post('/add', upload.single('profilePicture'), async (req, res) => {
     }
 });
 
+const fs = require('fs');
+const util = require('util');
+const unlinkAsync = util.promisify(fs.unlink);
 
-router.delete('/delete', (req, res) => {
-    let { user_ids } = req.body; 
+router.delete('/delete', async (req, res) => {
+    let { user_ids } = req.body;
 
     if (!user_ids) {
         return res.status(400).json({ message: "No members selected for deletion." });
@@ -133,21 +135,41 @@ router.delete('/delete', (req, res) => {
         user_ids = [user_ids];
     }
 
-    const deleteQuery = `
-        DELETE FROM user
-        WHERE user_id IN (${user_ids.map(() => '?').join(',')}) 
-    `;
+    try {
+        // Get profile pictures of users before deleting them
+        const [users] = await db.promise().query(
+            `SELECT profile_picture FROM user WHERE user_id IN (${user_ids.map(() => '?').join(',')})`,
+            user_ids
+        );
 
-    db.query(deleteQuery, user_ids, (err, result) => {
-        if (err) {
-            return res.status(500).json({ message: 'Database error while deleting members.', error: err });
+        // Delete profile pictures from the filesystem
+        for (const user of users) {
+            if (user.profile_picture) {
+                const filePath = path.join(__dirname, '../uploads', user.profile_picture);
+                if (fs.existsSync(filePath)) {
+                    await unlinkAsync(filePath);
+                }
+            }
         }
+
+        // Delete users from the database
+        const deleteQuery = `
+            DELETE FROM user
+            WHERE user_id IN (${user_ids.map(() => '?').join(',')})
+        `;
+
+        const [result] = await db.promise().query(deleteQuery, user_ids);
+
         if (result.affectedRows > 0) {
-            res.status(200).json({ message: 'Members deleted successfully!' });
+            res.status(200).json({ message: 'Members and profile pictures deleted successfully!' });
         } else {
             res.status(404).json({ message: 'No members found to delete.' });
         }
-    });
+
+    } catch (err) {
+        console.error('Error deleting members:', err);
+        res.status(500).json({ message: 'Internal server error.', error: err });
+    }
 });
 
 router.get('/membership-info/:user_id', (req, res) => {

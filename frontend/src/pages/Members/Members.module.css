@@ -10,7 +10,9 @@
 .memberFunction {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 20px
+  margin-bottom: 20px;
+  align-items: center;
+  gap:10px;
 }
 
 .membersCount{
