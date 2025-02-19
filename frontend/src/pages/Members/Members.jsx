@@ -264,7 +264,6 @@ const Members = () => {
 
     const handleSave = (e, updatedMember) => {
         e.preventDefault()
-        console.log(updatedMember);
 
         fetch(`http://localhost:5000/api/members/update`, {
             method: "PUT",

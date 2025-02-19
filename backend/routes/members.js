@@ -47,94 +47,80 @@ const upload = multer({
     limits: { fileSize: 10 * 1024 * 1024 } 
 });
 
-router.post('/add', upload.single('profilePicture'), (req, res) => {
-    const { name, email, phone, username, password, gender, dob, height, weight, membershipPlan, fitnessGoals, dateJoined } = req.body;
-    const profilePicture = req.file ? `profile_pictures/${req.file.filename}` : null;
+router.post('/add', upload.single('profilePicture'), async (req, res) => {
+    try {
+        const { name, email, phone, username, password, gender, dob, height, weight, membershipPlan, fitnessGoals, dateJoined } = req.body;
+        const profilePicture = req.file ? `profile_pictures/${req.file.filename}` : null;
 
-    const calculateAge = (dob) => {
+        // Validate age
         const birthDate = new Date(dob);
         const today = new Date();
         let age = today.getFullYear() - birthDate.getFullYear();
-        const monthDiff = today.getMonth() - birthDate.getMonth();
-        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        if (today.getMonth() < birthDate.getMonth() || (today.getMonth() === birthDate.getMonth() && today.getDate() < birthDate.getDate())) {
             age--;
         }
-        return age;
-    };
-
-    if (calculateAge(dob) < 12) {
-        return res.status(400).json({ message: 'You must be at least 12 years old to register.' });
-    }
-
-    const checkUsernameQuery = 'SELECT username FROM user WHERE username = ?';
-
-    db.query(checkUsernameQuery, [username], (err, results) => {
-        if (err) {
-            return res.status(500).json({ message: 'Database error while checking username.' });
+        if (age < 12) {
+            return res.status(400).json({ message: 'You must be at least 12 years old to register.' });
         }
 
-        if (results.length > 0) {
+        // Check if username already exists
+        const [existingUser] = await db.promise().query('SELECT username FROM user WHERE username = ?', [username]);
+        if (existingUser.length > 0) {
             return res.status(400).json({ message: 'Username already exists. Please choose another one.' });
         }
 
+        // Insert new user
         const insertUserQuery = `
             INSERT INTO user (username, role, name, gender, email, password, contact_number, date_of_birth, profile_picture, height, weight, fitness_goals, date_joined) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
+        const [insertResult] = await db.promise().query(insertUserQuery, [username, "member", name, gender, email, password, phone, dob, profilePicture, height, weight, fitnessGoals, dateJoined]);
 
-        db.query(insertUserQuery, [username, "member", name, gender, email, password, phone, dob, profilePicture, height, weight, fitnessGoals, dateJoined], (err, result) => {
-            if (err) {
-                return res.status(500).json({ message: 'Database error while adding member.' });
-            }
+        // Get membership details
+        const [membershipResult] = await db.promise().query('SELECT * FROM membership WHERE membership_id = ?', [membershipPlan]);
+        if (membershipResult.length === 0) {
+            return res.status(400).json({ message: 'Invalid membership ID.' });
+        }
 
-            const durationQuery = 'SELECT duration FROM membership WHERE membership_id = ?';
-            db.query(durationQuery, [membershipPlan], (err, result) => {
-                if (err) {
-                    console.error('Error fetching duration:', err);
-                    return res.status(500).json({ message: 'Database error while fetching membership duration.' });
-                }
-                if (result.length === 0) {
-                    return res.status(400).json({ message: 'Invalid membership ID.' });
-                }
+        const { plan_name, price, duration } = membershipResult[0];
+        const currentDate = new Date();
+        const month = currentDate.toLocaleString('default', { month: 'long' });
+        const year = currentDate.getFullYear();
+        const updatedDescription = `${plan_name} - ${month} ${year}`;
 
-                const duration = result[0].duration;
-                const startDate = new Date();
-                const endDate = new Date();
-                endDate.setMonth(startDate.getMonth() + duration);
+        const startDate = new Date();
+        const endDate = new Date();
+        endDate.setMonth(startDate.getMonth() + duration);
 
-                const formatDateForMySQL = (date) => date.toISOString().split('T')[0];
+        const startDateFormatted = startDate.toISOString().split('T')[0];
+        const endDateFormatted = endDate.toISOString().split('T')[0];
 
-                const startDateFormatted = formatDateForMySQL(startDate);
-                const endDateFormatted = formatDateForMySQL(endDate);
-                
-                const status = (new Date() >= startDate && new Date() <= endDate) ? 'Active' : 'Expired';
+        // Set membership status to Active
+        const status = 'Active';
 
-                const userQuery = 'SELECT user_id FROM user WHERE username = ? LIMIT 1';
-                db.query(userQuery, [username], (err, userResult) => {
-                    if (err) {
-                        return res.status(500).json({ message: 'Database error while fetching user ID.' });
-                    }
-                    if (userResult.length === 0) {
-                        return res.status(400).json({ message: 'User not found after insert.' });
-                    }
+        // Get user ID
+        const [userResult] = await db.promise().query('SELECT user_id FROM user WHERE username = ? LIMIT 1', [username]);
+        if (userResult.length === 0) {
+            return res.status(400).json({ message: 'User not found after insert.' });
+        }
 
-                    const userId = userResult[0].user_id;
+        const userId = userResult[0].user_id;
 
-                    const insertQuery = `
-                        INSERT INTO user_membership (membership_id, user_id, start_date, end_date, status) 
-                        VALUES (?, ?, ?, ?, ?)
-                    `;
-                    db.query(insertQuery, [membershipPlan, userId, startDateFormatted, endDateFormatted, status], (err, insertResult) => {
-                        if (err) {
-                            return res.status(500).json({ message: 'Database error while inserting membership.' });
-                        }
-                        res.status(201).json({ message: 'Member added successfully!' });
-                    });
-                });
-            });
-        });
-    });
+        // Insert into user_membership table
+        await db.promise().query('INSERT INTO user_membership (membership_id, user_id, start_date, end_date, status) VALUES (?, ?, ?, ?, ?)', [membershipPlan, userId, startDateFormatted, endDateFormatted, status]);
+
+        // Insert into transactions table
+        const paymentDate = new Date().toISOString().split('T')[0];
+        await db.promise().query('INSERT INTO transactions (user_id, description, amount, payment_status, payment_date) VALUES (?, ?, ?, ?, ?)', [userId, updatedDescription, price, "Paid", paymentDate]);
+
+        res.status(201).json({ message: 'Member added successfully!' });
+
+    } catch (err) {
+        console.error('Error:', err);
+        res.status(500).json({ message: 'Internal server error.', error: err });
+    }
 });
+
 
 router.delete('/delete', (req, res) => {
     let { user_ids } = req.body; 
@@ -206,7 +192,7 @@ router.put('/update', (req, res) => {
         if (err) {
             return res.status(500).json({ message: 'Database error while checking username.' });
         }
-        if (result.length > 0) {  // If a matching username is found
+        if (result.length > 0) {  
             return res.status(400).json({ message: 'Username already exists.' });
         }
 
@@ -232,7 +218,7 @@ router.put('/update', (req, res) => {
                     }
                     const duration = result[0].duration;
 
-                    const startDateQuery = 'SELECT start_date FROM user_membership WHERE user_id = ?';
+                    const startDateQuery = 'SELECT * FROM user_membership WHERE user_id = ?';
                     db.query(startDateQuery, [user_id], (err, result) => {
                         if (err) {
                             console.error('Error fetching start_date:', err);
@@ -241,7 +227,9 @@ router.put('/update', (req, res) => {
                         if (!result || result.length === 0) {
                             return res.status(404).json({ message: 'Start date not found for this membership.' });
                         }
-
+                        if(result[0].status == "Active"){
+                            return res.status(404).json({ message: 'You are not allowed to update membership plan when you are still active.' });
+                        }
                         const startDate = new Date(result[0].start_date);
                         const endDate = new Date(startDate);
                         endDate.setMonth(startDate.getMonth() + duration);
