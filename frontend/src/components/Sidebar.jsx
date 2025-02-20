@@ -6,6 +6,10 @@ import logo from "../assets/logo-black.png";
 
 function Sidebar() {
   const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.removeItem("user"); 
+    navigate("/login"); 
+  };
 
   return (
     <div className={classes.Sidebar}>
@@ -17,7 +21,11 @@ function Sidebar() {
               key={key}
               className={classes.row}
               onClick={() => {
-                navigate(val.link);
+                if (val.action === "logout") {
+                  handleLogout(); 
+                } else {
+                  navigate(val.link);
+                }
               }}
             >
               <div className={classes.icon}>{val.icon} </div>

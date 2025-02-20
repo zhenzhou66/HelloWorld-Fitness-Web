@@ -9,6 +9,7 @@ import classes from "./App.module.css";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import Profile from "./components/Profile";
+import PrivateRoute from "./components/PrivateRoute"; 
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Members from "./pages/Members/Members";
 import Trainers from "./pages/Trainers/Trainers";
@@ -27,34 +28,41 @@ const App = () => {
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<Login />} />
 
-        {/* Protected Layout */}
+        {/* 🔹 Protected Layout (Only Logged-in Users) */}
         <Route
-          path="/*"
-          element={
-            <div className={classes.App}>
-              <Sidebar />
-              <div className={classes.AppContent}>
-                <div className={classes.HeaderProfile}>
-                  <Header />
-                  <Profile />
-                </div>
+          element={<PrivateRoute />} 
+        >
+          <Route
+            path="/*"
+            element={
+              <div className={classes.App}>
+                <Sidebar />
+                <div className={classes.AppContent}>
+                  <div className={classes.HeaderProfile}>
+                    <Header />
+                    <Profile />
+                  </div>
 
-                <div className={classes.PageContent}>
-                  <Routes>
-                    <Route path="/Dashboard" element={<Dashboard />} />
-                    <Route path="/Members" element={<Members />} />
-                    <Route path="/Trainers" element={<Trainers />} />
-                    <Route path="/Memberships" element={<Memberships />} />
-                    <Route path="/Schedules" element={<Schedules />} />
-                    <Route path="/Analytics" element={<Analytics />} />
-                    <Route path="/Billing" element={<Billing />} />
-                    <Route path="/Announcements" element={<Announcements />} />
-                  </Routes>
+                  <div className={classes.PageContent}>
+                    <Routes>
+                      <Route path="/Dashboard" element={<Dashboard />} />
+                      <Route path="/Members" element={<Members />} />
+                      <Route path="/Trainers" element={<Trainers />} />
+                      <Route path="/Memberships" element={<Memberships />} />
+                      <Route path="/Schedules" element={<Schedules />} />
+                      <Route path="/Analytics" element={<Analytics />} />
+                      <Route path="/Billing" element={<Billing />} />
+                      <Route path="/Announcements" element={<Announcements />} />
+                    </Routes>
+                  </div>
                 </div>
               </div>
-            </div>
-          }
-        />
+            }
+          />
+        </Route>
+
+        {/* Redirect unknown routes to login */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </Router>
   );

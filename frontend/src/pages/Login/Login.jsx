@@ -6,32 +6,32 @@ import logo from "../../assets/logo-white.png";
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
-        const response = await fetch('http://localhost:5000/auth/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ username, password }),
-        });
+      const response = await fetch("http://localhost:5000/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
 
-        const data = await response.json();
+      const data = await response.json();
 
-        if (response.ok) {
-            // Login to admin dashboard
-            alert('Login successful!');
-            navigate("/Dashboard"); 
-        } else {
-            setError(data.message);
-        }
+      if (response.ok) {
+        localStorage.setItem("user", JSON.stringify(data.user));
+        alert("Login successful!");
+        navigate("/Dashboard");
+      } else {
+        setError(data.message || "Invalid credentials. Please try again.");
+      }
     } catch (err) {
-        console.error('Login error:', err);
-        setError('Something went wrong. Please try again later.');
+      console.error("Login error:", err);
+      setError("Something went wrong. Please try again later.");
     }
   };
 
