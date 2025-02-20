@@ -16,7 +16,7 @@ import Trainers from "./pages/Trainers/Trainers";
 import Memberships from "./pages/Memberships/Memberships";
 import Schedules from "./pages/Schedules/Schedules";
 import Analytics from "./pages/Analytics/Analytics";
-import Billing from "./pages/Billing";
+import Billing from "./pages/Billing/Billing";
 import Announcements from "./pages/Announcements";
 import Login from "./pages/Login/Login";
 

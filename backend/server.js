@@ -40,6 +40,9 @@ app.use('/api/members', membersRoutes);
 const trainersRoutes = require('./routes/trainers');
 app.use('/api/trainers', trainersRoutes);
 
+const billingRoutes = require('./routes/billing');
+app.use('/api/billing', billingRoutes);
+
 app.use('/uploads', express.static('uploads'));
 
 app.get('/', (req, res) => {
