@@ -2,6 +2,7 @@ import React from "react";
 import classes from "./ClassAtd.module.css";
 import SumStats from "./ClassAtdComponents/SumStats";
 import PopChart from "./ClassAtdComponents/PopChart";
+import AtdTable from "./ClassAtdComponents/AtdTable";
 
 function ClassAtd() {
   return (
@@ -10,7 +11,9 @@ function ClassAtd() {
         <PopChart />
         <SumStats />
       </div>
-      <div className={classes.lowerSection}>atdtable</div>
+      <div className={classes.lowerSection}>
+        <AtdTable />
+      </div>
     </div>
   );
 }
