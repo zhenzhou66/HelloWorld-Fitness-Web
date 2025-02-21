@@ -31,7 +31,7 @@ export const SidebarData = [
     link: "/Memberships",
   },
   {
-    title: "Schedules",
+    title: "Class Schedules",
     icon: <ScheduleIcon />,
     link: "/Schedules",
   },
