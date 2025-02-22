@@ -16,11 +16,14 @@ export default function ConfirmModal({
   return (
     <div className={styles.modalOverlayDeleteM}>
       <div className={styles.modalDeleteM} style={{ textAlign: "center" }}>
+
         <button className={styles.closeButton} onClick={onClose}>
           <X size={24} />
         </button>
         <Trash className={styles.deleteIcon} size={40} />
+
         <p style={{ marginBottom: "30px" }}>{message}</p>
+
         <div className={styles.modalButtons}>
           <button className={styles.cancelDeleteButton} onClick={onClose}>
             {cancelText || "No, cancel"}
@@ -29,6 +32,7 @@ export default function ConfirmModal({
             {confirmText || "Yes, I'm sure"}
           </button>
         </div>
+        
       </div>
     </div>
   );
