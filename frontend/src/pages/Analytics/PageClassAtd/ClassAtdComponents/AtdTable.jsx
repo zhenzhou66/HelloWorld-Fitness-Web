@@ -55,7 +55,9 @@ export default function BasicTable() {
             <TableCell component="th" scope="row">
               Class ID
             </TableCell>
-            <TableCell align="right">Class Name</TableCell>
+            <TableCell component="th" scope="row">
+              Class Name
+            </TableCell>
             <TableCell align="right">Schedule Date</TableCell>
             <TableCell align="right">Class Time</TableCell>
             <TableCell align="right">Trainer</TableCell>
@@ -72,13 +74,35 @@ export default function BasicTable() {
               <TableCell component="th" scope="row">
                 {row.classID}
               </TableCell>
-              <TableCell align="right">
+              <TableCell
+                component="th"
+                scope="row"
+                style={{ display: "flex", alignItems: "center" }}
+              >
                 <img
                   src={yoga}
                   alt="class pic"
-                  style={{ width: 75, height: 75 }}
+                  style={{
+                    width: "75px",
+                    height: "75px",
+                    marginRight: "12px",
+                    borderRadius: "8px",
+                  }}
                 />
-                {row.className}
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "4px",
+                  }}
+                >
+                  <span style={{ fontWeight: "bold", fontSize: "16px" }}>
+                    {row.className}
+                  </span>
+                  <span style={{ color: "#666", fontSize: "14px" }}>
+                    {row.classDesc}
+                  </span>
+                </div>
               </TableCell>
               <TableCell align="right">{row.schDate}</TableCell>
               <TableCell align="right">{row.time}</TableCell>
