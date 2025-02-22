@@ -1,0 +1,75 @@
+.receiptContainer {
+    width: 300px;
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+}
+
+.receiptTitle {
+    text-align: center;
+    margin: 0 0 10px 0;
+    font-size: 24px;
+}
+
+.receiptHeader {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.userInfo p,
+.dateInfo p {
+    margin: 0;
+}
+
+.dottedLine {
+    border: none;
+    border-top: 1px dotted #ccc;
+    margin: 10px 0;
+}
+
+.membershipInfo {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.membershipPlanTitle {
+    margin: 0;
+    font-weight: bold;
+}
+
+.membershipPlan {
+    margin: 0 0 5px 0;
+    font-style: italic;
+    font-size: 14px;
+}
+
+.price {
+    text-align: right;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.totalSection {
+    margin-bottom: 10px;
+}
+
+.totalItem {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0;
+}
+
+.label,
+.amount {
+    font-weight: bold;
+}
+
+.thankYou {
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+    margin-top: 20px;
+}

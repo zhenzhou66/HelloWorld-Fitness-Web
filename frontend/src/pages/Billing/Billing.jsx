@@ -154,7 +154,10 @@ export default function Billing() {
 
                 {
                   showPrintOverlay&&(
-                    <PrintOverlay />
+                    <PrintOverlay 
+                    show={showPrintOverlay}
+                    onClose={()=>{setShowPrintOverlay(false)}}  
+                    />
                   )
                 }
               </td>

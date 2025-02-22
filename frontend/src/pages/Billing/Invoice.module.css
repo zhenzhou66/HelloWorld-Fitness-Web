@@ -1,0 +1,84 @@
+/* Container for the receipt */
+.receipt-container {
+    width: 300px;
+    border: 2px solid #007bff;
+    /* or your preferred border color */
+    border-radius: 8px;
+    padding: 20px;
+    margin: 0 auto;
+    /* Center horizontally */
+    font-family: Arial, sans-serif;
+    /* or your preferred font */
+}
+
+/* Title */
+.receipt-title {
+    text-align: center;
+    margin: 0 0 10px 0;
+    font-size: 24px;
+}
+
+/* Header (User + Date) */
+.receipt-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+/* Dotted line (separator) */
+.dotted-line {
+    border: none;
+    border-top: 1px dotted #ccc;
+    margin: 10px 0;
+}
+
+/* Membership Info Section */
+.membership-info {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.membership-plan-title {
+    margin: 0;
+    font-weight: bold;
+}
+
+.membership-plan {
+    margin: 0 0 5px 0;
+    font-style: italic;
+    font-size: 14px;
+}
+
+.price {
+    text-align: right;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Total Section */
+.total-section {
+    margin-bottom: 10px;
+}
+
+.total-item {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0;
+}
+
+.label {
+    font-weight: bold;
+}
+
+.amount {
+    font-weight: bold;
+    text-align: right;
+}
+
+/* Thank You Message */
+.thank-you {
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+    margin-top: 20px;
+}
