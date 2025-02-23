@@ -1,3 +1,4 @@
+
 /* Basic styling for the overlay */
 .overlay {
     position: fixed;
@@ -5,7 +6,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.158);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -23,39 +24,26 @@
 
 .closeButton {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 20px;
+    right: 30px;
     background: transparent;
     border: none;
     font-size: 20px;
     cursor: pointer;
 }
 
-/* Navbar styling */
-.navbar {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
+.header{
+    padding:10px 0px 15px 10px;
 }
 
-.navButton {
-    padding: 10px 20px;
-    background: #f0f0f0;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    margin: 0 5px;
-    border-radius: 4px;
+.headerId{
+    color:#757575
 }
 
-.navButton:hover {
-    background: #e0e0e0;
-}
 
-.active {
-    background: #007bff;
-    color: #fff;
-}
+
+
+
 
 /* Content styling */
 .content {
@@ -72,25 +60,19 @@
 
 /* Print button container */
 .buttonContainer {
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap:10px;
 }
 
-.printButton {
-    padding: 10px 20px;
-    background: #28a745;
+.buttonContainer button{
+    min-width: 150px;
+    height:30px;
     border: none;
-    color: #fff;
-    border-radius: 4px;
-    cursor: pointer;
+    border-radius: 5px;
+    background-color: #e3e3e3;
+    font-weight: 600;
 }
 
-.printButton:hover {
-    background: #218838;
-}
 
-/* Error styling */
-.error {
-    color: red;
-    text-align: center;
-    padding: 10px;
-}

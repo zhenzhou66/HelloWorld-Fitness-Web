@@ -8,12 +8,14 @@ export default function Billing() {
   const [transactions, setTransactions] = useState([]); // Store transaction data
   const [transactionCount, setTransactionCount] = useState(0); // Store total count
   const [statusFilter, setStatusFilter] = useState(""); // Store selected status
+  const [selectedTransaction, setSelectedTransaction]=useState(null);
 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false); //show delete overlay
   const [showPrintOverlay, setShowPrintOverlay] = useState(false);
 
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
 
   // Fetch billing data from backend
   useEffect(() => {
@@ -58,6 +60,12 @@ export default function Billing() {
     setCurrentPage(pageNumber);
   };
 
+const handlePrintClick=(transaction)=>{
+  setSelectedTransaction(transaction);
+  setShowPrintOverlay(true);
+}
+
+
   return (
     <div className={styles.billingContent}>
       {/* top row function for table */}
@@ -91,7 +99,7 @@ export default function Billing() {
           <tr>
             <th className={styles.checkboxuserid}>
               <div className={styles.checkboxContainer}>
-                <input type="checkbox" checked={false} onChange={() => {}} />
+                <input type="checkbox" checked={false} onChange={() => { }} />
                 <span>Transaction ID</span>
               </div>
             </th>
@@ -109,7 +117,7 @@ export default function Billing() {
             <tr key={transaction.transaction_id}>
               <td className={styles.checkboxuserid}>
                 <div className={styles.checkboxContainer}>
-                  <input type="checkbox" checked={false} onChange={() => {}} />
+                  <input type="checkbox" checked={false} onChange={() => { }} />
                   <span>{transaction.transaction_id}</span>
                 </div>
               </td>
@@ -123,14 +131,14 @@ export default function Billing() {
                   transaction.payment_status === "Paid"
                     ? styles.paid
                     : transaction.payment_status === "Overdue"
-                    ? styles.overdue
-                    : styles.pending
+                      ? styles.overdue
+                      : styles.pending
                 }
               >
                 {transaction.payment_status}
               </td>
               <td>
-                <button className={styles.printButton} onClick={() => setShowPrintOverlay(true)}>
+                <button className={styles.printButton} onClick={() => handlePrintClick(transaction)}>
                   <Printer size={20} />
                 </button>
                 <button
@@ -145,7 +153,7 @@ export default function Billing() {
                   <ConfirmModal
                     show={showDeleteConfirm}
                     onClose={() => setShowDeleteConfirm(false)}
-                    onConfirm={() => {}} //handle delete backend logic
+                    onConfirm={() => { }} //handle delete backend logic
                     message="Are you sure you want to delete this transaction?"
                     confirmText="Yes, I'm sure"
                     cancelText="No, cancel"
@@ -153,10 +161,11 @@ export default function Billing() {
                 )}
 
                 {
-                  showPrintOverlay&&(
-                    <PrintOverlay 
-                    show={showPrintOverlay}
-                    onClose={()=>{setShowPrintOverlay(false)}}  
+                  showPrintOverlay && selectedTransaction && (
+                    <PrintOverlay
+                      show={showPrintOverlay}
+                      onClose={() => { setShowPrintOverlay(false) }}
+                      transactionData={selectedTransaction}
                     />
                   )
                 }

@@ -32,7 +32,9 @@ function Analytics() {
   return (
     <div className={classes.AnalyticsContainer}>
       <NavBar setSelectedComponent={setSelectedComponent} buttons={buttons} />
-      <div className={classes.componentContainer}>{renderComponent()}</div>
+      <div className={classes.componentContainer}>
+        {renderComponent()}
+        </div>
     </div>
   );
 }
