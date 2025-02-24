@@ -73,6 +73,11 @@
     border-radius: 5px;
     background-color: #e3e3e3;
     font-weight: 600;
+    cursor: pointer;
+}
+
+.buttonContainer button:hover{
+    background-color: #ccc;
 }
 
 

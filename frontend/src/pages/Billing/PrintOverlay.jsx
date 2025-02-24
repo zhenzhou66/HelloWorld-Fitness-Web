@@ -39,7 +39,7 @@ function PrintOverlay(
             
             <div className={styles.modal}>
                 <div className={styles.header}>
-                    <h3>Invoice & receipt for Transaction ID: 
+                    <h3>Invoice & receipt for Transaction ID:&nbsp;
                         <span className={styles.headerId}>{transactionData.transaction_id}</span>
                         </h3>
                 </div>
@@ -54,8 +54,8 @@ function PrintOverlay(
                 <div className={styles.content}>{renderComponent()}</div>
 
                 <div className={styles.buttonContainer}>
-                    <button>Print</button>
-                    <button>Send</button>
+                    <button className={styles.sendButton} onClick={() =>{}}>Print</button>
+                    <button className={styles.printButton} onClick={() => { }}>Send</button>
                 </div>
 
 
