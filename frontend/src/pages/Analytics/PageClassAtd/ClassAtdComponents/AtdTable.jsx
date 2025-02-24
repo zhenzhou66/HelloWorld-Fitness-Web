@@ -6,10 +6,13 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import yoga from "../../../../assets/yoga.jpg";
 
 function createData(
   classID,
   className,
+  classPic,
+  classDesc,
   schDate,
   time,
   assignedTrainer,
@@ -19,6 +22,8 @@ function createData(
   return {
     classID,
     className,
+    classPic,
+    classDesc,
     schDate,
     time,
     assignedTrainer,
@@ -31,6 +36,8 @@ const rows = [
   createData(
     "001",
     "Yoga Flow",
+    { yoga },
+    "A gentle flow class that focuses on linking breath with movement.",
     "Jan 20 2025",
     "8:00AM - 9:00AM",
     "AlexW",
@@ -48,9 +55,11 @@ export default function BasicTable() {
             <TableCell component="th" scope="row">
               Class ID
             </TableCell>
-            <TableCell align="right">Class Name</TableCell>
+            <TableCell component="th" scope="row">
+              Class Name
+            </TableCell>
             <TableCell align="right">Schedule Date</TableCell>
-            <TableCell align="right">Time</TableCell>
+            <TableCell align="right">Class Time</TableCell>
             <TableCell align="right">Trainer</TableCell>
             <TableCell align="right">Attendance Rate</TableCell>
             <TableCell align="right">Absentees</TableCell>
@@ -65,7 +74,36 @@ export default function BasicTable() {
               <TableCell component="th" scope="row">
                 {row.classID}
               </TableCell>
-              <TableCell align="right">{row.className}</TableCell>
+              <TableCell
+                component="th"
+                scope="row"
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <img
+                  src={yoga}
+                  alt="class pic"
+                  style={{
+                    width: "75px",
+                    height: "75px",
+                    marginRight: "12px",
+                    borderRadius: "8px",
+                  }}
+                />
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "4px",
+                  }}
+                >
+                  <span style={{ fontWeight: "bold", fontSize: "16px" }}>
+                    {row.className}
+                  </span>
+                  <span style={{ color: "#666", fontSize: "14px" }}>
+                    {row.classDesc}
+                  </span>
+                </div>
+              </TableCell>
               <TableCell align="right">{row.schDate}</TableCell>
               <TableCell align="right">{row.time}</TableCell>
               <TableCell align="right">{row.assignedTrainer}</TableCell>

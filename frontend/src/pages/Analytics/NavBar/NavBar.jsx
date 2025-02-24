@@ -1,8 +1,8 @@
 import { useState } from "react";
 import styles from "./NavBar.module.css";
 
-function NavBar({ setSelectedComponent }) {
-  const [activeButton, setActiveButton] = useState("PageOne");
+function NavBar({ setSelectedComponent, buttons }) {
+  const [activeButton, setActiveButton] = useState(buttons[0].component); // Default active button
 
   const handleClick = (component) => {
     setSelectedComponent(component);
@@ -11,30 +11,17 @@ function NavBar({ setSelectedComponent }) {
 
   return (
     <nav className={styles.navbar}>
-      <button
-        onClick={() => handleClick("PageOne")}
-        className={`${styles.navButton} ${
-          activeButton === "PageOne" ? styles.active : ""
-        }`}
-      >
-        Gym Attendance
-      </button>
-      <button
-        onClick={() => handleClick("PageTwo")}
-        className={`${styles.navButton} ${
-          activeButton === "PageTwo" ? styles.active : ""
-        }`}
-      >
-        Class Attendance
-      </button>
-      <button
-        onClick={() => handleClick("PageThree")}
-        className={`${styles.navButton} ${
-          activeButton === "PageThree" ? styles.active : ""
-        }`}
-      >
-        Financial
-      </button>
+      {buttons.map(({ label, component }) => (
+
+        <button
+          key={component} onClick={() => handleClick(component)} className={`${styles.navButton} ${
+            activeButton === component ? styles.active : ""
+          }`}
+        >
+          {label}
+        </button>
+
+      ))}
     </nav>
   );
 }

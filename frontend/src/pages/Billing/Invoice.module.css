@@ -1,0 +1,191 @@
+.receiptContainer {
+    width: 320px;
+    border: 2px solid black;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 0 auto;
+}
+
+.receiptTitle {
+    text-align: center;
+    margin: 0;
+    font-weight: 500;
+    padding: 0;
+}
+
+
+.logoContainer {
+    text-align: center;
+}
+
+.logo {
+    width: 25%;
+    height: auto;
+    margin: 0 auto;
+    /* Add spacing around the logo */
+    object-fit: contain;
+    /* Ensure the image scales properly */
+    padding: 0px;
+}
+
+
+.receiptHeader {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0px;
+    font-size: 12px;
+}
+
+.userInfo p,
+.dateInfo p {
+    margin: 0;
+}
+
+.dottedLine {
+    border: none;
+    border-top: 5px dotted #757575;
+    margin: 5px 0;
+}
+
+
+.billContainer{
+    background-color: #d9d9d9;
+    padding:5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.billSection {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 12px;
+}
+
+.billToTitle{
+    font-weight: 600;
+}
+
+.invoiceDetail{
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.dueDate{
+    font-size: 10px;
+}
+.dueDateData{
+    color:#757575;
+}
+
+.userProfile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left:5px;
+}
+
+.mprofileDetails {
+    display: flex;
+    flex-direction: column;
+}
+
+.mprofilePicture {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.mprofileName {
+    font-weight: bold;
+    font-size: 10px;
+}
+
+.mprofileEmail {
+    font-size: 8px;
+    color: #666;
+}
+
+/* Product Table Headers */
+.productRow {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.productInfo {
+    width:60%;
+    flex-shrink: 0;
+}
+
+.productRowData {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+    padding: 5px 0;
+}
+
+.qtyInfo,
+.amountInfo {
+    flex: 1;
+    align-self: center;
+}
+
+.productTitle {
+    font-weight: bold;
+    margin: 0;
+    font-size: 12px;
+}
+
+.productName {
+    font-size: 12px;
+    margin: 0;
+}
+
+.quantity,
+.amount {
+    font-size: 14px;
+    margin: 0;
+    text-align: center;
+}
+
+.quantity{
+    margin-right: 25px;
+    font-size: 12px;
+}
+.totalSectionFlex{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.totalSection {
+    margin:5px 0;
+    width:60%;
+
+}
+
+.totalItem {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 10px;
+}
+
+.labelTotal {
+    font-weight: 600;
+    font-size: 12px;
+    
+}
+
+.label,
+.amount {
+    color: #757575;
+    font-size: 12px;
+}
+
+.dottedLineLast {
+    border: none;
+    border-top: 5px dotted #757575;
+    margin-left: auto;
+    margin-right: 0;
+    width: 60%;
+}

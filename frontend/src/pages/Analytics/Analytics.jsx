@@ -9,6 +9,13 @@ import NavBar from "./NavBar/NavBar";
 function Analytics() {
   const [selectedComponent, setSelectedComponent] = useState("PageOne");
 
+//customizing nav bar buttons
+  const buttons = [
+    { label: "Gym Attendance", component: "PageOne" },
+    { label: "Class Attendance", component: "PageTwo" },
+    { label: "Financial", component: "PageThree" },
+  ];
+
   const renderComponent = () => {
     switch (selectedComponent) {
       case "PageOne":
@@ -24,8 +31,10 @@ function Analytics() {
 
   return (
     <div className={classes.AnalyticsContainer}>
-      <NavBar setSelectedComponent={setSelectedComponent} />
-      <div className={classes.componentContainer}>{renderComponent()}</div>
+      <NavBar setSelectedComponent={setSelectedComponent} buttons={buttons} />
+      <div className={classes.componentContainer}>
+        {renderComponent()}
+        </div>
     </div>
   );
 }

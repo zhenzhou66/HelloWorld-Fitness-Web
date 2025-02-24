@@ -1,21 +1,21 @@
+
   .billingContent {
     background-color: #f9f9f9;
     width: 100%;
     padding: 20px;
     overflow-x: auto;
-    font-family: "Roboto", sans-serif;
     box-sizing: border-box;
   }
-  
+
   .billingFunction {
     display: flex;
     justify-content: space-between;
     margin-bottom: 20px
   }
 
-  .transactionCount{
+  .transactionCount {
     font-weight: lighter;
-    color:#787878;
+    color: #787878;
   }
 
   .billingActions {
@@ -24,7 +24,7 @@
     gap: 10px;
     margin-left: auto;
   }
-  
+
   .statusFilter {
     padding: 8px 12px;
     font-size: 14px;
@@ -35,26 +35,26 @@
     cursor: pointer;
     outline: none;
     transition: border-color 0.2s ease-in-out;
-    width:150px;
-}
+    width: 150px;
+  }
 
-/* Hover Effect */
-.statusFilter:hover {
+  /* Hover Effect */
+  .statusFilter:hover {
     border-color: #007bff;
-}
+  }
 
 
 
-/* Style the dropdown options */
-.statusFilter option {
+  /* Style the dropdown options */
+  .statusFilter option {
     background: white;
     color: #333;
-}
+  }
 
-/* Additional styling for inside a flex container */
-.billingFunction .statusFilter {
+  /* Additional styling for inside a flex container */
+  .billingFunction .statusFilter {
     margin-left: auto;
-}
+  }
 
 
 
@@ -72,36 +72,37 @@
     border-bottom: 1px solid #ddd;
 
   }
-  
+
   .transactionTable td {
     vertical-align: middle;
   }
-    
-  th, td {
+
+  th,
+  td {
     padding: 5px;
   }
-  
+
   td {
     padding: 0;
     margin: 0;
     height: 100%;
     vertical-align: middle;
   }
-      
+
   .transactionTable th {
     background-color: #efefef;
     font-weight: bold;
     height: 50px;
-    
+
   }
 
-   
+
   .transactionTable tr {
     height: auto;
     min-height: 50px;
   }
 
-  
+
   .checkboxuserid {
     display: flex;
     align-items: center;
@@ -112,7 +113,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  
+
   .checkboxContainer {
     display: flex;
     align-items: center;
@@ -123,53 +124,53 @@
     margin: 10px;
   }
 
-.trashButton,
-.printButton {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 5px;
-  border-radius: 50%;
-  transition: background-color 0.3s;
-}
+  .trashButton,
+  .printButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: background-color 0.3s;
+  }
 
-.trashButton:hover,
-.printButton:hover {
-  color: #ff5733;
-}
+  .trashButton:hover,
+  .printButton:hover {
+    color: #ff5733;
+  }
 
-.paid{
-  color: #69CA00;
-}
+  .paid {
+    color: #69CA00;
+  }
 
-.pending{
-  color:#787878
-}
+  .pending {
+    color: #787878
+  }
 
-.overdue{
-  color: #CA0000;
-}
+  .overdue {
+    color: #CA0000;
+  }
 
-.pagination {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 20px;
-}
-  
-.pagination button {
-  padding: 5px 10px;
-  border: 0px solid #ccc;
-  border-radius: 4px;
-  background-color: #f9f9f9;
-  cursor: pointer;
-}
-  
-.pagination button.active {
-  background-color: #ddd;
-  font-weight: bold;
-}
-  
-.pagination button:hover {
-  background-color: #ff8c00;
-}
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .pagination button {
+    padding: 5px 10px;
+    border: 0px solid #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+  }
+
+  .pagination button.active {
+    background-color: #ddd;
+    font-weight: bold;
+  }
+
+  .pagination button:hover {
+    background-color: #ff8c00;
+  }
