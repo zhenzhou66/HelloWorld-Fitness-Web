@@ -199,7 +199,7 @@ const Schedules = () => {
                 </div>
               </td>
               <td>
-                <span className={styles.classParticipants}>10 / {classes.max_participants}</span>
+                <span className={styles.classParticipants}>{classes.participants_count} / {classes.max_participants}</span>
               </td>
               <td className={styles.actions} onClick={(e) => e.stopPropagation()}>
                 <button className={styles.viewButton} onClick={() => handleViewClick(classes.class_id)}>

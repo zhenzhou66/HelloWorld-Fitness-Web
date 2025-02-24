@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require('../db');
 
 router.get('/display', (req, res) => {
-    const classDetails = 'SELECT c.*, t.name, t.profile_picture FROM classes c INNER JOIN user t ON c.trainer_id = t.user_id';
+    const classDetails = 'SELECT c.*, t.name, t.profile_picture, (SELECT COUNT(*) FROM class_participants p WHERE p.class_id = c.class_id) AS participants_count FROM classes c INNER JOIN user t ON c.trainer_id = t.user_id';
     const classCount = 'SELECT COUNT(*) AS classCount FROM classes';
 
     db.query(classDetails, (err, detailResult) => {
