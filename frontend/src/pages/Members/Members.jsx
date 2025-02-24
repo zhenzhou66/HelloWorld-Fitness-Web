@@ -583,7 +583,7 @@ const Members = () => {
                                 <img src={`http://localhost:5000/uploads/${memberInfo.profile_picture}`} alt="Profile" className={styles.profilePicture} />
                                 <div>
                                     <label>Username:</label>
-                                    <input type="text" name="username" value={memberInfo.username} onChange={handleEditChange} required/>
+                                    <input type="text" name="username" value={memberInfo.username} readOnly required/>
                                 </div>
                             </div>
                             <hr className={styles.edithr} />
