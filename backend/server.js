@@ -43,6 +43,9 @@ app.use('/api/trainers', trainersRoutes);
 const billingRoutes = require('./routes/billing');
 app.use('/api/billing', billingRoutes);
 
+const scheduleRoutes = require('./routes/schedules');
+app.use('/api/schedules', scheduleRoutes);
+
 app.use('/uploads', express.static('uploads'));
 
 app.get('/', (req, res) => {

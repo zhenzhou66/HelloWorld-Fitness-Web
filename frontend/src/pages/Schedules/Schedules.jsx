@@ -1,10 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./Schedules.module.css";
 import { Trash, Edit, X, Eye } from "lucide-react";
 import ConfirmModal from "../../components/ConfirmDelete/ConfirmDelete.jsx";
 
 const Schedules = () => {
-  const [selectedClass, setSelectedClass] = useState(null);
+  const [search, setSearch] = useState("");
+  const [classes, setClass] = useState({ classDetails: [], classCount: 0 });
+  const [filteredClass, setFilteredClass] = useState([]);
+  const [selectedClass, setSelectedClass] = useState(false);
+
+//Display Classes
+  useEffect(() => {
+    fetch("http://localhost:5000/api/schedules/display")
+      .then((response) => response.json())
+      .then((data) => {
+        setClass(data);
+        setFilteredClass(data.classDetails);
+      })
+      .catch((error) => console.error("Error fetching stats:", error));
+  }, []);
+
+//Search Classes
+  const filterClass = (searchQuery) => {
+    const filtered = classes.classDetails.filter((plan) =>
+      plan.class_name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredClass(filtered);
+  };
+
+  useEffect(() => {
+    filterClass(search);
+  }, [search, classes.classDetails]);
+  
+// Formatting date function
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB', { timeZone: 'Asia/Kuala_Lumpur' }); 
+  }
 
   const handleRowClick = (event, classes) => {
     if (event.target.closest(`.${styles.actions}`)) {
@@ -14,7 +46,7 @@ const Schedules = () => {
   };
 
   const closeOverlay = () => {
-    setSelectedClass(null); // Close the overlay
+    setSelectedClass(false); // Close the overlay
   };
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -49,50 +81,6 @@ const Schedules = () => {
     setScheduleInfo((prevState) => ({ ...prevState, [name]: value }));
   };
 
-  // Static data for demonstration
-  const classes = [
-    {
-      class_id: "1",
-      class_name: "Yoga Flow",
-      description: "A relaxing yoga session focused on flexibility and...",
-      class_image: "https://via.placeholder.com/50",
-      schedule_date: "2025-01-20",
-      start_time: "08:00 AM",
-      end_time: "09:00 AM",
-    },
-    {
-      class_id: "2",
-      class_name: "HIIT Workout",
-      description: "High-intensity interval training",
-      class_image: "https://via.placeholder.com/50",
-      schedule_date: "2025-02-16",
-      start_time: "5:00 PM",
-      end_time: "6:00 PM",
-    }
-  ];
-
-  const user = [
-    {
-      profile_picture: "https://via.placeholder.com/50",
-      name: "Ali",
-    },
-    {
-      profile_picture: "https://via.placeholder.com/50",
-      name: "John",
-    }
-  ];
-
-  const [formData, setFormData] = useState({
-    className: '',
-    classImage: null,
-    description: '',
-    scheduleDate: '',
-    startTime: '',
-    endTime: '',
-    maxParticipants: '',
-    trainerName: ''
-  });
-
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   
   const handleChange = (e) => {
@@ -113,10 +101,10 @@ const Schedules = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const schedulesPerPage = 5;
 
-  const totalPages = Math.ceil(classes.length / schedulesPerPage);
+  const totalPages = Math.ceil(classes.classCount / schedulesPerPage);
   const startIndex = (currentPage - 1) * schedulesPerPage;
   const endIndex = startIndex + schedulesPerPage;
-  const currentSchedules = classes.slice(startIndex, endIndex);
+  const currentSchedules = filteredClass.slice(startIndex, endIndex);
 
   // Add Class Modal Function
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -125,17 +113,38 @@ const Schedules = () => {
   const closeModal = () => setIsModalOpen(false);
 
   // View Class Modal Function
-  const handleViewClick = (classes) => {
-    setSelectedClass(classes);
+  const [viewClass, setViewClass] = useState([]);
+  const [participants, setParticipants] = useState([]);
+  const handleViewClick = (class_id) => {
+    const selected = currentSchedules.find((classes) => classes.class_id === class_id);
+    if (selected) {
+      setViewClass(selected);
+      fetch(`http://localhost:5000/api/schedules/participants/${class_id}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      })
+      .then(response => response.json())
+      .then(data => {
+          setParticipants(data.participants || []);
+      })
+      .catch(error => {
+          console.error("Error fetching participants:", error);
+      });
+      setSelectedClass(true);
+    }
   }
 
   return (
     <div className={styles.schedulesContent}>
       <div className={styles.schedulesFunction}>
-        <h3 className={styles.schedulesTitle}>All Classes</h3>
+        <h3 className={styles.schedulesTitle}>
+          All Classes&nbsp;&nbsp;
+          <span className={styles.classCount}>({classes.classCount})</span>
+        </h3>
         <div className={styles.schedulesAction}>
           <div className={styles.searchContainer}>
-            <input type="text" className={styles.searchInput} placeholder="Search" />
+            <input type="text" className={styles.searchInput} placeholder="Search" value={search} 
+            onChange={(e) => setSearch(e.target.value)}/>
           </div>
           <button className={styles.addClass} onClick={openModal}>Add Class</button>
         </div>
@@ -170,14 +179,14 @@ const Schedules = () => {
               </td>
               <td>
                 <div className={styles.classdetailsContainer}>
-                  <img src={classes.class_image} alt="Class Image" className={styles.classImage} />
+                  <img src={`http://localhost:5000/uploads/${classes.class_image}`} alt="Class Image" className={styles.classImage} />
                   <div className={styles.classDetails}>
                     <span className={styles.className}>{classes.class_name}</span>
                     <span className={styles.classDescription}>{classes.description}</span>
                   </div>
                 </div>
               </td>
-              <td className={styles.scheduleDate}>{classes.schedule_date}</td>
+              <td className={styles.scheduleDate}>{formatDate(classes.schedule_date)}</td>
               <td>
                 <span className={styles.classStartTime}>{classes.start_time}</span>
                 <span className={styles.dash}>-</span>
@@ -185,15 +194,15 @@ const Schedules = () => {
               </td>
               <td>
                 <div className={styles.assignedTrainerContainer}>
-                  <img src={user.profile_picture} alt="Trainer Profile Picture" className={styles.trainerImage} />
-                  <span className={styles.trainerName}>{user.name}</span>
+                  <img src={`http://localhost:5000/uploads/${classes.profile_picture}`} alt="Trainer Profile Picture" className={styles.trainerImage} />
+                  <span className={styles.trainerName}>{classes.name}</span>
                 </div>
               </td>
               <td>
-                <span className={styles.classParticipants}>10 / 20</span>
+                <span className={styles.classParticipants}>10 / {classes.max_participants}</span>
               </td>
               <td className={styles.actions} onClick={(e) => e.stopPropagation()}>
-                <button className={styles.viewButton} onClick={() => handleViewClick(classes)}>
+                <button className={styles.viewButton} onClick={() => handleViewClick(classes.class_id)}>
                   <Eye size={20} />
                 </button>
                 <button className={styles.editButton} onClick={() => 
@@ -362,53 +371,58 @@ const Schedules = () => {
             </div>
 
             <div className={styles.classnameid}>
-            <span>{selectedClass.class_name}</span>
-            <span><strong>ID:</strong> {selectedClass.class_id}</span>
+            <span>{viewClass.class_name}</span>
+            <span><strong>ID:</strong> {viewClass.class_id}</span>
             </div>
 
             <div className={styles.classInfo}>
-              <img src={selectedClass.class_image} alt="Class" className={styles.classImage} />
+              <img src={`http://localhost:5000/uploads/${viewClass.class_image}`} alt="Class" className={styles.classImage} />
               <div>
-                <label>Description</label>
-                <textarea readOnly value={selectedClass.description}></textarea>
+                <label>Description:</label>
+                <textarea readOnly value={viewClass.description}></textarea>
               </div>
             </div>
 
             <div className={styles.dateTime}>
               <div>
-                <label>Date</label>
-                <input type="text" value={selectedClass.schedule_date} readOnly />
+                <label>Date:</label>
+                <input type="text" value={formatDate(viewClass.schedule_date)} readOnly />
               </div>
               <div>
-                <label>Start time</label>
-                <input type="text" value={selectedClass.start_time} readOnly />
+                <label>Start time:</label>
+                <input type="text" value={viewClass.start_time} readOnly />
               </div>
               <div>
-                <label>End time</label>
-                <input type="text" value={selectedClass.end_time} readOnly />
+                <label>End time:</label>
+                <input type="text" value={viewClass.end_time} readOnly />
               </div>
             </div>
 
             <div className={styles.trainerParticipants}>
               <div>
-                <label>Max Participants</label>
-                <input type="text" value="20" readOnly />  {/* Hardcoded for now */}
+                <label>Max Participants:</label>
+                <input type="text" value={viewClass.max_participants} readOnly />  {/* Hardcoded for now */}
               </div>
               <div>
-                <label>Assigned Trainer</label>
-                <input type="text" value="Trainer A" readOnly />  {/* Hardcoded for now */}
+                <label>Assigned Trainer:</label>
+                <input type="text" value={viewClass.name} readOnly />  {/* Hardcoded for now */}
               </div>
             </div>
 
             <hr className={styles.edithr} />
-            <h4>Participants: {selectedClass.participants?.length || 0}</h4>
+            <h4>Participants: {participants?.length || 0}</h4>
             <div className={styles.participantsList}>
-              {selectedClass.participants?.map((participant, index) => (
-                <div key={index} className={styles.participant}>
-                  <img src={participant.avatar} alt={participant.name} />
-                  <span>{participant.name}</span>
-                </div>
-              )) || <p>No Participants</p>}
+              {participants.length > 0 ? (
+                participants.map((participant, index) => (
+                  <div key={index} className={styles.assignedTrainerContainer}>
+                    <img src={`http://localhost:5000/uploads/${participant.profile_picture}`} 
+                        alt={participant.name} className={styles.trainerImage}/>
+                    <span className={styles.trainerName}>{participant.name}</span>
+                  </div>
+                ))
+              ) : (
+                <p>No Participants</p>
+              )}
             </div>
           </div>
         </div>

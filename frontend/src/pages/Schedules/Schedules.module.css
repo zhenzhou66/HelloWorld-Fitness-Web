@@ -7,6 +7,11 @@
     box-sizing: border-box;
 }
 
+.classCount{
+    font-weight: lighter;
+    color:#787878;
+  }
+
 .schedulesFunction {
     display: flex;
     align-items: center;
@@ -186,7 +191,13 @@ td {
     cursor: pointer;
     padding: 5px;
     border-radius: 50%;
-    transition: background-color 0.3s;
+    transition: 0.3s;
+}
+
+.actions {
+    display: flex;
+    gap: 10px; 
+    align-items: center; 
 }
 
 .viewButton:hover,
@@ -477,4 +488,9 @@ textarea {
 .edithr {
     margin-top: 5px;
     margin-bottom: 5px;
+}
+
+.participantsList{
+    display: flex;
+    gap: 20px;
 }
