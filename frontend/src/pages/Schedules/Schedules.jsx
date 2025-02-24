@@ -1,8 +1,54 @@
 import React, { useState } from "react";
 import styles from "./Schedules.module.css";
-import { Trash, Edit, X } from "lucide-react";
+import { Trash, Edit, X, Eye } from "lucide-react";
+import ConfirmModal from "../../components/ConfirmDelete/ConfirmDelete.jsx";
 
 const Schedules = () => {
+  const [selectedClass, setSelectedClass] = useState(null);
+
+  const handleRowClick = (event, classes) => {
+    if (event.target.closest(`.${styles.actions}`)) {
+      return;
+    }
+    handleViewClick(classes);
+  };
+
+  const closeOverlay = () => {
+    setSelectedClass(null); // Close the overlay
+  };
+
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [scheduleInfo, setScheduleInfo] = useState({
+    className: "",
+    scheduleDate: "",
+    startTime: "",
+    endTime: "",
+    trainerName: "",
+    description: ""
+});
+
+  const openEditModal = (schedule) => {
+    setScheduleInfo(schedule);
+    setIsEditModalOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setIsEditModalOpen(false);
+    setScheduleInfo({
+        className: "",
+        scheduleDate: "",
+        startTime: "",
+        endTime: "",
+        trainerName: "",
+        description: ""
+    });
+  };
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setScheduleInfo((prevState) => ({ ...prevState, [name]: value }));
+  };
+
   // Static data for demonstration
   const classes = [
     {
@@ -46,6 +92,8 @@ const Schedules = () => {
     maxParticipants: '',
     trainerName: ''
   });
+
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -75,6 +123,11 @@ const Schedules = () => {
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+
+  // View Class Modal Function
+  const handleViewClick = (classes) => {
+    setSelectedClass(classes);
+  }
 
   return (
     <div className={styles.schedulesContent}>
@@ -108,10 +161,10 @@ const Schedules = () => {
 
         <tbody>
           {currentSchedules.map((classes) => (
-            <tr key={classes.class_id}>
+            <tr key={classes.class_id} onClick={(event) => handleRowClick(event, classes)} className={styles.clickableRow}>
               <td className={styles.checkboxclassid}>
                 <div className={styles.checkboxContainer}>
-                  <input type="checkbox" />
+                  <input type="checkbox" onClick={(e) => e.stopPropagation()} />
                   <span>{classes.class_id}</span>
                 </div>
               </td>
@@ -139,13 +192,27 @@ const Schedules = () => {
               <td>
                 <span className={styles.classParticipants}>10 / 20</span>
               </td>
-              <td>
-                <button className={styles.editButton}>
+              <td className={styles.actions} onClick={(e) => e.stopPropagation()}>
+                <button className={styles.viewButton} onClick={() => handleViewClick(classes)}>
+                  <Eye size={20} />
+                </button>
+                <button className={styles.editButton} onClick={() => 
+                openEditModal(classes)}>
                   <Edit size={20} />
                 </button>
-                <button className={styles.deleteButton}>
+                <button className={styles.deleteButton} onClick={() => setShowDeleteConfirm(true)}>
                   <Trash size={20} />
                 </button>
+
+                {showDeleteConfirm && <ConfirmModal
+                  show={showDeleteConfirm}
+                  onClose={() => setShowDeleteConfirm(false)}
+                  onConfirm={() => {}}
+                  message="Are you sure you want to delete this transaction?"
+                  confirmText="Yes, I'm sure"
+                  cancelText="No, cancel"
+                  />
+                }
               </td>
             </tr>
           ))}
@@ -172,37 +239,40 @@ const Schedules = () => {
 
             <form onSubmit={handleSubmit} className={styles.formContainer}>
               <div className={styles.classHeader}>
-                <label className={styles.classNameTextStyle}>Class Name:</label>
-                <input type="text" name="className" value={formData.className} onChange={handleChange} required />
+                <label>Class Name:</label>
+                <input type="text" name="className" value={formData.className} onChange={handleChange} placeholder="Class Name" required />
               </div>
 
-              <div className={styles.imageUpload} onClick={() => document.getElementById('classImageInput').click()}>
-                {FormData.classImage ? (
-                  <img src={URL.createObjectURL(formData.classImage)} alt="Class" className={styles.uploadedImage} />
-                ) : (
-                  <span className={styles.uploadPlaceholder}>+</span>
-                )}
-                <input type="file" id="classImageInput" name="classImage" style={{ display: 'none' }} onChange={(e) => setFormData({ ...formData, classImage: e.target.files[0] })} />
-              </div>
+              <div className={styles.uploadDescriptionContainer}>
+                <div className={styles.imageUpload} onClick={() => document.getElementById('classImageInput').click()}>
+                  {formData.classImage ? (
+                    <img src={URL.createObjectURL(formData.classImage)} alt="Class" className={styles.uploadedImage} />
+                  ) : (
+                    <span className={styles.uploadPlaceholder}>+</span>
+                  )}
+                  <input type="file" id="classImageInput" name="classImage" style={{ display: 'none' }} onChange={(e) => setFormData({ ...formData, classImage: e.target.files[0] })} />
+                </div>
+              
 
-              <label>Description</label>
-              <textarea name="description" value={formData.description} onChange={handleChange} required />
+                <div className={styles.descriptionContainer}>
+                  <label>Description:</label>
+                  <textarea className={styles.descriptionInput} name="description" placeholder="Brief description of the class" value={formData.description} onChange={handleChange} required />
+                </div>
+              </div>
 
               <div className={styles.dateTimeContainer}>
                 <div>
                   <label>Date:</label>
                   <input type="date" name="scheduleDate" value={formData.scheduleDate} onChange={handleChange} required />
                 </div>
-              </div>
-
-              <div>
-                <label>Start time:</label>
-                <input type="time" name="startTime" value={formData.startTime} onChange={handleChange} required />
-              </div>
-
-              <div>
-                <label>End time:</label>
-                <input type="time" name="endTime" value={formData.endTime} onChange={handleChange} required />
+                <div>
+                  <label>Start time:</label>
+                  <input type="time" name="startTime" value={formData.startTime} onChange={handleChange} required />
+                </div>
+                <div>
+                  <label>End time:</label>
+                  <input type="time" name="endTime" value={formData.endTime} onChange={handleChange} required />
+                </div>
               </div>
 
               <div className={styles.participantTrainerContainer}>
@@ -214,7 +284,7 @@ const Schedules = () => {
                 <div>
                   <label>Assigned Trainer:</label>
                   <select name="trainerName" value={formData.trainerName} onChange={handleChange} required>
-                    <option value="">Select trainer</option>
+                    <option value="" disabled>Select trainer</option>
                     <option value="Trainer A">Trainer A</option>
                     <option value="Trainer B">Trainer B</option>
                   </select>
@@ -223,6 +293,123 @@ const Schedules = () => {
               
               <button type="submit" className={styles.confirmButton}>Add Class</button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Overlay */}
+      {isEditModalOpen && (
+        <div className={styles.editOverlay} onClick={closeEditModal}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <span className={styles.textstyle}>Edit Class</span>
+              <X className={styles.closeButton} onClick={closeEditModal} />
+            </div>
+                        
+            <form className={styles.formContainer}>
+              <div className={styles.classHeader}>
+                <label>Class Name:</label>
+                <input type="text" name="className" value={scheduleInfo.className} onChange={handleEditChange} required />
+              </div>
+                            
+              <div className={styles.descriptionContainer}>
+                <label>Description:</label>
+                <textarea name="description" value={scheduleInfo.description} onChange={handleEditChange} required />
+              </div>
+                            
+              <div className={styles.dateTimeContainer}>
+                <div>
+                  <label>Date:</label>
+                  <input type="date" name="scheduleDate" value={scheduleInfo.scheduleDate} onChange={handleEditChange} required />
+                </div>
+                <div>
+                  <label>Start Time:</label>
+                  <input type="time" name="startTime" value={scheduleInfo.startTime} onChange={handleEditChange} required />
+                </div>
+                <div>
+                  <label>End Time:</label>
+                  <input type="time" name="endTime" value={scheduleInfo.endTime} onChange={handleEditChange} required />
+                </div>
+              </div>
+              
+              <div className={styles.participantTrainerContainer}>
+                <div>
+                <label>Assigned Trainer:</label>
+                  <select name="trainerName" value={formData.trainerName} onChange={handleChange} required>
+                    <option value="" disabled>Select trainer</option>
+                    <option value="Trainer A">Trainer A</option>
+                    <option value="Trainer B">Trainer B</option>
+                  </select>
+                </div>
+              </div>
+                            
+              <div className={styles.buttonSection}>
+                <button type="button" onClick={closeEditModal} className={styles.cancelDeleteButton}>Cancel</button>
+                <button type="submit" className={styles.confirmDeleteButton}>Update</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* View Overlay */}
+      {selectedClass && (
+        <div className={styles.overlay} onClick={closeOverlay}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <span>View Class</span>
+              <button className={styles.closeButton} onClick={closeOverlay}>✖</button>
+            </div>
+
+            <div className={styles.classnameid}>
+            <span>{selectedClass.class_name}</span>
+            <span><strong>ID:</strong> {selectedClass.class_id}</span>
+            </div>
+
+            <div className={styles.classInfo}>
+              <img src={selectedClass.class_image} alt="Class" className={styles.classImage} />
+              <div>
+                <label>Description</label>
+                <textarea readOnly value={selectedClass.description}></textarea>
+              </div>
+            </div>
+
+            <div className={styles.dateTime}>
+              <div>
+                <label>Date</label>
+                <input type="text" value={selectedClass.schedule_date} readOnly />
+              </div>
+              <div>
+                <label>Start time</label>
+                <input type="text" value={selectedClass.start_time} readOnly />
+              </div>
+              <div>
+                <label>End time</label>
+                <input type="text" value={selectedClass.end_time} readOnly />
+              </div>
+            </div>
+
+            <div className={styles.trainerParticipants}>
+              <div>
+                <label>Max Participants</label>
+                <input type="text" value="20" readOnly />  {/* Hardcoded for now */}
+              </div>
+              <div>
+                <label>Assigned Trainer</label>
+                <input type="text" value="Trainer A" readOnly />  {/* Hardcoded for now */}
+              </div>
+            </div>
+
+            <hr className={styles.edithr} />
+            <h4>Participants: {selectedClass.participants?.length || 0}</h4>
+            <div className={styles.participantsList}>
+              {selectedClass.participants?.map((participant, index) => (
+                <div key={index} className={styles.participant}>
+                  <img src={participant.avatar} alt={participant.name} />
+                  <span>{participant.name}</span>
+                </div>
+              )) || <p>No Participants</p>}
+            </div>
           </div>
         </div>
       )}

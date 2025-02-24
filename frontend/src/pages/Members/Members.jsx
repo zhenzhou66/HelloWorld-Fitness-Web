@@ -642,7 +642,7 @@ const Members = () => {
                             </div>
                             <div className={styles.buttonSection}>
                                 <button type="button" onClick={closeEditModal} className={styles.cancelDeleteButton}>Cancel</button>
-                                <button type="submit" className={styles.confirmDeleteButton} >Update</button>
+                                <button type="submit" className={styles.confirmDeleteButton}>Update</button>
                             </div>
                         </form>
                     </div>
