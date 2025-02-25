@@ -120,7 +120,7 @@ const Schedules = () => {
         selectedClassIds = Object.keys(selectedClasses).filter(id => selectedClasses[id]);
           
           if (selectedClassIds.length === 0) {
-              alert("Please select at least one member to delete.");
+              alert("Please select at least one class to delete.");
               return;
           }
       }
@@ -144,7 +144,7 @@ const Schedules = () => {
           setClassesToDelete([]);
       })
       .catch(error => {
-          console.error("Error deleting members:", error);
+          console.error("Error deleting class:", error);
       });
   };    
 
@@ -237,7 +237,7 @@ const Schedules = () => {
         setFilteredClass(data.classDetails);
       })
       .catch((error) => console.error("Error fetching stats:", error));
-};
+  };
 
   // For Select All Function
   const [SelectAll, setSelectAll] = useState(false);
@@ -290,7 +290,7 @@ const Schedules = () => {
             onChange={(e) => setSearch(e.target.value)}/>
           </div>
           <button className={styles.addClass} onClick={() => setIsModalOpen(true)}>Add Class</button>
-          <button className={styles.deleteMemberButton} onClick={() => handleDeleteClick(null)}>Delete Selected</button>
+          <button className={styles.deleteClassButton} onClick={() => handleDeleteClick(null)}>Delete Selected</button>
         </div>
       </div>
 
@@ -371,7 +371,7 @@ const Schedules = () => {
         ))}
       </div>
 
-      {/* For Admin to Delete Member(Overlay) */}
+      {/* For Admin to Delete Schedule(Overlay) */}
       {showDeleteConfirm && (
           <div className={styles.modalOverlayDeleteM}>
               <div className={styles.modalDeleteM} style={{ textAlign: "center" }}>

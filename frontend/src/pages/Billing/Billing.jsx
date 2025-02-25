@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Billing.module.css";
 import { Printer, Trash, X } from "lucide-react";
-import ConfirmModal from "../../components/ConfirmDelete/ConfirmDelete.jsx";
 import PrintOverlay from "./PrintOverlay.jsx";
 
 export default function Billing() {
@@ -47,6 +46,85 @@ export default function Billing() {
       statusFilter === "" || transaction.payment_status === statusFilter
   );
 
+  //Delete transaction function
+  const [transactionsToDelete, setTransactionsToDelete] = useState([]);
+  const handleDeleteClick = (transaction_id = null) => {
+      let selectedTransactionIds;
+  
+      if (transaction_id) {
+        selectedTransactionIds = [transaction_id];
+      } else {
+        selectedTransactionIds = Object.keys(selectedTransactions).filter(id => selectedTransactions[id]);
+          
+          if (selectedTransactionIds.length === 0) {
+              alert("Please select at least one transaction to delete.");
+              return;
+          }
+      }
+      setTransactionsToDelete(selectedTransactionIds);
+      setShowDeleteConfirm(true);
+  };
+
+  const handleDelete = () => {
+      fetch(`http://localhost:5000/api/billing/delete`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ transaction_ids: transactionsToDelete }),
+      })
+      .then(response => response.json())
+      .then(data => {
+          alert(data.message);
+          fetchTransactions(); 
+          setSelectedTransactions({});
+          setSelectAll(false);
+          setShowDeleteConfirm(false);
+          setTransactionsToDelete([]);
+      })
+      .catch(error => {
+          console.error("Error deleting transactions:", error);
+      });
+  };    
+
+  const fetchTransactions = () => {
+    fetch("http://localhost:5000/api/billing/display")
+      .then((response) => response.json())
+      .then((data) => {
+        setTransactions(data.transactions);
+        setTransactionCount(data.transactionCount);
+        setLoading(false);
+      })
+      .catch((error) => console.error("Error fetching stats:", error));
+  };
+
+   // For Select All Function
+  const [SelectAll, setSelectAll] = useState(false);
+  const [selectedTransactions, setSelectedTransactions] = useState({});
+
+  const handleSelectAll = (event) => {
+      const isChecked = event.target.checked;
+      setSelectAll(isChecked);
+  
+      const updatedTransaction = {};
+      currentTransactions.forEach(transaction => {
+        updatedTransaction[transaction.transaction_id] = isChecked;
+      });
+  
+      setSelectedTransactions(updatedTransaction);
+  };
+
+  const handleSelectTransactions = (event, transaction_id) => {
+      const isChecked = event.target.checked;
+  
+      setSelectedTransactions((prev) => {
+          const updatedTransaction = { ...prev, [transaction_id]: isChecked };
+  
+          const allSelected = Object.values(updatedTransaction).every((val) => val === true);
+          setSelectAll(allSelected);
+  
+          return updatedTransaction;
+      });
+  };
+
   // Bottom Page Function
   const [currentPage, setCurrentPage] = useState(1);
   const transactionPerPage = 9;
@@ -64,7 +142,6 @@ const handlePrintClick=(transaction)=>{
   setSelectedTransaction(transaction);
   setShowPrintOverlay(true);
 }
-
 
   return (
     <div className={styles.billingContent}>
@@ -90,6 +167,7 @@ const handlePrintClick=(transaction)=>{
             <option value="Pending">Pending</option>
             <option value="Overdue">Overdue</option>
           </select>
+          <button className={styles.deleteTransactionButton} onClick={() => handleDeleteClick(null)}>Delete Selected</button>
         </div>
       </div>
 
@@ -99,7 +177,7 @@ const handlePrintClick=(transaction)=>{
           <tr>
             <th className={styles.checkboxuserid}>
               <div className={styles.checkboxContainer}>
-                <input type="checkbox" checked={false} onChange={() => { }} />
+                <input type="checkbox" checked={SelectAll} onChange={handleSelectAll} />
                 <span>Transaction ID</span>
               </div>
             </th>
@@ -117,7 +195,7 @@ const handlePrintClick=(transaction)=>{
             <tr key={transaction.transaction_id}>
               <td className={styles.checkboxuserid}>
                 <div className={styles.checkboxContainer}>
-                  <input type="checkbox" checked={false} onChange={() => { }} />
+                  <input type="checkbox" checked={selectedTransactions[transaction.transaction_id] || false} onChange={(e) => handleSelectTransactions(e, transaction.transaction_id)} />
                   <span>{transaction.transaction_id}</span>
                 </div>
               </td>
@@ -143,22 +221,10 @@ const handlePrintClick=(transaction)=>{
                 </button>
                 <button
                   className={styles.trashButton}
-                  onClick={() => setShowDeleteConfirm(true)}
+                  onClick={() => handleDeleteClick(transaction.transaction_id)}
                 >
                   <Trash size={20} />
                 </button>
-
-                {/* using confirmDelete component for overlay */}
-                {showDeleteConfirm && (
-                  <ConfirmModal
-                    show={showDeleteConfirm}
-                    onClose={() => setShowDeleteConfirm(false)}
-                    onConfirm={() => { }} //handle delete backend logic
-                    message="Are you sure you want to delete this transaction?"
-                    confirmText="Yes, I'm sure"
-                    cancelText="No, cancel"
-                  />
-                )}
 
                 {
                   showPrintOverlay && selectedTransaction && (
@@ -175,8 +241,28 @@ const handlePrintClick=(transaction)=>{
         </tbody>
       </table>
 
-      {/* pages under table */}
+      {/* For Admin to Delete Transaction(Overlay) */}
+      {showDeleteConfirm && (
+          <div className={styles.modalOverlayDeleteM}>
+              <div className={styles.modalDeleteM} style={{ textAlign: "center" }}>
+                  <button className={styles.closeButton} onClick={() => setShowDeleteConfirm(false)}>
+                  <X size={24} />
+                  </button>
+                  <Trash className={styles.deleteIcon} size={40}/>
+                  <p style={{ marginBottom: "30px" }}>Are you sure you want to delete this transaction?</p>
+                  <div className={styles.modalButtons}>
+                      <button className={styles.cancelDeleteButton} onClick={() => setShowDeleteConfirm(false)}>
+                          No, cancel
+                      </button>
+                      <button className={styles.confirmDeleteButton} onClick={handleDelete}>
+                          Yes, I'm sure
+                      </button>
+                  </div>
+              </div>
+          </div>
+      )}
 
+      {/* pages under table */}
       <div className={styles.pagination}>
         {Array.from({ length: totalPages }, (_, index) => (
           <button

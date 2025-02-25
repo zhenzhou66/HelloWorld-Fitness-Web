@@ -530,23 +530,8 @@ textarea {
     display: flex;
     justify-content: space-around;
 }
-  
-.confirmDeleteButton {
-    background: #ff7f50;
-    color: white;
-    padding: 10px;
-    border: none;
-    cursor: pointer;
-    width: 40%;
-    border-radius: 5px;
-    transition:0.3s;
-}
 
-.confirmDeleteButton:hover{
-    background-color: #ff5733;
-}
-
-.deleteMemberButton {
+.deleteClassButton {
     font-family: "Roboto", sans-serif;
     padding: 8px 16px;
     background-color: rgb(242, 69, 69);
@@ -557,6 +542,6 @@ textarea {
     transition: 0.3s;
 }
   
-.deleteMemberButton:hover {
+.deleteClassButton:hover {
     background-color: red;
 }
