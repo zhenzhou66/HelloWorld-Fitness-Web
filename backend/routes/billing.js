@@ -58,4 +58,31 @@ router.delete('/delete', async (req, res) => {
     }
 });
 
+router.get('/user-info', async (req, res) => {
+    let { transaction_id } = req.query;
+
+    if (!transaction_id) {
+        return res.status(400).json({ message: 'Missing transaction ID' });
+    }
+
+    const transactionQuery = `
+        SELECT * FROM transactions t 
+        INNER JOIN user u ON t.user_id = u.user_id 
+        WHERE transaction_id = ?
+    `;
+
+    db.query(transactionQuery, [transaction_id], (err, records) => {
+        if (err) {
+            return res.status(500).json({ message: 'Database error while fetching transactions.', error: err });
+        }
+
+        if (records.length === 0) {
+            return res.status(404).json({ message: 'Transaction not found' });
+        }
+
+        return res.json({ record: records });
+    });
+});
+
+
 module.exports = router;

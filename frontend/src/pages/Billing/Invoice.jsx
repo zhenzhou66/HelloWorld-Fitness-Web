@@ -1,7 +1,7 @@
-import React from "react";
 import styles from "./Invoice.module.css";
 import logo from "../../assets/logo-black.png";
 import PropTypes from "prop-types";
+import React, { useState, useEffect } from "react"
 
 function Invoice({ transactionData }) {
 
@@ -10,7 +10,24 @@ function Invoice({ transactionData }) {
         const date = new Date(dateString);
         return date.toLocaleDateString("en-GB", { timeZone: "Asia/Kuala_Lumpur" });
     }
+      
+    const [userInfo, setUserInfo]=useState(null);
 
+    // Fetch user data from backend
+    useEffect(() => {
+        fetch(`http://localhost:5000/api/billing/user-info?transaction_id=${transactionData.transaction_id}`)
+        .then((response) => {
+            if (!response.ok) throw new Error("Failed to fetch data");
+            return response.json();
+        })
+        .then((data) => {
+            setUserInfo(data.record);
+            console.log(userInfo);
+        })
+        .catch((error) => {
+            setError(error.message);
+        });
+    }, [transactionData.transaction_id]);
 
     return (
         <div className={styles.receiptContainer}>
@@ -23,7 +40,7 @@ function Invoice({ transactionData }) {
 
             <div className={styles.receiptHeader}>
                 <div className={styles.userInfo}>
-                    <p>User ID: <span className={styles.headerData}>{transactionData.transaction_id}</span> </p>
+                    <p>User ID: <span className={styles.headerData}>{userInfo.user_id}</span> </p>
                 </div>
                 <div className={styles.dateInfo}>
                     <p>Date: <span className={styles.headerData}>{formatDate(transactionData.payment_date)}</span> </p>

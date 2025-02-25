@@ -20,6 +20,8 @@
     border-radius: 8px;
     padding: 20px;
     position: relative;
+    height:90%;
+    overflow-y: scroll;
 }
 
 .closeButton {
@@ -39,11 +41,6 @@
 .headerId{
     color:#757575
 }
-
-
-
-
-
 
 /* Content styling */
 .content {
@@ -80,4 +77,18 @@
     background-color: #ccc;
 }
 
+@media print {
+    .overlay {
+        position: static !important;
+        background: none !important;
+    }
 
+    .modal {
+        box-shadow: none !important;
+        border: none !important;
+    }
+
+    .closeButton, .buttonContainer, .navBarSection {
+        display: none !important; /* Hide navigation and buttons */
+    }
+}
