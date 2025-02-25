@@ -497,7 +497,7 @@ const Members = () => {
                                             <label>Date of Birth:</label>
                                             <input type="date" name="dob" value={formData.dob} onChange={handleChange} required />
                                             <label>Profile Picture:</label>
-                                        <input type="file" name="profilePicture" onChange={(e) => setFormData({ ...formData, profilePicture: e.target.files[0] })} />
+                                            <input type="file" name="profilePicture" onChange={(e) => setFormData({ ...formData, profilePicture: e.target.files[0] })} />
                                         </div>
                                     </>
                                 ) : (

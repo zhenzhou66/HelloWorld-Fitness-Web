@@ -70,21 +70,137 @@ const Schedules = () => {
     setScheduleInfo((prevState) => ({ ...prevState, [name]: value }));
   };
 
+// Delete Class Function
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [classesToDelete, setClassesToDelete] = useState([]);
+
+  const handleDeleteClick = (class_id = null) => {
+      let selectedClassIds;
   
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+      if (class_id) {
+        selectedClassIds = [class_id];
+      } else {
+        selectedClassIds = Object.keys(selectedClasses).filter(id => selectedClasses[id]);
+          
+          if (selectedClassIds.length === 0) {
+              alert("Please select at least one member to delete.");
+              return;
+          }
+      }
+      setClassesToDelete(selectedClassIds);
+      setShowDeleteConfirm(true);
+  };
+
+  const handleDelete = () => {
+      fetch(`http://localhost:5000/api/schedules/delete`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ class_ids: classesToDelete }),
+      })
+      .then(response => response.json())
+      .then(data => {
+          alert(data.message);
+          fetchClasses(); 
+          setSelectedClasses({});
+          setSelectAll(false);
+          setShowDeleteConfirm(false);
+          setClassesToDelete([]);
+      })
+      .catch(error => {
+          console.error("Error deleting members:", error);
+      });
+  };    
+
+//Fetch trainers
+  const [trainers, setTrainers] = useState([]);
+
+  useEffect(() => {
+      fetch('http://localhost:5000/api/schedules/trainers')
+          .then((response) => response.json())
+          .then((data) => {
+            setTrainers(data);
+          })
+          .catch((error) => console.error("Error fetching trainers:", error));
+  }, []);
+
+// Add Class Modal Function
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  const [formData, setFormData] = useState({ 
+    className: "", 
+    description: "", 
+    scheduleDate: "", 
+    startTime: "",
+    endTime: "",
+    maxParticipants: "", 
+    trainerName: "", 
+  });
+
+  const closeModal = () => {
+    setIsModalOpen(false)
     setFormData({
-      ...formData,
-      [name]: value
+      className: "", 
+      description: "", 
+      scheduleDate: "", 
+      startTime: "",
+      endTime: "",
+      maxParticipants: "", 
+      trainerName: "", 
     });
   };
-  
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+}
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
-    closeModal();
+    const url = 'http://localhost:5000/api/schedules/add';
+    const method = 'POST';
+
+    const formDataToSend = new FormData();
+    formDataToSend.append("className", formData.className);
+    formDataToSend.append("description", formData.description);
+    formDataToSend.append("scheduleDate", formData.scheduleDate);
+    formDataToSend.append("startTime", formData.startTime);
+    formDataToSend.append("endTime", formData.endTime);
+    formDataToSend.append("maxParticipants", formData.maxParticipants);
+    formDataToSend.append("trainerName", formData.trainerName);
+    
+    if (formData.classImage) {
+        formDataToSend.append("classImage", formData.classImage);
+    }
+
+    fetch(url, {
+        method,
+        body: formDataToSend,
+    })
+    .then(async (response) => {
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || "An error occurred while adding class.");
+        }
+
+        alert(data.message); 
+        fetchClasses();
+        closeModal();
+    })
+    .catch((error) => {
+        alert(error.message); 
+        console.error(error);
+    });
   };
+
+  const fetchClasses = () => {
+    fetch("http://localhost:5000/api/schedules/display")
+      .then((response) => response.json())
+      .then((data) => {
+        setClass(data);
+        setFilteredClass(data.classDetails);
+      })
+      .catch((error) => console.error("Error fetching stats:", error));
+};
 
   // For Select All Function
   const [SelectAll, setSelectAll] = useState(false);
@@ -124,16 +240,12 @@ const Schedules = () => {
   const endIndex = startIndex + schedulesPerPage;
   const currentSchedules = filteredClass.slice(startIndex, endIndex);
 
-  // Add Class Modal Function
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const closeModal = () => setIsModalOpen(false);
-
   // View Class Modal Function
   const [viewClass, setViewClass] = useState([]);
   const [participants, setParticipants] = useState([]);
 
   const closeOverlay = () => {
-    setSelectedClass(false); // Close the overlay
+    setSelectedClass(false); 
   };
 
   const handleViewClick = (class_id) => {
@@ -168,6 +280,7 @@ const Schedules = () => {
             onChange={(e) => setSearch(e.target.value)}/>
           </div>
           <button className={styles.addClass} onClick={() => setIsModalOpen(true)}>Add Class</button>
+          <button className={styles.deleteMemberButton} onClick={() => handleDeleteClick(null)}>Delete Selected</button>
         </div>
       </div>
 
@@ -230,19 +343,9 @@ const Schedules = () => {
                 openEditModal(classes)}>
                   <Edit size={20} />
                 </button>
-                <button className={styles.deleteButton} onClick={() => setShowDeleteConfirm(true)}>
+                <button className={styles.deleteButton} onClick={() => handleDeleteClick(classes.class_id)}>
                   <Trash size={20} />
                 </button>
-
-                {showDeleteConfirm && <ConfirmModal
-                  show={showDeleteConfirm}
-                  onClose={() => setShowDeleteConfirm(false)}
-                  onConfirm={() => {}}
-                  message="Are you sure you want to delete this transaction?"
-                  confirmText="Yes, I'm sure"
-                  cancelText="No, cancel"
-                  />
-                }
               </td>
             </tr>
           ))}
@@ -257,6 +360,27 @@ const Schedules = () => {
           </button>
         ))}
       </div>
+
+      {/* For Admin to Delete Member(Overlay) */}
+      {showDeleteConfirm && (
+          <div className={styles.modalOverlayDeleteM}>
+              <div className={styles.modalDeleteM} style={{ textAlign: "center" }}>
+                  <button className={styles.closeButton} onClick={() => setShowDeleteConfirm(false)}>
+                  <X size={24} />
+                  </button>
+                  <Trash className={styles.deleteIcon} size={40}/>
+                  <p style={{ marginBottom: "30px" }}>Are you sure you want to delete this class?</p>
+                  <div className={styles.modalButtons}>
+                      <button className={styles.cancelDeleteButton} onClick={() => setShowDeleteConfirm(false)}>
+                          No, cancel
+                      </button>
+                      <button className={styles.confirmDeleteButton} onClick={handleDelete}>
+                          Yes, I'm sure
+                      </button>
+                  </div>
+              </div>
+          </div>
+      )}
 
       {/* Add Class Overlay Function */}
       {isModalOpen && (
@@ -315,8 +439,9 @@ const Schedules = () => {
                   <label>Assigned Trainer:</label>
                   <select name="trainerName" value={formData.trainerName} onChange={handleChange} required>
                     <option value="" disabled>Select trainer</option>
-                    <option value="Trainer A">Trainer A</option>
-                    <option value="Trainer B">Trainer B</option>
+                    {trainers.map((trainer) => (
+                        <option key={trainer.user_id} value={trainer.user_id}>{trainer.name}</option>
+                    ))}
                   </select>
                 </div>
               </div>
