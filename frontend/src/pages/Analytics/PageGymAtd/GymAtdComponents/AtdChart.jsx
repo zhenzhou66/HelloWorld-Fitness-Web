@@ -70,9 +70,9 @@ function AtdChart() {
           marginBottom: "10px",
         }}
       >
-        <h2 style={{ marginLeft: "25px", fontSize: "20px" }}>
+        <p style={{ marginLeft: "25px", fontSize: "20px", fontWeight: 450 }}>
           Monthly Member Check-Ins | {selectedYear}
-        </h2>
+        </p>
         <div style={{ marginLeft: "25px", marginRight: "25px" }}>
           <Box sx={{ minWidth: 120 }}>
             <FormControl fullWidth>

@@ -4,3 +4,68 @@
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+.midSection {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+.midLeftSection,
+.midRightSection {
+  padding: 20px;
+  background: white; /* White background for sections */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.midRightSection {
+  flex: 0.5;
+}
+.midLeftSection {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Centers everything */
+  width: 50%;
+  height: 400px; /* Dynamic height */
+  gap: 10px; /* Controls spacing between elements */
+  flex: 0.5;
+  min-width: 400px;
+}
+
+.infoContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+}
+
+.infoTitle {
+  margin-left: 25px;
+  font-size: 16px;
+  font-weight: 450;
+}
+
+.infoDetails {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.infoAmount {
+  margin-left: 25px;
+  font-size: 30px;
+  font-weight: 600;
+}
+
+.infoDescription {
+  font-size: 14px;
+  color: #555;
+}
+
+.pieContainer {
+  width: 100%;
+  min-width: 350px;
+  height: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

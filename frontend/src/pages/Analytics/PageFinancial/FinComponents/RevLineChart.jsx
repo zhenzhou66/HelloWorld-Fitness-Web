@@ -8,17 +8,20 @@ import {
   LinearScale,
   PointElement,
 } from "chart.js";
-import Box from "@mui/material/Box";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
+
+import ChartInfo from "./ChartInfo";
+import YearSelectBox from "./YearSelectBox";
 import { useState } from "react";
 
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement);
 
 function RevLineChart() {
   const [selectedYear, setSelectedYear] = useState("2024");
+
+  const handleYearChange = (newSelectedYear) => {
+    setSelectedYear(newSelectedYear);
+    console.log("Selected Year:", newSelectedYear); // You can now use this value anywhere
+  };
   const data = {
     labels: [
       "Jan",
@@ -36,7 +39,7 @@ function RevLineChart() {
     ],
     datasets: [
       {
-        label: "Active Members",
+        label: "Revenue",
         data: [12, 19, 3, 5, 2, 3, 9, 10, 15, 20, 25, 30],
         fill: false,
         backgroundColor: "rgb(255, 99, 132)",
@@ -70,26 +73,13 @@ function RevLineChart() {
           marginBottom: "10px",
         }}
       >
-        <h2 style={{ marginLeft: "25px", fontSize: "20px" }}>Revenue</h2>
-        <p>$875</p>
-        <div style={{ marginLeft: "25px", marginRight: "25px" }}>
-          <Box sx={{ minWidth: 120 }}>
-            <FormControl fullWidth>
-              <InputLabel id="YearGymAtd">Year</InputLabel>
-              <Select
-                labelId="YearGymAtd"
-                id="year-select"
-                value={selectedYear}
-                label="Year"
-                onChange={(e) => setSelectedYear(e.target.value)}
-              >
-                <MenuItem value="2023">2023</MenuItem>
-                <MenuItem value="2024">2024</MenuItem>
-                <MenuItem value="2025">2025</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
-        </div>
+        <ChartInfo
+          title="Revenue"
+          amount="875.00"
+          description="avg per month"
+        />
+
+        <YearSelectBox onYearChange={handleYearChange} />
       </div>
 
       <div className={classes.chart}>

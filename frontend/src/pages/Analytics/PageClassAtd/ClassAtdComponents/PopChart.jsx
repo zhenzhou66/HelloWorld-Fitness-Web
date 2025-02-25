@@ -89,7 +89,7 @@ function PopChart() {
         </div>
       </div>
 
-      <div className={classes.chart}>
+      <div>
         <Bar data={data} options={options} style={{ height: "250px" }}></Bar>
       </div>
     </div>
