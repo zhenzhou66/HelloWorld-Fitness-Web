@@ -38,13 +38,6 @@ const Schedules = () => {
     return date.toLocaleDateString('en-GB', { timeZone: 'Asia/Kuala_Lumpur' }); 
   }
 
-  const handleRowClick = (event, classes) => {
-    if (event.target.closest(`.${styles.actions}`)) {
-      return;
-    }
-    handleViewClick(classes);
-  };
-
   const closeOverlay = () => {
     setSelectedClass(false); // Close the overlay
   };
@@ -95,6 +88,35 @@ const Schedules = () => {
     e.preventDefault();
     console.log(formData);
     closeModal();
+  };
+
+  // For Select All Function
+  const [SelectAll, setSelectAll] = useState(false);
+  const [selectedClasses, setSelectedClasses] = useState({});
+
+  const handleSelectAll = (event) => {
+      const isChecked = event.target.checked;
+      setSelectAll(isChecked);
+  
+      const updatedClasses = {};
+      currentSchedules.forEach(classes => {
+        updatedClasses[classes.class_id] = isChecked;
+      });
+  
+      setSelectedClasses(updatedClasses);
+  };
+
+  const handleSelectClasses = (event, class_id) => {
+      const isChecked = event.target.checked;
+  
+      setSelectedClasses((prev) => {
+          const updatedClasses = { ...prev, [class_id]: isChecked };
+  
+          const allSelected = Object.values(updatedClasses).every((val) => val === true);
+          setSelectAll(allSelected);
+  
+          return updatedClasses;
+      });
   };
 
   // Bottom Page Function
@@ -155,7 +177,7 @@ const Schedules = () => {
           <tr>
             <th className={styles.checkboxclassid}>
               <div className={styles.checkboxContainer}>
-                <input type="checkbox" />
+                <input type="checkbox" checked={SelectAll} onChange={handleSelectAll}/>
                 <span>Class ID</span>
               </div>
             </th>
@@ -170,10 +192,10 @@ const Schedules = () => {
 
         <tbody>
           {currentSchedules.map((classes) => (
-            <tr key={classes.class_id} onClick={(event) => handleRowClick(event, classes)} className={styles.clickableRow}>
+            <tr key={classes.class_id} className={styles.clickableRow}>
               <td className={styles.checkboxclassid}>
                 <div className={styles.checkboxContainer}>
-                  <input type="checkbox" onClick={(e) => e.stopPropagation()} />
+                  <input type="checkbox" checked={selectedClasses[classes.class_id] || false} onChange={(e) => handleSelectClasses(e, classes.class_id)} />
                   <span>{classes.class_id}</span>
                 </div>
               </td>
