@@ -38,10 +38,6 @@ const Schedules = () => {
     return date.toLocaleDateString('en-GB', { timeZone: 'Asia/Kuala_Lumpur' }); 
   }
 
-  const closeOverlay = () => {
-    setSelectedClass(false); // Close the overlay
-  };
-
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [scheduleInfo, setScheduleInfo] = useState({
     className: "",
@@ -130,13 +126,16 @@ const Schedules = () => {
 
   // Add Class Modal Function
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
   // View Class Modal Function
   const [viewClass, setViewClass] = useState([]);
   const [participants, setParticipants] = useState([]);
+
+  const closeOverlay = () => {
+    setSelectedClass(false); // Close the overlay
+  };
+
   const handleViewClick = (class_id) => {
     const selected = currentSchedules.find((classes) => classes.class_id === class_id);
     if (selected) {
@@ -168,7 +167,7 @@ const Schedules = () => {
             <input type="text" className={styles.searchInput} placeholder="Search" value={search} 
             onChange={(e) => setSearch(e.target.value)}/>
           </div>
-          <button className={styles.addClass} onClick={openModal}>Add Class</button>
+          <button className={styles.addClass} onClick={() => setIsModalOpen(true)}>Add Class</button>
         </div>
       </div>
 
