@@ -38,36 +38,73 @@ const Schedules = () => {
     return date.toLocaleDateString('en-GB', { timeZone: 'Asia/Kuala_Lumpur' }); 
   }
 
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [scheduleInfo, setScheduleInfo] = useState({
-    className: "",
-    scheduleDate: "",
-    startTime: "",
-    endTime: "",
-    trainerName: "",
-    description: ""
-});
+// View Class Modal Function
+  const [viewClass, setViewClass] = useState([]);
+  const [participants, setParticipants] = useState([]);
 
-  const openEditModal = (schedule) => {
-    setScheduleInfo(schedule);
+  const closeOverlay = () => {
+    setSelectedClass(false); 
+  };
+
+  const handleViewClick = (class_id) => {
+    const selected = currentSchedules.find((classes) => classes.class_id === class_id);
+    if (selected) {
+      setViewClass(selected);
+      fetch(`http://localhost:5000/api/schedules/participants/${class_id}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      })
+      .then(response => response.json())
+      .then(data => {
+          setParticipants(data.participants || []);
+      })
+      .catch(error => {
+          console.error("Error fetching participants:", error);
+      });
+      setSelectedClass(true);
+    }
+  }
+
+//Edit Class Function
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [scheduleInfo, setScheduleInfo] = useState([]);
+
+  const openEditModal = (class_id) => {
+    setScheduleInfo((prev) => ({
+      ...prev, 
+      class_id: class_id 
+    }));
+    const selected = currentSchedules.find((classes) => classes.class_id === class_id);
+    setScheduleInfo(selected);
     setIsEditModalOpen(true);
   };
 
   const closeEditModal = () => {
     setIsEditModalOpen(false);
-    setScheduleInfo({
-        className: "",
-        scheduleDate: "",
-        startTime: "",
-        endTime: "",
-        trainerName: "",
-        description: ""
-    });
+    setScheduleInfo([]);
   };
 
   const handleEditChange = (e) => {
-    const { name, value } = e.target;
-    setScheduleInfo((prevState) => ({ ...prevState, [name]: value }));
+    setScheduleInfo({ ...scheduleInfo, [e.target.name]: e.target.value });
+  };
+
+  const handleEditSubmit = (e, updateClass) => {
+    e.preventDefault();
+    fetch(`http://localhost:5000/api/schedules/update`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updateClass),
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message); 
+        closeEditModal();
+        fetchClasses(); 
+    })
+    .catch(error => {
+        alert(error.message); 
+        console.error("Error updating class:", error);
+    });
   };
 
 // Delete Class Function
@@ -151,7 +188,7 @@ const Schedules = () => {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-}
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -240,33 +277,6 @@ const Schedules = () => {
   const endIndex = startIndex + schedulesPerPage;
   const currentSchedules = filteredClass.slice(startIndex, endIndex);
 
-  // View Class Modal Function
-  const [viewClass, setViewClass] = useState([]);
-  const [participants, setParticipants] = useState([]);
-
-  const closeOverlay = () => {
-    setSelectedClass(false); 
-  };
-
-  const handleViewClick = (class_id) => {
-    const selected = currentSchedules.find((classes) => classes.class_id === class_id);
-    if (selected) {
-      setViewClass(selected);
-      fetch(`http://localhost:5000/api/schedules/participants/${class_id}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      })
-      .then(response => response.json())
-      .then(data => {
-          setParticipants(data.participants || []);
-      })
-      .catch(error => {
-          console.error("Error fetching participants:", error);
-      });
-      setSelectedClass(true);
-    }
-  }
-
   return (
     <div className={styles.schedulesContent}>
       <div className={styles.schedulesFunction}>
@@ -340,7 +350,7 @@ const Schedules = () => {
                   <Eye size={20} />
                 </button>
                 <button className={styles.editButton} onClick={() => 
-                openEditModal(classes)}>
+                openEditModal(classes.class_id)}>
                   <Edit size={20} />
                 </button>
                 <button className={styles.deleteButton} onClick={() => handleDeleteClick(classes.class_id)}>
@@ -461,10 +471,10 @@ const Schedules = () => {
               <X className={styles.closeButton} onClick={closeEditModal} />
             </div>
                         
-            <form className={styles.formContainer}>
+            <form className={styles.formContainer} onSubmit={(e) => handleEditSubmit(e, scheduleInfo)}>
               <div className={styles.classHeader}>
                 <label>Class Name:</label>
-                <input type="text" name="className" value={scheduleInfo.className} onChange={handleEditChange} required />
+                <input type="text" name="class_name" value={scheduleInfo.class_name} onChange={handleEditChange} required />
               </div>
                             
               <div className={styles.descriptionContainer}>
@@ -475,27 +485,33 @@ const Schedules = () => {
               <div className={styles.dateTimeContainer}>
                 <div>
                   <label>Date:</label>
-                  <input type="date" name="scheduleDate" value={scheduleInfo.scheduleDate} onChange={handleEditChange} required />
+                  <input type="date" name="schedule_date" value={new Date(scheduleInfo.schedule_date).toLocaleDateString('en-CA')} onChange={handleEditChange} required />
                 </div>
                 <div>
                   <label>Start Time:</label>
-                  <input type="time" name="startTime" value={scheduleInfo.startTime} onChange={handleEditChange} required />
+                  <input type="time" name="start_time" value={scheduleInfo.start_time} onChange={handleEditChange} required />
                 </div>
                 <div>
                   <label>End Time:</label>
-                  <input type="time" name="endTime" value={scheduleInfo.endTime} onChange={handleEditChange} required />
+                  <input type="time" name="end_time" value={scheduleInfo.end_time} onChange={handleEditChange} required />
                 </div>
               </div>
               
               <div className={styles.participantTrainerContainer}>
                 <div>
                 <label>Assigned Trainer:</label>
-                  <select name="trainerName" value={formData.trainerName} onChange={handleChange} required>
+                  <select name="trainer_id" value={scheduleInfo.trainer_id} onChange={handleEditChange} required>
                     <option value="" disabled>Select trainer</option>
-                    <option value="Trainer A">Trainer A</option>
-                    <option value="Trainer B">Trainer B</option>
+                    {trainers.map((trainer) => (
+                        <option key={trainer.user_id} value={trainer.user_id}>{trainer.name}</option>
+                    ))}
                   </select>
                 </div>
+              </div>
+
+              <div className={styles.descriptionContainer}>
+                <label>Max Participants:</label>
+                <input type="number" name="max_participants" value={scheduleInfo.max_participants} onChange={handleEditChange} required />
               </div>
                             
               <div className={styles.buttonSection}>

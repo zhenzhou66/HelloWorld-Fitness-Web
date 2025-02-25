@@ -531,21 +531,6 @@ textarea {
     justify-content: space-around;
 }
   
-.cancelDeleteButton {
-    background: transparent;
-    color: black;
-    padding: 10px;
-    border: 1px black solid;
-    cursor: pointer;
-    border-radius: 5px;
-    width: 40%;
-    transition:0.3s;
-}
-
-.cancelDeleteButton:hover{
-    background-color: #d8d7d7;
-}
-  
 .confirmDeleteButton {
     background: #ff7f50;
     color: white;

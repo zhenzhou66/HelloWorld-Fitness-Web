@@ -150,4 +150,44 @@ router.delete('/delete', async (req, res) => {
     }
 });
 
+router.put('/update', (req, res) => {
+    const {class_id, class_name, description, end_time, max_participants, schedule_date, start_time, trainer_id} = req.body;
+    console.log(class_name);
+
+    const checkNameQuery = 'SELECT class_name FROM classes WHERE class_name = ? AND class_id != ?';
+    db.query(checkNameQuery, [class_name, class_id], (err, result) => {
+        if (err) {
+            return res.status(500).json({ message: 'Database error while checking class names.' });
+        }
+        if (result.length > 0) {  
+            return res.status(400).json({ message: 'Class name already exists.' });
+        }
+
+        //Check if the date is in the future
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); 
+
+        const classDate = new Date(schedule_date);
+        classDate.setHours(0, 0, 0, 0); 
+        if (classDate <= today) {
+            return res.status(400).json({ message: "Schedule date must be in the future." });
+        }
+
+        const updateQuery = `
+        UPDATE classes
+        SET class_name = ?, description = ?, max_participants = ?, schedule_date = ?, start_time = ?, end_time = ?, trainer_id = ?
+        WHERE class_id = ?
+        `;
+
+        db.query(updateQuery, [class_name, description, max_participants, schedule_date, start_time, end_time, trainer_id, class_id], (err, result) => {
+            if (err) {
+                return res.status(500).json({ message: 'Database error while updating class.' });
+            }
+            
+            res.status(200).json({ message: 'Class updated successfully!' });
+                        
+        });
+    });
+});
+
 module.exports = router;
