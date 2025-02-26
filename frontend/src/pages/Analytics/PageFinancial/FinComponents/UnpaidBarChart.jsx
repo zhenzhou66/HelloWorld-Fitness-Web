@@ -26,14 +26,14 @@ function UnpaidBarChart() {
 
   const handleYearChange = (newSelectedYear) => {
     setSelectedYear(newSelectedYear);
-    console.log("Selected Year:", newSelectedYear);
+    console.log("Selected Year:", newSelectedYear); //use this newSelectedYear for backend
   };
   const data = {
     labels: ["Paid", "Unpaid"],
     datasets: [
       {
         label: "Membership",
-        data: [12, 19],
+        data: [12, 19], //bar chart edit data here
         fill: false,
         backgroundColor: ["rgba(0, 200, 0, 0.6)", "rgba(255, 0, 0, 0.6)"],
         borderColor: ["rgba(0, 150, 0, 1)", "rgba(200, 0, 0, 1)"],

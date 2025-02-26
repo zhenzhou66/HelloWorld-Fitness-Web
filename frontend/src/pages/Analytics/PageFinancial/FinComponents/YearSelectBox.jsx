@@ -7,12 +7,11 @@ import Select from "@mui/material/Select";
 import { useState } from "react";
 
 function YearSelectBox({ onYearChange }) {
-  // Accept a prop function
   const [selectedYear, setSelectedYear] = useState("2024");
 
   const handleChange = (e) => {
     setSelectedYear(e.target.value);
-    onYearChange(e.target.value); // Call parent function with the new year
+    onYearChange(e.target.value); //the changed year get passed into the prop
   };
 
   return (

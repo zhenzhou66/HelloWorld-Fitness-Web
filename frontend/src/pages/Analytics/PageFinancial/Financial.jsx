@@ -14,6 +14,7 @@ function Financial() {
         <RevPieChart />
         <UnpaidBarChart />
       </div>
+
       <div className={classes.lowerSection}>
         <RevSourceTable />
       </div>

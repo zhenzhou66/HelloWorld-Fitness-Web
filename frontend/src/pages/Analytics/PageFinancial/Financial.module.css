@@ -20,6 +20,7 @@
 
 .midRightSection {
   flex: 0.5;
+  width: 30%;
 }
 .midLeftSection {
   display: flex;
@@ -30,6 +31,12 @@
   gap: 10px; /* Controls spacing between elements */
   flex: 0.5;
   min-width: 400px;
+}
+
+.lowerSection {
+  margin-top: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  gap: 10px;
 }
 
 .infoContainer {
@@ -68,4 +75,15 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.datePickerContainer {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.datePicker {
+  width: 100%;
+  background-color: white;
+  border-radius: 8px;
 }
