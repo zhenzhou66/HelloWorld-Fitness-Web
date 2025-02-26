@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import classes from "../GymAtd.module.css";
 import PropTypes from "prop-types";
 import { useTheme } from "@mui/material/styles";
@@ -105,36 +105,29 @@ const columns = [
   },
 ];
 
-function createData(userID, username, date, checkInTime) {
-  return { userID, username, date, checkInTime };
-}
-
-const rows = [
-  createData("U001", "Alice", "2024-02-10", "08:30"),
-  createData("U002", "Bob", "2024-02-10", "09:15"),
-  createData("U003", "Charlie", "2024-02-09", "14:00"),
-  createData("U004", "David", "2024-02-08", "07:45"),
-  createData("U005", "Emma", "2024-02-10", "07:00"),
-  createData("U006", "Frank", "2024-02-09", "10:30"),
-  createData("U007", "Grace", "2024-02-08", "18:45"),
-  createData("U008", "Hannah", "2024-02-08", "09:10"),
-  createData("U009", "Ian", "2024-02-09", "16:20"),
-  createData("U010", "Jack", "2024-02-10", "11:00"),
-];
-
-const sortedRows = [...rows].sort((a, b) => {
-  const dateA = new Date(`${a.date}T${a.checkInTime}`);
-  const dateB = new Date(`${b.date}T${b.checkInTime}`);
-  return dateA - dateB;
-});
-
 export default function CustomPaginationActionsTable() {
+  const [sortedRows, setSortedRows] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/analytics/checkInUser")
+      .then((response) => {
+        if (!response.ok) throw new Error("Failed to fetch data");
+        return response.json();
+      })
+      .then((data) => {
+        setSortedRows(data.checkInUser); 
+      })
+      .catch((error) => {
+        console.error(error.message);
+      });
+  }, []);
+
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - sortedRows.length) : 0;
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -171,16 +164,16 @@ export default function CustomPaginationActionsTable() {
           ).map((row) => (
             <TableRow key={row.userID}>
               <TableCell component="th" scope="row">
-                {row.userID}
+                {row.user_id}
               </TableCell>
               <TableCell component="th" scope="row">
-                {row.username}
+                {row.name}
               </TableCell>
               <TableCell style={{ width: 160 }} align="left">
-                {row.date}
+                {new Date(row.date).toISOString().split('T')[0]}
               </TableCell>
               <TableCell style={{ width: 160 }} align="left">
-                {row.checkInTime}
+                {row.time}
               </TableCell>
             </TableRow>
           ))}
@@ -195,7 +188,7 @@ export default function CustomPaginationActionsTable() {
             <TablePagination
               rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
               colSpan={3}
-              count={rows.length}
+              count={sortedRows.length}
               rowsPerPage={rowsPerPage}
               page={page}
               slotProps={{

@@ -13,12 +13,33 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement);
 
 function AtdChart() {
-  const [selectedYear, setSelectedYear] = useState("2024");
+  const [selectedYear, setSelectedYear] = useState("2025");
+  const [graphData, setGraphData] = useState([]);
+  
+  useEffect(() => {
+    fetch(`http://localhost:5000/api/analytics/monthlyCheckIn/${selectedYear}`)
+      .then((response) => {
+        if (!response.ok) throw new Error("Failed to fetch data");
+        return response.json();
+      })
+      .then((data) => {
+        let monthlyData = new Array(12).fill(0);
+
+        data.checkInUser.forEach(({ month, total }) => {
+          monthlyData[month - 1] = total; 
+        });
+  
+        setGraphData(monthlyData);      })
+      .catch((error) => {
+        console.error(error.message);
+      });
+  }, [selectedYear]);
+
   const data = {
     labels: [
       "Jan",
@@ -37,7 +58,7 @@ function AtdChart() {
     datasets: [
       {
         label: "Active Members",
-        data: [12, 19, 3, 5, 2, 3, 9, 10, 15, 20, 25, 30],
+        data: graphData,
         fill: false,
         backgroundColor: "rgb(255, 99, 132)",
         borderColor: "rgba(255, 99, 132, 0.2)",
@@ -60,6 +81,7 @@ function AtdChart() {
       },
     },
   };
+
   return (
     <div className={classes.middleSection}>
       <div
