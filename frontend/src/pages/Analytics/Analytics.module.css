@@ -13,3 +13,34 @@
   display: flex; /* Ensures child content fills */
   flex-direction: column;
 }
+.rightButtons {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+}
+.previewButton {
+  padding: 8px 16px;
+  border: 1px solid grey;
+  background-color: transparent;
+  color: grey;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.previewButton:hover {
+  background-color: lightgrey;
+  color: black;
+}
+
+.generateReportButton {
+  padding: 8px 16px;
+  background-color: #c76c37;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.generateReportButton:hover {
+  background-color: #a8562a;
+}

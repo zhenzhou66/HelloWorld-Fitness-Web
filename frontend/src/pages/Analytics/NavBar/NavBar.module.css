@@ -1,9 +1,16 @@
 .navbar {
   display: flex;
+  align-items: center;
   gap: 1rem;
   margin-bottom: 20px;
   border-bottom: 2px solid #dadada;
   width: 100%;
+  justify-content: space-between;
+}
+
+.navButtons {
+  display: flex;
+  gap: 1rem;
 }
 
 .navButton {

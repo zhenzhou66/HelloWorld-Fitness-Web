@@ -9,7 +9,6 @@ import NavBar from "./NavBar/NavBar";
 function Analytics() {
   const [selectedComponent, setSelectedComponent] = useState("PageOne");
 
-//customizing nav bar buttons
   const buttons = [
     { label: "Gym Attendance", component: "PageOne" },
     { label: "Class Attendance", component: "PageTwo" },
@@ -32,9 +31,14 @@ function Analytics() {
   return (
     <div className={classes.AnalyticsContainer}>
       <NavBar setSelectedComponent={setSelectedComponent} buttons={buttons} />
-      <div className={classes.componentContainer}>
-        {renderComponent()}
-        </div>
+      <div className={classes.componentContainer}>{renderComponent()}</div>
+      <div className={classes.rightButtons}>
+        <button className={classes.previewButton}>Preview</button>{" "}
+        {/* preview button n generate report button */}
+        <button className={classes.generateReportButton}>
+          Generate Report
+        </button>
+      </div>
     </div>
   );
 }
