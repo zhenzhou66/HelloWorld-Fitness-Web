@@ -23,7 +23,7 @@ function Receipt({transactionData}) {
 
             <div className={styles.receiptHeader}>
                 <div className={styles.userInfo}>
-                    <p>User ID: <span className={styles.headerData}>{transactionData.transaction_id}</span> </p>
+                    <p>User ID: <span className={styles.headerData}>{transactionData.user_id}</span> </p>
                 </div>
                 <div className={styles.dateInfo}>
                     <p>Date: <span className={styles.headerData}>{formatDate(transactionData.payment_date)}</span> </p>

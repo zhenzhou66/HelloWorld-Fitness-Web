@@ -10,24 +10,6 @@ function Invoice({ transactionData }) {
         const date = new Date(dateString);
         return date.toLocaleDateString("en-GB", { timeZone: "Asia/Kuala_Lumpur" });
     }
-      
-    const [userInfo, setUserInfo]=useState(null);
-
-    // Fetch user data from backend
-    useEffect(() => {
-        fetch(`http://localhost:5000/api/billing/user-info?transaction_id=${transactionData.transaction_id}`)
-        .then((response) => {
-            if (!response.ok) throw new Error("Failed to fetch data");
-            return response.json();
-        })
-        .then((data) => {
-            setUserInfo(data.record);
-            console.log(userInfo);
-        })
-        .catch((error) => {
-            setError(error.message);
-        });
-    }, [transactionData.transaction_id]);
 
     return (
         <div className={styles.receiptContainer}>
@@ -40,7 +22,7 @@ function Invoice({ transactionData }) {
 
             <div className={styles.receiptHeader}>
                 <div className={styles.userInfo}>
-                    <p>User ID: <span className={styles.headerData}>{userInfo.user_id}</span> </p>
+                    <p>User ID: <span className={styles.headerData}>{transactionData.user_id}</span> </p>
                 </div>
                 <div className={styles.dateInfo}>
                     <p>Date: <span className={styles.headerData}>{formatDate(transactionData.payment_date)}</span> </p>
@@ -58,8 +40,8 @@ function Invoice({ transactionData }) {
                         <div className={styles.userProfile}>
                             <img src={logo} alt="Profile" className={styles.mprofilePicture} />
                             <div className={styles.mprofileDetails}>
-                                <span className={styles.mprofileName}>EmilyLai</span>
-                                <span className={styles.mprofileEmail}>emily.lai@gmail.com</span>
+                                <span className={styles.mprofileName}>{transactionData.name}</span>
+                                <span className={styles.mprofileEmail}>{transactionData.email}</span>
                             </div>
                         </div>
                     </div>
@@ -67,7 +49,7 @@ function Invoice({ transactionData }) {
                     <div className={styles.invoiceDetail}>
                         <p>Invoice Detail</p>
                         <p className={styles.dueDate}>
-                            Due Date: <span className={styles.dueDateData}>15/2/2025</span>
+                            Due Date: <span className={styles.dueDateData}>{formatDate(transactionData.end_date)}</span>
                         </p>
                     </div>
                 </div>

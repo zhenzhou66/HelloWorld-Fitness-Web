@@ -58,31 +58,30 @@ router.delete('/delete', async (req, res) => {
     }
 });
 
-router.get('/user-info', async (req, res) => {
-    let { transaction_id } = req.query;
+router.get('/user-info/:user_id', async (req, res) => {
+    const { user_id } = req.params; 
 
-    if (!transaction_id) {
-        return res.status(400).json({ message: 'Missing transaction ID' });
+    if (!user_id) { // Fixing the incorrect variable reference
+        return res.status(400).json({ message: 'Missing user ID' });
     }
 
-    const transactionQuery = `
-        SELECT * FROM transactions t 
-        INNER JOIN user u ON t.user_id = u.user_id 
-        WHERE transaction_id = ?
+    const userQuery = `
+        SELECT u.name, u.email, um.end_date FROM user u 
+        INNER JOIN user_membership um ON u.user_id = um.user_id 
+        WHERE u.user_id = ?
     `;
 
-    db.query(transactionQuery, [transaction_id], (err, records) => {
+    db.query(userQuery, [user_id], (err, records) => {
         if (err) {
-            return res.status(500).json({ message: 'Database error while fetching transactions.', error: err });
+            return res.status(500).json({ message: 'Database error while fetching user info.', error: err });
         }
 
         if (records.length === 0) {
-            return res.status(404).json({ message: 'Transaction not found' });
+            return res.status(404).json({ message: 'User not found' });
         }
 
-        return res.json({ record: records });
+        return res.json({ record: records[0] }); 
     });
 });
-
 
 module.exports = router;

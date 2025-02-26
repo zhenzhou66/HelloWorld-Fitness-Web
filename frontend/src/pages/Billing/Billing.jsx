@@ -140,7 +140,14 @@ export default function Billing() {
 
 const handlePrintClick=(transaction)=>{
   setSelectedTransaction(transaction);
-  setShowPrintOverlay(true);
+
+  fetch(`http://localhost:5000/api/billing/user-info/${transaction.user_id}`)
+  .then((response) => response.json())
+  .then((data) => {
+    setSelectedTransaction((prev) => ({ ...prev, ...data.record }));
+    setShowPrintOverlay(true);
+  })
+  .catch((error) => console.error("Error fetching stats:", error));
 }
 
   return (
