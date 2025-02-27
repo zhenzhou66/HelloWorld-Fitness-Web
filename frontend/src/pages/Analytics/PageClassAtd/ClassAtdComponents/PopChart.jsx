@@ -26,13 +26,33 @@ ChartJS.register(
 );
 
 function PopChart() {
-  const [selectedYear, setSelectedYear] = useState("2024");
+  const [selectedYear, setSelectedYear] = useState("2025");
+  const [graphDataY, setGraphDataY] = useState([]);
+  const [graphDataX, setGraphDataX] = useState([]);
+  
+  useEffect(() => {
+    fetch(`http://localhost:5000/api/analytics/classPopularity`)
+      .then((response) => {
+        if (!response.ok) throw new Error("Failed to fetch data");
+        return response.json();
+      })
+      .then((data) => {
+
+        setGraphDataY(data.result.map((item) => item.name)); // Class names as labels
+        setGraphDataX(data.result.map((item) => item.total));
+
+      })
+      .catch((error) => {
+        console.error(error.message);
+      });
+  }, [selectedYear]);
+
   const data = {
-    labels: ["Yoga", "HIIT", "Spin", "Zumba"],
+    labels: graphDataY,
     datasets: [
       {
         label: "Active Members",
-        data: [12, 19, 3, 5],
+        data: graphDataX,
         fill: false,
         backgroundColor: "rgba(248, 215, 174, 0.4)",
         borderColor: "rgb(0, 0, 0)",
@@ -56,6 +76,7 @@ function PopChart() {
       },
     },
   };
+
   return (
     <div className={classes.leftsection}>
       <div

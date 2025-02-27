@@ -96,31 +96,41 @@ router.get('/monthlyCheckIn/:year', (req, res) => {
     });
 });
 
-// router.get('/monthlyCheckIn/:year', (req, res) => {
-//     const { year } = req.params;
+router.get('/classStats', (req, res) => {
 
-//     const query = `
-//         SELECT 
-//             MONTH(check_in_time) AS month, 
-//             COUNT(*) AS total
-//         FROM attendance_gym 
-//         WHERE YEAR(check_in_time) = ?
-//         GROUP BY month 
-//         ORDER BY month
-//     `;
+    const totalStudentQuery = 'SELECT COUNT(*) AS totalStudent FROM attendance_classes';
+    const presentStudentQuery = 'SELECT COUNT(*) AS presentStudent FROM attendance_classes WHERE status = ?';
+    const absentStudentQuery = 'SELECT COUNT(*) AS absentStudent FROM attendance_classes WHERE status = ?';
 
-//     db.query(query, [year], (err, results) => {
-//         if (err) return res.status(500).json({ message: 'Database error while fetching check-in data.' });
+    db.query(totalStudentQuery, (err, totalResult) => {
+        if (err) return res.status(500).json({ message: 'Database error while fetching total students data.' });
 
-//         // Ensure all months (1-12) are present
-//         let monthlyData = new Array(12).fill(0); // Default all months to 0
-//         results.forEach(({ month, total }) => {
-//             monthlyData[month - 1] = total; // Fill in available data
-//         });
+        db.query(presentStudentQuery, ["Present"], (err, presentResult) => {
+            if (err) return res.status(500).json({ message: 'Database error while fetching present students data.' });
+    
+            db.query(absentStudentQuery, ["Absent"], (err, absentResult) => {
+                if (err) return res.status(500).json({ message: 'Database error while fetching absent students data.' });
+        
+                return res.json({
+                    totalStudent: totalResult[0].totalStudent,
+                    presentStudent: presentResult[0].presentStudent,
+                    absentStudent: absentResult[0].absentStudent
+                });
+            });
+        });
+    });
+});
 
-//         return res.json(monthlyData); // Send an array of numbers for chart.js
-//     });
-// });
+router.get('/classPopularity', (req, res) => {
+    const query = 'SELECT c.class_name AS name, COUNT(a.class_id) AS total FROM classes c INNER JOIN attendance_classes a ON c.class_id = a.class_id GROUP BY a.class_id ORDER BY total LIMIT 4';
 
+    db.query(query, (err, countResult) => {
+        if (err) return res.status(500).json({ message: 'Database error while fetching check-in user data.' });
+
+        return res.json({
+            result: countResult
+        });
+    });
+});
 
 module.exports = router;
