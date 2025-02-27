@@ -197,4 +197,55 @@ router.get('/averageRevenue/:year', (req, res) => {
     });
 });
 
+router.get('/revenuePieChart/:year', (req, res) => {
+    let { year } = req.params;
+
+    // Query to get top 4 most popular classes for the given year
+    const query = `
+        SELECT SUBSTRING_INDEX(description, ' - ', 1) AS description, SUM(amount) AS amount 
+        FROM transactions  
+        WHERE YEAR(payment_date) = ? 
+        GROUP BY SUBSTRING_INDEX(description, ' - ', 1) 
+        ORDER BY amount DESC
+    `;
+
+    const sumQuery = 'SELECT SUM(amount) AS sum FROM transactions WHERE YEAR(payment_date) = ?';
+
+    db.query(query, [year], (err, countResult) => {
+        if (err) return res.status(500).json({ message: 'Database error while fetching pie chart data.' });
+        
+        db.query(sumQuery, [year], (err, sumResult) => {
+            if (err) return res.status(500).json({ message: 'Database error while fetching transactions sum data.' });
+            
+            return res.json({
+                category: countResult,
+                sumRevenue: sumResult[0].sum
+            });
+        });
+    });
+});
+
+router.get('/paymentStatus/:year', (req, res) => {
+    let { year } = req.params;
+
+    // Query to get top 4 most popular classes for the given year
+    const query = `
+        SELECT 
+        SUM(CASE WHEN payment_status = 'Paid' THEN amount ELSE 0 END) AS Paid,
+        SUM(CASE WHEN payment_status IN ('Overdue', 'Pending') THEN amount ELSE 0 END) AS Unpaid
+        FROM transactions  
+        WHERE YEAR(payment_date) = ?;
+ 
+    `;
+
+    db.query(query, [year], (err, countResult) => {
+        if (err) return res.status(500).json({ message: 'Database error while fetching payment data.' });
+         
+        return res.json({
+            paymentStatus: countResult[0]
+        });
+        
+    });
+});
+
 module.exports = router;
