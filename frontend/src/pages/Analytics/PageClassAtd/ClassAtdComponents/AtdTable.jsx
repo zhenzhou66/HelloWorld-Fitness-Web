@@ -9,50 +9,12 @@ import Paper from "@mui/material/Paper";
 import yoga from "../../../../assets/yoga.jpg";
 import {useState, useEffect} from "react";
 
-// function createData(
-//   classID,
-//   className,
-//   classPic,
-//   classDesc,
-//   schDate,
-//   time,
-//   assignedTrainer,
-//   attendanceRate,
-//   absentees
-// ) {
-//   return {
-//     classID,
-//     className,
-//     classPic,
-//     classDesc,
-//     schDate,
-//     time,
-//     assignedTrainer,
-//     attendanceRate,
-//     absentees,
-//   };
-// }
-
-// const rows = [
-//   createData(
-//     "001",
-//     "Yoga Flow",
-//     { yoga },
-//     "A gentle flow class that focuses on linking breath with movement.",
-//     "Jan 20 2025",
-//     "8:00AM - 9:00AM",
-//     "AlexW",
-//     "100%",
-//     "0"
-//   ),
-// ];
-
 export default function BasicTable() {
 
   const [rows, setRows] = useState([]);
   
   useEffect(() => {
-    fetch("http://localhost:5000/api/analytics/classPopularity")
+    fetch(`http://localhost:5000/api/analytics/classPopularity/${2025}`)
       .then((response) => {
         if (!response.ok) throw new Error("Failed to fetch data");
         return response.json();

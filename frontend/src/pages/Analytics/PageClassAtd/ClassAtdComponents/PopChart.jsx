@@ -31,7 +31,7 @@ function PopChart() {
   const [graphDataX, setGraphDataX] = useState([]);
   
   useEffect(() => {
-    fetch(`http://localhost:5000/api/analytics/classPopularity`)
+    fetch(`http://localhost:5000/api/analytics/classPopularity/${selectedYear}`)
       .then((response) => {
         if (!response.ok) throw new Error("Failed to fetch data");
         return response.json();

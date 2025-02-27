@@ -121,31 +121,48 @@ router.get('/classStats', (req, res) => {
     });
 });
 
-router.get('/classPopularity', (req, res) => {
-    const query = 'SELECT c.class_name AS name, COUNT(a.class_id) AS total FROM classes c INNER JOIN attendance_classes a ON c.class_id = a.class_id GROUP BY a.class_id ORDER BY total LIMIT 4';
+router.get('/classPopularity/:year', (req, res) => {
+    let { year } = req.params;
 
-    db.query(query, (err, countResult) => {
+    // Query to get top 4 most popular classes for the given year
+    const query = `
+        SELECT c.class_name AS name, COUNT(a.class_id) AS total 
+        FROM classes c 
+        INNER JOIN attendance_classes a ON c.class_id = a.class_id 
+        WHERE YEAR(c.schedule_date) = ? 
+        GROUP BY a.class_id 
+        ORDER BY total DESC 
+        LIMIT 4
+    `;
+
+    db.query(query, [year], (err, countResult) => {
         if (err) return res.status(500).json({ message: 'Database error while fetching top classes data.' });
+
+        // Check if there are results, if not return an empty response
+        if (countResult.length === 0) return res.json({ result: [], classInfo: [] });
 
         const classNames = countResult.map(row => row.name);
         
-        const classInfoQuery = `SELECT 
-                                    c.*, 
-                                    COUNT(a.class_id) AS total,
-                                    SUM(CASE WHEN a.status = 'present' THEN 1 ELSE 0 END) AS present_count,
-                                    SUM(CASE WHEN a.status = 'absent' THEN 1 ELSE 0 END) AS absent_count
-                                FROM classes c 
-                                INNER JOIN attendance_classes a ON c.class_id = a.class_id 
-                                WHERE c.class_name IN (?)
-                                GROUP BY c.class_id
-                                ORDER BY absent_count`;
+        // Query to get detailed class info with attendance counts
+        const classInfoQuery = `
+            SELECT 
+                c.*, 
+                COUNT(a.class_id) AS total,
+                SUM(CASE WHEN a.status = 'present' THEN 1 ELSE 0 END) AS present_count,
+                SUM(CASE WHEN a.status = 'absent' THEN 1 ELSE 0 END) AS absent_count
+            FROM classes c 
+            LEFT JOIN attendance_classes a ON c.class_id = a.class_id 
+            WHERE c.class_name IN (?) AND YEAR(c.schedule_date) = ?
+            GROUP BY c.class_id
+            ORDER BY absent_count, total DESC
+        `;
 
-        db.query(classInfoQuery, [classNames], (err, classInfoResult) => {
+        db.query(classInfoQuery, [classNames, year], (err, classInfoResult) => {
             if (err) return res.status(500).json({ message: 'Database error while fetching class info.' });                        
 
             return res.json({
-                result: countResult,
-                classInfo: classInfoResult
+                result: countResult,  
+                classInfo: classInfoResult  
             });
         });
     });
