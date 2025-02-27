@@ -4,7 +4,7 @@ import classes from "../App.module.css";
 const Header = () => {
   const location = useLocation();
 
-  // Define titles and descriptions for different pages
+  //titles and descriptions for different pages
   const pageDetails = {
     "/Dashboard": {
       title: "Dashboard",
@@ -42,11 +42,12 @@ const Header = () => {
       title: "Announcements",
       description: "Create and send announcements to members and trainers.",
     },
-
-    // Add more routes as needed
+    "/Feedback": {
+      title: "Feedback",
+      description: "Track Trainers peformance & View feedback from members.",
+    },
   };
 
-  // Get the current page details or set a default
   const { title, description } = pageDetails[location.pathname] || {
     title: "Page Not Found",
     description: "The page you are looking for does not exist.",

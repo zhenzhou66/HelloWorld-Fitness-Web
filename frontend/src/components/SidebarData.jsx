@@ -6,7 +6,8 @@ import ContactMailIcon from "@mui/icons-material/ContactMail";
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
-import AnnouncementIcon from "@mui/icons-material/Announcement";
+import AddAlertIcon from "@mui/icons-material/AddAlert";
+import FeedbackIcon from "@mui/icons-material/Feedback";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 
 export const SidebarData = [
@@ -47,8 +48,13 @@ export const SidebarData = [
   },
   {
     title: " Announcements",
-    icon: <AnnouncementIcon />,
+    icon: <AddAlertIcon />,
     link: "/Announcements",
+  },
+  {
+    title: "Feedback",
+    icon: <FeedbackIcon />,
+    link: "/Feedback",
   },
   {
     title: "Logout",
