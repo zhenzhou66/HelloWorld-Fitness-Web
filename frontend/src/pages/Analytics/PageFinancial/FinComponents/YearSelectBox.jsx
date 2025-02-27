@@ -7,7 +7,9 @@ import Select from "@mui/material/Select";
 import { useState } from "react";
 
 function YearSelectBox({ onYearChange }) {
-  const [selectedYear, setSelectedYear] = useState("2024");
+  const currentYear = new Date().getFullYear();
+  const years = [currentYear - 2, currentYear - 1, currentYear];
+  const [selectedYear, setSelectedYear] = useState(currentYear);
 
   const handleChange = (e) => {
     setSelectedYear(e.target.value);
@@ -26,14 +28,16 @@ function YearSelectBox({ onYearChange }) {
             label="Year"
             onChange={handleChange}
           >
-            <MenuItem value="2023">2023</MenuItem>
-            <MenuItem value="2024">2024</MenuItem>
-            <MenuItem value="2025">2025</MenuItem>
+            {years.map((year) => (
+              <MenuItem key={year} value={year}>
+                {year}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
       </Box>
     </div>
-  );
+  );  
 }
 
 export default YearSelectBox;

@@ -11,17 +11,40 @@ import {
 
 import ChartInfo from "./ChartInfo";
 import YearSelectBox from "./YearSelectBox";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement);
 
 function RevLineChart() {
-  const [selectedYear, setSelectedYear] = useState("2024");
+  const [selectedYear, setSelectedYear] = useState("2025");
+  const [averageRevenue, setAverageRevenue] = useState("0.00");
+  const [graphData, setGraphData] = useState([]);
+  
+  useEffect(() => {
+    fetch(`http://localhost:5000/api/analytics/averageRevenue/${selectedYear}`)
+      .then((response) => {
+        if (!response.ok) throw new Error("Failed to fetch data");
+        return response.json();
+      })
+      .then((data) => {
+        let monthlyData = new Array(12).fill(0);
+
+        data.monthlyRevenue.forEach(({ month, amount }) => {
+          monthlyData[month - 1] = amount; 
+        });
+  
+        setGraphData(monthlyData);
+        setAverageRevenue(parseFloat(data.averageRevenue).toFixed(2));      
+      })
+      .catch((error) => {
+        console.error(error.message);
+      });
+  }, [selectedYear]);
 
   const handleYearChange = (newSelectedYear) => {
     setSelectedYear(newSelectedYear);
-    console.log("Selected Year:", newSelectedYear); // You can now use this value anywhere
   };
+
   const data = {
     labels: [
       "Jan",
@@ -40,7 +63,7 @@ function RevLineChart() {
     datasets: [
       {
         label: "Revenue",
-        data: [12, 19, 3, 5, 2, 3, 9, 10, 15, 20, 25, 30],
+        data: graphData,
         fill: false,
         backgroundColor: "rgb(255, 99, 132)",
         borderColor: "rgba(255, 99, 132, 0.2)",
@@ -75,7 +98,7 @@ function RevLineChart() {
       >
         <ChartInfo
           title="Revenue"
-          amount="875.00"
+          amount={averageRevenue}
           description="avg per month"
         />
 

@@ -168,4 +168,33 @@ router.get('/classPopularity/:year', (req, res) => {
     });
 });
 
+router.get('/averageRevenue/:year', (req, res) => {
+    let { year } = req.params;
+
+    // Query to get top 4 most popular classes for the given year
+    const query = `
+        SELECT MONTH(payment_date) AS month, SUM(amount) AS amount 
+        FROM transactions  
+        WHERE YEAR(payment_date) = ? 
+        GROUP BY month 
+        ORDER BY month 
+    `;
+
+    const sumQuery = 'SELECT SUM(amount) AS sum FROM transactions WHERE YEAR(payment_date) = ?';
+
+    db.query(query, [year], (err, countResult) => {
+        if (err) return res.status(500).json({ message: 'Database error while fetching transactions data.' });
+        
+        db.query(sumQuery, [year], (err, sumResult) => {
+            if (err) return res.status(500).json({ message: 'Database error while fetching transactions sum data.' });
+            
+            const avg_revenue = sumResult[0].sum / 12;
+            return res.json({
+                monthlyRevenue: countResult,
+                averageRevenue: avg_revenue
+            });
+        });
+    });
+});
+
 module.exports = router;
