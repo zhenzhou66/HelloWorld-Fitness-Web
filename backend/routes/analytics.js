@@ -125,10 +125,28 @@ router.get('/classPopularity', (req, res) => {
     const query = 'SELECT c.class_name AS name, COUNT(a.class_id) AS total FROM classes c INNER JOIN attendance_classes a ON c.class_id = a.class_id GROUP BY a.class_id ORDER BY total LIMIT 4';
 
     db.query(query, (err, countResult) => {
-        if (err) return res.status(500).json({ message: 'Database error while fetching check-in user data.' });
+        if (err) return res.status(500).json({ message: 'Database error while fetching top classes data.' });
 
-        return res.json({
-            result: countResult
+        const classNames = countResult.map(row => row.name);
+        
+        const classInfoQuery = `SELECT 
+                                    c.*, 
+                                    COUNT(a.class_id) AS total,
+                                    SUM(CASE WHEN a.status = 'present' THEN 1 ELSE 0 END) AS present_count,
+                                    SUM(CASE WHEN a.status = 'absent' THEN 1 ELSE 0 END) AS absent_count
+                                FROM classes c 
+                                INNER JOIN attendance_classes a ON c.class_id = a.class_id 
+                                WHERE c.class_name IN (?)
+                                GROUP BY c.class_id
+                                ORDER BY absent_count`;
+
+        db.query(classInfoQuery, [classNames], (err, classInfoResult) => {
+            if (err) return res.status(500).json({ message: 'Database error while fetching class info.' });                        
+
+            return res.json({
+                result: countResult,
+                classInfo: classInfoResult
+            });
         });
     });
 });
