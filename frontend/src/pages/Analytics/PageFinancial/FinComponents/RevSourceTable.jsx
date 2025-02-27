@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react"; 
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -12,19 +12,29 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import classes from "../Financial.module.css";
 
-function createData(paymentStatus, numOfTransct, totalAmount) {
-  return { paymentStatus, numOfTransct, totalAmount };
-}
-
-const rows = [
-  createData("Paid", 159, 6.0),
-  createData("Overdue", 237, 9.0),
-  createData("Pending", 262, 16.0),
-];
-
 function RevSourceTable() {
-  const [startDate, setStartDate] = useState(null); //use this 2 for filter
+  const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [tableData, setTableData] = useState([]);
+
+  useEffect(() => {
+    if (!startDate || !endDate) return; 
+
+    const formattedStartDate = dayjs(startDate).format("YYYY-MM-DD");
+    const formattedEndDate = dayjs(endDate).format("YYYY-MM-DD");
+
+    fetch(`http://localhost:5000/api/analytics/paymentTable?startDate=${formattedStartDate}&endDate=${formattedEndDate}`)
+      .then((response) => {
+        if (!response.ok) throw new Error("Failed to fetch data");
+        return response.json();
+      })
+      .then((data) => {
+        setTableData(data);
+      })
+      .catch((error) => {
+        console.error(error.message);
+      });
+  }, [startDate, endDate]);
 
   return (
     <div>
@@ -57,16 +67,16 @@ function RevSourceTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
+            {tableData.map((row) => (
               <TableRow
-                key={row.paymentStatus}
+                key={row.payment_status}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
-                  {row.paymentStatus}
+                  {row.payment_status}
                 </TableCell>
-                <TableCell align="center">{row.numOfTransct}</TableCell>
-                <TableCell align="left">{row.totalAmount}$</TableCell>
+                <TableCell align="center">{row.numOfTransct || 0}</TableCell>
+                <TableCell align="left">${row.totalAmount || 0}</TableCell>
               </TableRow>
             ))}
           </TableBody>

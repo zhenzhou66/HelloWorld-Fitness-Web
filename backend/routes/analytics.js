@@ -248,4 +248,34 @@ router.get('/paymentStatus/:year', (req, res) => {
     });
 });
 
+router.get("/paymentTable", async (req, res) => {
+    try {
+      const { startDate, endDate } = req.query;
+      if (!startDate || !endDate) {
+        return res.status(400).json({ error: "Start date and end date are required" });
+      }
+  
+      const query = `
+        SELECT 
+          payment_status,
+          COUNT(*) AS numOfTransct,
+          COALESCE(SUM(amount), 0) AS totalAmount
+        FROM transactions
+        WHERE payment_date BETWEEN ? AND ?
+        GROUP BY payment_status;
+      `;
+  
+      db.query(query, [startDate, endDate], (err, results) => {
+        if (err) {
+          console.error("Database error:", err);
+          return res.status(500).json({ error: "Database error" });
+        }
+        res.json(results);
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
+
 module.exports = router;
