@@ -1,0 +1,144 @@
+.announcementsContent {
+    background-color: #f9f9f9;
+    width: 100%;
+    padding: 20px;
+    overflow-x: auto;
+    font-family: "Roboto", sans-serif;
+    box-sizing: border-box;
+}
+
+.announcementsFunction {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.announcementsTitle {
+    font-family: "Roboto", sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+}
+
+.announcementAction {
+    padding: 10px;
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.searchContainer {
+    width: 300px;
+    height: 30px;
+    display: flex;
+}
+
+.searchInput {
+    font-family: "Roboto", sans-serif;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 8px 16px;
+    width: 100%;
+    max-width: 300px;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.addAnnouncement {
+    font-family: "Roboto", sans-serif;
+    padding: 8px 16px;
+    background-color: #ff7f50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.addAnnouncement:hover {
+    background-color: #ff5733;
+}
+
+.announcementsTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.announcementsTable th,
+.announcementsTable td {
+    box-sizing: border-box;
+    padding: 8px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.announcementsTable td {
+    vertical-align: middle;
+}
+
+th, td {
+    padding: 5px;
+}
+
+td {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    vertical-align: middle;
+}
+
+.announcementsTable th {
+    background-color: #efefef;
+    font-weight: bold;
+}
+
+.checkboxAid {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    vertical-align: middle;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.checkboxContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.aTitle {
+    font-weight: bold;
+}
+
+.editButton,
+.deleteButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+
+.actions {
+    display: flex;
+    gap: 10px; 
+    align-items: center; 
+}
+
+.editButton:hover,
+.deleteButton:hover {
+    color: #ff5733;
+}
+
+input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+.checkboxclassid input[type="checkbox"] {
+    margin: 20px;
+}

@@ -18,7 +18,7 @@ import Memberships from "./pages/Memberships/Memberships";
 import Schedules from "./pages/Schedules/Schedules";
 import Analytics from "./pages/Analytics/Analytics";
 import Billing from "./pages/Billing/Billing";
-import Announcements from "./pages/Announcements";
+import Announcements from "./pages/Announcements/Announcements";
 import Login from "./pages/Login/Login";
 import Feedback from "./pages/Feedback/Feedback";
 
@@ -55,10 +55,7 @@ const App = () => {
                         <Route path="/Schedules" element={<Schedules />} />
                         <Route path="/Analytics" element={<Analytics />} />
                         <Route path="/Billing" element={<Billing />} />
-                        <Route
-                          path="/Announcements"
-                          element={<Announcements />}
-                        />
+                        <Route path="/Announcements" element={<Announcements />} />
                         <Route path="/Feedback" element={<Feedback />} />
                       </Routes>
                     </div>
