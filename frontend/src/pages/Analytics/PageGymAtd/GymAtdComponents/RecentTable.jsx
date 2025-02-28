@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import classes from "../GymAtd.module.css";
 import PropTypes from "prop-types";
 import { useTheme } from "@mui/material/styles";
@@ -115,7 +115,7 @@ export default function CustomPaginationActionsTable() {
         return response.json();
       })
       .then((data) => {
-        setSortedRows(data.checkInUser); 
+        setSortedRows(data.checkInUser);
       })
       .catch((error) => {
         console.error(error.message);
@@ -125,7 +125,6 @@ export default function CustomPaginationActionsTable() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-  // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - sortedRows.length) : 0;
 
@@ -170,7 +169,7 @@ export default function CustomPaginationActionsTable() {
                 {row.name}
               </TableCell>
               <TableCell style={{ width: 160 }} align="left">
-                {new Date(row.date).toISOString().split('T')[0]}
+                {new Date(row.date).toISOString().split("T")[0]}
               </TableCell>
               <TableCell style={{ width: 160 }} align="left">
                 {row.time}
