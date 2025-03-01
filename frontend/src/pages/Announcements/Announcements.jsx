@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styles from "./Announcements.module.css";
 import Pagination from "../../components/Pagination/Pagination";
 import {Trash, Edit, X } from "lucide-react";
+import ConfirmModal from "../../components/ConfirmDelete/ConfirmDelete";
 
 const Announcements = () => {
   // Demonstration Data
@@ -10,13 +11,15 @@ const Announcements = () => {
     title: "Class Schedule Update",
     message: "The Zumba class on Friday has been rescheduled to 5:00 PM.",
     type: "Announcement",
-    publishDate: "2025-01-14 10:00:00"
+    publishDate: "2025-01-14 10:00:00",
+    endTime: "8:00AM"
     },
     {notiid: "UID002", 
       title: "Membership Renewal Reminder",
       message: "Your membership is set to expire soon. Renew now t...",
       type: "Reminder",
-      publishDate: "2025-01-10 08:00:00"
+      publishDate: "2025-01-10 08:00:00",
+      endTime: "10:00AM"
     }
 ];
 
@@ -38,6 +41,34 @@ const Announcements = () => {
 
   // General Overlay
   const [announcementType, setAnnouncementType] = useState(null);
+
+// For Edit Overlay
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
+
+  const openEditModal = (announcements) => {
+    setSelectedAnnouncement(announcements);
+    setIsEditModalOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setIsEditModalOpen(false);
+    setSelectedAnnouncement(null);
+  };
+
+// For Delete Announcement
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [selectedDeleteId, setSelectedDeleteId] = useState(null);
+
+  const handleDeleteClick = (notiid) => {
+    setSelectedDeleteId(notiid);
+    setShowDeleteConfirm(true);
+  };
+
+  const closeDeleteModal = () => {
+    setShowDeleteConfirm(false);
+    setSelectedDeleteId(null);
+  };
 
   return (
     <div className={styles.announcementsContent}>
@@ -84,10 +115,10 @@ const Announcements = () => {
               <td className={styles.aType}>{announcements.type}</td>
               <td className={styles.aPublishDate}>{announcements.publishDate}</td>
               <td className={styles.actions}>
-                <button className={styles.editButton}>
+                <button className={styles.editButton} onClick={() => openEditModal(announcements)}>
                   <Edit size={20} />
                 </button>
-                <button className={styles.deleteButton}>
+                <button className={styles.deleteButton} onClick={() => handleDeleteClick(announcements.notiid)}>
                   <Trash size={20} />
                 </button>
               </td>
@@ -143,7 +174,7 @@ const Announcements = () => {
 
                     <div className={styles.inputGroup}>
                       <label>Message</label>
-                      <textarea placeholder="Message of the announcement"></textarea>
+                      <textarea placeholder="Message of the announcement" />
                     </div>
 
                     <div className={styles.schedule}>
@@ -151,7 +182,7 @@ const Announcements = () => {
                       <input type="date" name="dob" />
 
                       <label>Ends</label>
-                      <input type="time" defaultValue="08:00" />
+                      <input type="time" />
                     </div>
                   </div>
 
@@ -177,13 +208,79 @@ const Announcements = () => {
                   <button className={styles.cancelBtn} onClick={() => setAnnouncementType(null)}>
                     Cancel
                   </button>
-                  <button className={styles.updateBtn}>Update</button>
+                  <button className={styles.updateBtn}>Publish</button>
                 </div>
               </>
             )}
           </div>
         </div>
       )}
+
+      {isEditModalOpen && (
+        <div className={styles.Editoverlay}>
+          <div className={styles.modal}>
+            <h2>Edit Announcement</h2>
+            <button className={styles.closeBtn} onClick={() => setIsEditModalOpen(false)}>
+              <X size={24} />
+            </button>
+            <div className={styles.announcementForm}>
+              <div className={styles.leftColumn}>
+                <div className={styles.inputGroup}>
+                  <label>Title</label>
+                  <input type="text" name="title" value={selectedAnnouncement?.title || ""} onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, title: e.target.value })} required/>
+                </div>
+
+                <div className={styles.inputGroup}>
+                  <label>Message</label>
+                  <textarea name="message" value={selectedAnnouncement?.message || ""} onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, message: e.target.value })} required/>
+                </div>
+
+                <div className={styles.schedule}>
+                  <label>Schedule for announcement</label>
+                  <input type="date" name="scheduleDate" value={selectedAnnouncement?.scheduleDate || ""} onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, scheduleDate: e.target.value })} required />
+
+                  <label>Ends</label>
+                  <input type="time" name="endTime" value={selectedAnnouncement?.endTime || ""} onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, endTime: e.target.value })} required />
+                </div>
+              </div>
+              <div className={styles.rightColumn}>
+                <div className={styles.notificationType}>
+                  <label>Type of notification</label>
+                  <div className={styles.radioGroup}>
+                    <input type="radio" name="type" value="type" checked={selectedAnnouncement?.type || ""} onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, type: e.target.value })} />
+                    <label htmlFor="announcement">Announcement</label>
+                    <input type="radio" id="reminder" name="type" />
+                    <label htmlFor="reminder">Reminder</label>
+                  </div>
+                </div>
+
+                <div className={styles.posterUpload}>
+                  <label>Poster <span className={styles.optional}>*not required</span></label>
+                  <input type="file" />
+                </div>
+              </div>
+            </div>
+              <div className={styles.modalActions}>
+                  <button className={styles.cancelBtn} onClick={() => setIsEditModalOpen(false)}>
+                    Cancel
+                  </button>
+                  <button className={styles.updateBtn}>Update</button>
+              </div>
+          </div>
+        </div>
+      )}
+
+      {/* For Admin to Delete Schedule(Overlay) */}
+      <ConfirmModal
+        show={showDeleteConfirm}
+        onClose={closeDeleteModal}
+        onConfirm={() => {
+          closeDeleteModal(); // Just close the modal (no backend delete)
+        }}
+        message="Are you sure you want to delete this announcement?"
+        confirmText="Yes, delete it"
+        cancelText="No, cancel"
+      />
     </div>
   )
 }

@@ -362,3 +362,102 @@ textarea {
 .updateBtn:hover {
     background: #b96928;
 }
+
+.modal h2 {
+    margin-bottom: 15px;
+}
+
+.modal input,
+.modal textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.modalButtons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.cancelButton {
+    background: #ccc;
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.saveButton {
+    background: #e67e22;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.Editoverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modalOverlayDeleteM {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modalDeleteM {
+    background: white;
+    padding: 20px;
+    width: 350px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .deleteIcon {
+    color: red;
+    margin-bottom: 10px;
+  }
+  
+  .modalButtons {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .cancelDeleteButton {
+    background: gray;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .confirmDeleteButton {
+    background: red;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+  }
