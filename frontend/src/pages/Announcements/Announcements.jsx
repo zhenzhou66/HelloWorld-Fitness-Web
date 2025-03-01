@@ -5,7 +5,7 @@ import {Trash, Edit, X } from "lucide-react";
 import ConfirmModal from "../../components/ConfirmDelete/ConfirmDelete";
 
 const Announcements = () => {
-  const [announcement, setAnnouncement] = useState({ membersDetails: [], membersCount: 0 });
+  const [announcement, setAnnouncement] = useState({ announcementDetails: [], announcementCount: 0 });
   const [filteredAnnouncement, setFilteredAnnouncement] = useState([]); 
 
   // Fetch billing data from backend
@@ -17,7 +17,7 @@ const Announcements = () => {
       })
       .then((data) => {
         setAnnouncement(data); 
-        setFilteredAnnouncement(data.detailResult);
+        setFilteredAnnouncement(data.announcementDetails);
       })
       .catch((error) => {
         console.error(error.message);
@@ -30,18 +30,108 @@ const Announcements = () => {
     return date.toLocaleDateString("en-GB", { timeZone: "Asia/Kuala_Lumpur" });
   }
 
-// Bottom Page Function
+  // Searching function
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+      if (search.trim() === "") {
+          setFilteredAnnouncement(announcement.announcementDetails); 
+      } else {
+        setFilteredAnnouncement(
+          announcement.announcementDetails.filter((notification) => 
+            notification.title.toLowerCase().includes(search.toLowerCase()))
+          );
+      }
+  }, [search, announcement.announcementDetails]);
+
+  // Bottom Page Function
   const [currentPage, setCurrentPage] = useState(1);
 
   const announcementsPerPage = 9;
-  const totalPages = Math.ceil(announcementCount / announcementsPerPage);
+  const totalPages = Math.ceil(announcement.announcementCount / announcementsPerPage);
   const startIndex = (currentPage - 1) * announcementsPerPage;
   const endIndex = startIndex + announcementsPerPage;
-  const currentAnnouncements = announcement.slice(startIndex, endIndex);
+  const currentAnnouncements = filteredAnnouncement.slice(startIndex, endIndex);
+
+  // For Select All Function
+  const [SelectAll, setSelectAll] = useState(false);
+  const [selectedAnnouncements, setSelectedAnnouncements] = useState({});
+
+  const handleSelectAll = (event) => {
+      const isChecked = event.target.checked;
+      setSelectAll(isChecked);
   
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  }
+      const updatedAnnouncement = {};
+      currentAnnouncements.forEach(announcement => {
+        updatedAnnouncement[announcement.notification_id] = isChecked;
+      });
+  
+      setSelectedAnnouncements(updatedAnnouncement);
+  };
+
+  const handleSelectAnnouncement = (event, notification_id) => {
+      const isChecked = event.target.checked;
+  
+      setSelectedAnnouncements((prev) => {
+          const updatedAnnouncement = { ...prev, [notification_id]: isChecked };
+  
+          const allSelected = Object.values(updatedAnnouncement).every((val) => val === true);
+          setSelectAll(allSelected);
+  
+          return updatedAnnouncement;
+      });
+  };
+
+  // For Delete Announcement
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [announcementToDelete, setAnnouncementToDelete] = useState([]);
+
+  const handleDeleteClick = (notification_id = null) => {
+      let selectedIds;
+  
+      if (notification_id) {
+        selectedIds = [notification_id];
+      } else {
+        selectedIds = Object.keys(selectedAnnouncements).filter(id => selectedAnnouncements[id]);
+          
+          if (selectedIds.length === 0) {
+              alert("Please select at least one member to delete.");
+              return;
+          }
+      }
+      setAnnouncementToDelete(selectedIds);
+      setShowDeleteConfirm(true);
+  };
+
+  const handleDelete = () => {
+      fetch(`http://localhost:5000/api/announcement/delete`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ notification_ids: announcementToDelete }),
+      })
+      .then(response => response.json())
+      .then(data => {
+          alert(data.message);
+          fetchAnnouncement(); 
+          setSelectedAnnouncements({});
+          setSelectAll(false);
+          setShowDeleteConfirm(false);
+          setAnnouncementToDelete([]);
+      })
+      .catch(error => {
+          console.error("Error deleting announcement:", error);
+      });
+  };    
+
+  const fetchAnnouncement = () => {
+    fetch("http://localhost:5000/api/announcement/display")
+      .then((response) => response.json())
+      .then((data) => {
+        setAnnouncement(data); 
+        setFilteredAnnouncement(data.announcementDetails);
+      })
+      .catch((error) => console.error("Error fetching stats:", error));
+  };
 
 // For Add Announcements Overlay
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -64,31 +154,32 @@ const Announcements = () => {
   };
 
 // For Delete Announcement
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [selectedDeleteId, setSelectedDeleteId] = useState(null);
+  // const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  // const [selectedDeleteId, setSelectedDeleteId] = useState(null);
 
-  const handleDeleteClick = (notiid) => {
-    setSelectedDeleteId(notiid);
-    setShowDeleteConfirm(true);
-  };
+  // const handleDeleteClick = (notiid) => {
+  //   setSelectedDeleteId(notiid);
+  //   setShowDeleteConfirm(true);
+  // };
 
-  const closeDeleteModal = () => {
-    setShowDeleteConfirm(false);
-    setSelectedDeleteId(null);
-  };
+  // const closeDeleteModal = () => {
+  //   setShowDeleteConfirm(false);
+  //   setSelectedDeleteId(null);
+  // };
 
   return (
     <div className={styles.announcementsContent}>
       <div className={styles.announcementsFunction}>
         <h3 className={styles.announcementsTitle}>
           All Announcement&nbsp;&nbsp;
-          <span className={styles.transactionCount}>({announcementCount})</span>
+          <span className={styles.transactionCount}>({announcement.announcementCount})</span>
         </h3>
         <div className={styles.announcementAction}>
           <div className={styles.searchContainer}>
-            <input type="text" className={styles.searchInput} placeholder="Search" />
+            <input type="text" className={styles.searchInput} onChange={(e) => setSearch(e.target.value)} placeholder="Search" />
           </div>
           <button className={styles.addAnnouncement} onClick={() => setIsModalOpen(true)}>Add Announcement</button>
+          <button className={styles.deleteMemberButton} onClick={() => handleDeleteClick(null)}>Delete Selected</button>
         </div>
       </div>
         
@@ -97,7 +188,7 @@ const Announcements = () => {
           <tr>
             <th className={styles.checkboxAid}>
               <div className={styles.checkboxContainer}>
-                <input type="checkbox" />
+                <input type="checkbox" checked={SelectAll} onChange={handleSelectAll}/>
                 <span>Notification ID</span>
               </div>
             </th>
@@ -111,22 +202,22 @@ const Announcements = () => {
 
         <tbody>
           {currentAnnouncements.map((announcements) => (
-            <tr key={announcements.notiid}>
+            <tr key={announcements.notification_id}>
               <td className={styles.checkboxAid}>
                 <div className={styles.checkboxContainer}>
-                  <input type="checkbox" />
-                  {announcements.notiid}
+                  <input type="checkbox" checked={selectedAnnouncements[announcements.notification_id] || false} onChange={(e) => handleSelectAnnouncement(e, announcements.notification_id)}/>
+                  {announcements.notification_id}
                 </div>
               </td>
               <td className={styles.aTitle}>{announcements.title}</td>
               <td className={styles.aMessage}>{announcements.message}</td>
               <td className={styles.aType}>{announcements.type}</td>
-              <td className={styles.aPublishDate}>{announcements.publishDate}</td>
+              <td className={styles.aPublishDate}>{formatDate(announcements.send_date)}</td>
               <td className={styles.actions}>
                 <button className={styles.editButton} onClick={() => openEditModal(announcements)}>
                   <Edit size={20} />
                 </button>
-                <button className={styles.deleteButton} onClick={() => handleDeleteClick(announcements.notiid)}>
+                <button className={styles.deleteButton} onClick={() => handleDeleteClick(announcements.notification_id)}>
                   <Trash size={20} />
                 </button>
               </td>
@@ -279,16 +370,25 @@ const Announcements = () => {
       )}
 
       {/* For Admin to Delete Schedule(Overlay) */}
-      <ConfirmModal
-        show={showDeleteConfirm}
-        onClose={closeDeleteModal}
-        onConfirm={() => {
-          closeDeleteModal(); // Just close the modal (no backend delete)
-        }}
-        message="Are you sure you want to delete this announcement?"
-        confirmText="Yes, delete it"
-        cancelText="No, cancel"
-      />
+      {showDeleteConfirm && (
+        <div className={styles.modalOverlayDeleteM}>
+            <div className={styles.modalDeleteM} style={{ textAlign: "center" }}>
+                <button className={styles.closeButton} onClick={() => setShowDeleteConfirm(false)}>
+                <X size={24} />
+                </button>
+                <Trash className={styles.deleteIcon} size={40}/>
+                <p style={{ marginBottom: "30px" }}>Are you sure you want to delete this member?</p>
+                <div className={styles.modalButtons}>
+                    <button className={styles.cancelDeleteButton} onClick={() => setShowDeleteConfirm(false)}>
+                        No, cancel
+                    </button>
+                    <button className={styles.confirmDeleteButton} onClick={handleDelete}>
+                        Yes, I'm sure
+                    </button>
+                </div>
+            </div>
+        </div>
+      )}
     </div>
   )
 }

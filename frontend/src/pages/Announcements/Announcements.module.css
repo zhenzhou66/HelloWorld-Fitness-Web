@@ -110,9 +110,16 @@ td {
     gap: 10px;
 }
 
-.aTitle {
-    font-weight: bold;
-}
+.deleteMemberButton {
+    font-family: "Roboto", sans-serif;
+    padding: 8px 16px;
+    background-color: rgb(242, 69, 69);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
 
 .editButton,
 .deleteButton {
@@ -428,15 +435,13 @@ textarea {
   .modalDeleteM {
     background: white;
     padding: 20px;
-    width: 350px;
+    width: 400px;
+    max-height: 90%;
     border-radius: 8px;
     text-align: center;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  }
-  
-  .deleteIcon {
-    color: red;
-    margin-bottom: 10px;
+    position: relative;
+    overflow-y: scroll;
   }
   
   .modalButtons {
@@ -445,19 +450,46 @@ textarea {
   }
   
   .cancelDeleteButton {
-    background: gray;
-    color: white;
+    background: transparent;
+    color: black;
     padding: 10px;
-    border-radius: 5px;
-    border: none;
+    border: 1px black solid;
     cursor: pointer;
+    border-radius: 5px;
+    width: 40%;
+    transition:0.3s;
+  }
+
+  .cancelDeleteButton:hover{
+    background-color: #d8d7d7;
   }
   
   .confirmDeleteButton {
-    background: red;
+    background: #ff7f50;
     color: white;
     padding: 10px;
+    border: none;
+    cursor: pointer;
+    width: 40%;
     border-radius: 5px;
+    transition:0.3s;
+  }
+
+  .confirmDeleteButton:hover{
+    background-color: #ff5733;
+  }
+
+  .deleteIcon{
+    color: #555;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .closeButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
     border: none;
     cursor: pointer;
   }
