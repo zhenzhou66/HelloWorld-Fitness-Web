@@ -133,11 +133,76 @@ const Announcements = () => {
       .catch((error) => console.error("Error fetching stats:", error));
   };
 
-// For Add Announcements Overlay
+  // For Add Announcements Overlay
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // General Overlay
   const [announcementType, setAnnouncementType] = useState(null);
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setFormData({
+      title: "", 
+      message: "", 
+      type: "", 
+      send_date: "",
+      end_date: "",
+      target: "", 
+      user_id: "", 
+      class_id: ""
+    });
+  };
+
+  const [formData, setFormData] = useState({ 
+      title: "", 
+      message: "", 
+      type: "", 
+      send_date: "",
+      end_date: "",
+      target: "", 
+      user_id: "", 
+      class_id: ""
+  });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const url = 'http://localhost:5000/api/announcement/add';
+
+    const formDataToSend = {
+        title: formData.title,
+        message: formData.message,
+        type: formData.type,
+        send_date: formData.send_date,
+        end_date: formData.end_date,
+        user_id: formData.user_id,
+        class_id: formData.class_id,
+        target: announcementType,
+    };
+
+    fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formDataToSend),
+    })
+    .then(async (response) => {
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.message || "An error occurred while adding announcement.");
+        }
+
+        alert(data.message); 
+        fetchAnnouncement();
+        closeModal();
+    })
+    .catch((error) => {
+        alert(error.message); 
+        console.error(error);
+    });
+  };
 
 // For Edit Overlay
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -152,20 +217,6 @@ const Announcements = () => {
     setIsEditModalOpen(false);
     setSelectedAnnouncement(null);
   };
-
-// For Delete Announcement
-  // const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  // const [selectedDeleteId, setSelectedDeleteId] = useState(null);
-
-  // const handleDeleteClick = (notiid) => {
-  //   setSelectedDeleteId(notiid);
-  //   setShowDeleteConfirm(true);
-  // };
-
-  // const closeDeleteModal = () => {
-  //   setShowDeleteConfirm(false);
-  //   setSelectedDeleteId(null);
-  // };
 
   return (
     <div className={styles.announcementsContent}>
@@ -246,69 +297,80 @@ const Announcements = () => {
                 <div className={styles.modalButtons}>
                   <button 
                     className={styles.announcementBtn} 
-                    onClick={() => setAnnouncementType("general")}
+                    onClick={() => setAnnouncementType("General")}
                   >
                     General Announcement
                   </button>
                   <button 
-                    className={styles.announcementBtn}
-                    onClick={() => setAnnouncementType("coach")}
+                    className={styles.announcementBtn} 
+                    onClick={() => setAnnouncementType("Member")}
                   >
-                    Coach Announcement
+                    Member Announcement
+                  </button>
+                  <button 
+                    className={styles.announcementBtn}
+                    onClick={() => setAnnouncementType("Trainer")}
+                  >
+                    Trainer Announcement
                   </button>
                 </div>
               </>
             ) : (
               // Step 2: Show the Selected Announcement Form
               <>
-                <h2 className={styles.modalTitle}>
-                  <span className={styles.icon}>🔔</span> {announcementType === "general" ? "Add General Announcement" : "Add Coach Announcement"}
-                </h2>
-                <div className={styles.announcementForm}>
-                  <div className={styles.leftColumn}>
-                    <div className={styles.inputGroup}>
-                      <label>Title</label>
-                      <input type="text" placeholder="Title of the announcement" />
-                    </div>
+                <form onSubmit={handleSubmit}>
+                  <h2 className={styles.modalTitle}>
+                    <span className={styles.icon}>🔔</span> {announcementType === "General" ? "Add General Announcement" : announcementType === "Member" ? "Add Member Announcement" : "Add Trainer Announcement"}
+                  </h2>
+                  <div className={styles.announcementForm}>
+                    <div className={styles.leftColumn}>
+                      <div className={styles.inputGroup}>
+                        <label>Title</label>
+                        <input type="text" placeholder="Title of the announcement" name="title" value={formData.title} onChange={handleChange} required/>
+                      </div>
 
-                    <div className={styles.inputGroup}>
-                      <label>Message</label>
-                      <textarea placeholder="Message of the announcement" />
-                    </div>
+                      <div className={styles.inputGroup}>
+                        <label>Message</label>
+                        <textarea placeholder="Message of the announcement" name="message" value={formData.message} onChange={handleChange} required />
+                      </div>
 
-                    <div className={styles.schedule}>
-                      <label>Schedule for announcement</label>
-                      <input type="date" name="dob" />
+                      <div className={styles.schedule}>
+                        <label>Schedule for announcement</label>
+                        <input type="date" name="send_date" value={formData.send_date} onChange={handleChange} required />
 
-                      <label>Ends</label>
-                      <input type="time" />
-                    </div>
-                  </div>
-
-                  <div className={styles.rightColumn}>
-                    <div className={styles.notificationType}>
-                      <label>Type of notification</label>
-                      <div className={styles.radioGroup}>
-                        <input type="radio" id="announcement" name="type" checked />
-                        <label htmlFor="announcement">Announcement</label>
-                        <input type="radio" id="reminder" name="type" />
-                        <label htmlFor="reminder">Reminder</label>
+                        <label>Ends</label>
+                        <input type="date" name="end_date" value={formData.end_date} onChange={handleChange}/>
                       </div>
                     </div>
 
-                    <div className={styles.posterUpload}>
-                      <label>Poster <span className={styles.optional}>*not required</span></label>
-                      <input type="file" />
+                    <div className={styles.rightColumn}>
+                      <div className={styles.notificationType}>
+                        <label>Type of notification</label>
+                        <div className={styles.radioGroup}>
+                          <input type="radio" id="Announcement" name="type" value="Announcement" checked={formData.type === "Announcement"} onChange={handleChange} required/>
+                          <label htmlFor="Announcement">Announcement</label>
+                          <input type="radio" id="Reminder" name="type" value="Reminder" checked={formData.type === "Reminder"} onChange={handleChange} required/>
+                          <label htmlFor="Reminder">Reminder</label>
+                        </div>
+                      </div>
+
+                      <div className={styles.schedule}>
+                        <label>User ID</label>
+                        <input type="number" name="user_id" value={formData.user_id} onChange={handleChange}/>
+
+                        <label>Class ID</label>
+                        <input type="number" name="class_id" value={formData.class_id} onChange={handleChange}/>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className={styles.modalActions}>
-                  <button className={styles.cancelBtn} onClick={() => setAnnouncementType(null)}>
-                    Cancel
-                  </button>
-                  <button className={styles.updateBtn}>Publish</button>
-                </div>
+                  <div className={styles.modalActions}>
+                    <button className={styles.cancelBtn} onClick={() => setAnnouncementType(null)}>
+                      Back
+                    </button>
+                    <input type="submit" className={styles.updateBtn} value="Publish" />
+                  </div>
+                </form>
               </>
             )}
           </div>
@@ -377,7 +439,7 @@ const Announcements = () => {
                 <X size={24} />
                 </button>
                 <Trash className={styles.deleteIcon} size={40}/>
-                <p style={{ marginBottom: "30px" }}>Are you sure you want to delete this member?</p>
+                <p style={{ marginBottom: "30px" }}>Are you sure you want to delete this announcement?</p>
                 <div className={styles.modalButtons}>
                     <button className={styles.cancelDeleteButton} onClick={() => setShowDeleteConfirm(false)}>
                         No, cancel
