@@ -77,4 +77,33 @@ router.post('/add', async (req, res) => {
     }
 });
 
+router.put('/update', (req, res) => {
+    const {class_id, end_date, message, notification_id, send_date, target, title, type, user_id} = req.body;
+
+    const checkTitleQuery = 'SELECT title FROM notifications WHERE title = ? AND notification_id != ?';
+    db.query(checkTitleQuery, [title, notification_id], (err, result) => {
+        if (err) {
+            return res.status(500).json({ message: 'Database error while checking title.' });
+        }
+        if (result.length > 0) {  
+            return res.status(400).json({ message: 'Title already exists.' });
+        }
+
+        const updateQuery = `
+        UPDATE notifications
+        SET title = ?, message = ?, type = ?, send_date = ?, end_date = ?, target = ?, user_id = ?, class_id = ?
+        WHERE notification_id = ?
+        `;
+
+        db.query(updateQuery, [title, message, type, send_date, end_date, target, user_id, class_id, notification_id], (err, result) => {
+            if (err) {
+                return res.status(500).json({ message: 'Database error while updating announcement.' });
+            }
+            
+            res.status(200).json({ message: 'Announcement updated successfully!' });
+
+        });
+    });
+});
+
 module.exports = router;

@@ -218,6 +218,26 @@ const Announcements = () => {
     setSelectedAnnouncement(null);
   };
 
+  const handleSave = (e) => {
+      e.preventDefault()
+
+      fetch(`http://localhost:5000/api/announcement/update`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(selectedAnnouncement),
+      })
+      .then(response => response.json())
+      .then(data => {
+          alert(data.message); 
+          closeEditModal();
+          fetchAnnouncement(); 
+      })
+      .catch(error => {
+          alert(error.message); 
+          console.error("Error updating announcement:", error);
+      });
+  };
+
   return (
     <div className={styles.announcementsContent}>
       <div className={styles.announcementsFunction}>
@@ -384,49 +404,55 @@ const Announcements = () => {
             <button className={styles.closeBtn} onClick={() => setIsEditModalOpen(false)}>
               <X size={24} />
             </button>
-            <div className={styles.announcementForm}>
-              <div className={styles.leftColumn}>
-                <div className={styles.inputGroup}>
-                  <label>Title</label>
-                  <input type="text" name="title" value={selectedAnnouncement?.title || ""} onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, title: e.target.value })} required/>
-                </div>
+            <form onSubmit={handleSave}>
+              <div className={styles.announcementForm}>
+                <div className={styles.leftColumn}>
+                  <div className={styles.inputGroup}>
+                    <label>Title</label>
+                    <input type="text" name="title" value={selectedAnnouncement?.title || ""} onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, title: e.target.value })} required/>
+                  </div>
 
-                <div className={styles.inputGroup}>
-                  <label>Message</label>
-                  <textarea name="message" value={selectedAnnouncement?.message || ""} onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, message: e.target.value })} required/>
-                </div>
+                  <div className={styles.inputGroup}>
+                    <label>Message</label>
+                    <textarea name="message" value={selectedAnnouncement?.message || ""} onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, message: e.target.value })} required/>
+                  </div>
 
-                <div className={styles.schedule}>
-                  <label>Schedule for announcement</label>
-                  <input type="date" name="scheduleDate" value={selectedAnnouncement?.scheduleDate || ""} onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, scheduleDate: e.target.value })} required />
+                  <div className={styles.schedule}>
+                    <label>Schedule for announcement</label>
+                    <input type="date" name="send_date" value={new Date(selectedAnnouncement?.send_date || "").toLocaleDateString('en-CA')} onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, send_date: e.target.value })} required />
 
-                  <label>Ends</label>
-                  <input type="time" name="endTime" value={selectedAnnouncement?.endTime || ""} onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, endTime: e.target.value })} required />
-                </div>
-              </div>
-              <div className={styles.rightColumn}>
-                <div className={styles.notificationType}>
-                  <label>Type of notification</label>
-                  <div className={styles.radioGroup}>
-                    <input type="radio" name="type" value="type" checked={selectedAnnouncement?.type || ""} onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, type: e.target.value })} />
-                    <label htmlFor="announcement">Announcement</label>
-                    <input type="radio" id="reminder" name="type" />
-                    <label htmlFor="reminder">Reminder</label>
+                    <label>Ends</label>
+                    <input type="date" name="end_date" value={new Date(selectedAnnouncement?.end_date || "").toLocaleDateString('en-CA')} onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, end_date: e.target.value })}/>
                   </div>
                 </div>
+                <div className={styles.rightColumn}>
+                  <div className={styles.notificationType}>
+                    <label>Type of notification</label>
+                    <div className={styles.radioGroup}>
+                    <input type="radio" name="type" value="Announcement" checked={selectedAnnouncement?.type === "Announcement"} onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, type: e.target.value })} required/>
+                    <label htmlFor="Announcement">Announcement</label>
 
-                <div className={styles.posterUpload}>
-                  <label>Poster <span className={styles.optional}>*not required</span></label>
-                  <input type="file" />
+                    <input type="radio" name="type" value="Reminder" checked={selectedAnnouncement?.type === "Reminder"} onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, type: e.target.value })} required/>
+                    <label htmlFor="Reminder">Reminder</label>
+                    </div>
+                  </div>
+
+                  <div className={styles.schedule}>
+                    <label>User ID</label>
+                    <input type="number" name="user_id" value={selectedAnnouncement?.user_id || ""} onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, user_id: e.target.value })}/>
+
+                    <label>Class ID</label>
+                    <input type="number" name="class_id" value={selectedAnnouncement?.class_id || ""} onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, class_id: e.target.value })}/>
+                  </div>
                 </div>
               </div>
-            </div>
               <div className={styles.modalActions}>
-                  <button className={styles.cancelBtn} onClick={() => setIsEditModalOpen(false)}>
-                    Cancel
-                  </button>
-                  <button className={styles.updateBtn}>Update</button>
+                <button className={styles.cancelBtn} onClick={() => setIsEditModalOpen(false)}>
+                  Cancel
+                </button>
+                <input type="submit" className={styles.updateBtn} value="Update"/>
               </div>
+            </form>
           </div>
         </div>
       )}
