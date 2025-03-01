@@ -20,6 +20,8 @@ ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement);
 function AtdChart() {
   const [selectedYear, setSelectedYear] = useState("2025");
   const [graphData, setGraphData] = useState([]);
+  const currentYear = new Date().getFullYear();
+  const years = [currentYear - 2, currentYear - 1, currentYear];
   
   useEffect(() => {
     fetch(`http://localhost:5000/api/analytics/monthlyCheckIn/${selectedYear}`)
@@ -106,9 +108,11 @@ function AtdChart() {
                 label="Year"
                 onChange={(e) => setSelectedYear(e.target.value)}
               >
-                <MenuItem value="2023">2023</MenuItem>
-                <MenuItem value="2024">2024</MenuItem>
-                <MenuItem value="2025">2025</MenuItem>
+                {years.map((year) => (
+                  <MenuItem key={year} value={year}>
+                    {year}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Box>

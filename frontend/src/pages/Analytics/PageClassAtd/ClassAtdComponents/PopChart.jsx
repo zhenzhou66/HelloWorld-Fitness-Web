@@ -29,6 +29,8 @@ function PopChart() {
   const [selectedYear, setSelectedYear] = useState("2025");
   const [graphDataY, setGraphDataY] = useState([]);
   const [graphDataX, setGraphDataX] = useState([]);
+  const currentYear = new Date().getFullYear();
+  const years = [currentYear - 2, currentYear - 1, currentYear];
   
   useEffect(() => {
     fetch(`http://localhost:5000/api/analytics/classPopularity/${selectedYear}`)
@@ -38,7 +40,7 @@ function PopChart() {
       })
       .then((data) => {
 
-        setGraphDataY(data.result.map((item) => item.name)); // Class names as labels
+        setGraphDataY(data.result.map((item) => item.name)); 
         setGraphDataX(data.result.map((item) => item.total));
 
       })
@@ -101,9 +103,11 @@ function PopChart() {
                 label="Year"
                 onChange={(e) => setSelectedYear(e.target.value)}
               >
-                <MenuItem value="2023">2023</MenuItem>
-                <MenuItem value="2024">2024</MenuItem>
-                <MenuItem value="2025">2025</MenuItem>
+                {years.map((year) => (
+                  <MenuItem key={year} value={year}>
+                    {year}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Box>

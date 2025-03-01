@@ -49,6 +49,9 @@ app.use('/api/schedules', scheduleRoutes);
 const analyticsRoutes = require('./routes/analytics');
 app.use('/api/analytics', analyticsRoutes);
 
+const announcementRoutes = require('./routes/announcement');
+app.use('/api/announcement', announcementRoutes);
+
 app.use('/uploads', express.static('uploads'));
 
 app.get('/', (req, res) => {
