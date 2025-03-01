@@ -1,58 +1,185 @@
 import React from "react";
+import { useTheme } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import TableFooter from "@mui/material/TableFooter";
+import TablePagination from "@mui/material/TablePagination";
 import Paper from "@mui/material/Paper";
 import Rating from "@mui/material/Rating";
 import Box from "@mui/material/Box";
 import StarIcon from "@mui/icons-material/Star";
+import IconButton from "@mui/material/IconButton";
+import FirstPageIcon from "@mui/icons-material/FirstPage";
+import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
+import LastPageIcon from "@mui/icons-material/LastPage";
+import yoga from "../../../assets/yoga.jpg";
+
+// Pagination Actions Component
+function TablePaginationActions(props) {
+  const theme = useTheme();
+  const { count, page, rowsPerPage, onPageChange } = props;
+
+  const handleFirstPageButtonClick = (event) => {
+    onPageChange(event, 0);
+  };
+
+  const handleBackButtonClick = (event) => {
+    onPageChange(event, page - 1);
+  };
+
+  const handleNextButtonClick = (event) => {
+    onPageChange(event, page + 1);
+  };
+
+  const handleLastPageButtonClick = (event) => {
+    onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
+  };
+
+  return (
+    <Box sx={{ flexShrink: 0, ml: 2.5 }}>
+      <IconButton
+        onClick={handleFirstPageButtonClick}
+        disabled={page === 0}
+        aria-label="first page"
+      >
+        {theme.direction === "rtl" ? <LastPageIcon /> : <FirstPageIcon />}
+      </IconButton>
+      <IconButton
+        onClick={handleBackButtonClick}
+        disabled={page === 0}
+        aria-label="previous page"
+      >
+        {theme.direction === "rtl" ? (
+          <KeyboardArrowRight />
+        ) : (
+          <KeyboardArrowLeft />
+        )}
+      </IconButton>
+      <IconButton
+        onClick={handleNextButtonClick}
+        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+        aria-label="next page"
+      >
+        {theme.direction === "rtl" ? (
+          <KeyboardArrowLeft />
+        ) : (
+          <KeyboardArrowRight />
+        )}
+      </IconButton>
+      <IconButton
+        onClick={handleLastPageButtonClick}
+        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+        aria-label="last page"
+      >
+        {theme.direction === "rtl" ? <FirstPageIcon /> : <LastPageIcon />}
+      </IconButton>
+    </Box>
+  );
+}
 
 function getLabelText(value) {
   return value.toFixed(1);
 }
 
-function createData(userID, username, avgRating, ratingAmount) {
-  return { userID, username, avgRating, ratingAmount };
+function createData(userID, username, userEmail, avgRating, ratingAmount) {
+  return { userID, username, userEmail, avgRating, ratingAmount };
 }
 
 const rows = [
-  createData("U001", "Emily Lai", 3.0, 10),
-  createData("U002", "Emilia Lai", 4.5, 15),
+  createData("U001", "Emily Lai", "emilylai2006@gmail.com", 3.0, 10),
+  createData("U002", "Emilia Lai", "emilylai2005@gmail.com", 4.5, 15),
+  createData("U003", "John Doe", "johndoe@example.com", 4.2, 12),
+  createData("U004", "Jane Smith", "janesmith@example.com", 3.8, 9),
+  createData("U005", "Michael Lee", "michaellee@example.com", 4.7, 20),
+  createData("U006", "Chris Brown", "chrisbrown@example.com", 3.9, 11),
 ];
 
 export default function TrainerPerformance() {
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(2);
+
+  const emptyRows =
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   return (
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
+      <Table sx={{ minWidth: 650 }} aria-label="trainer performance table">
+        <TableHead sx={{ backgroundColor: "#e0e0e0" }}>
           <TableRow>
-            <TableCell>User ID</TableCell>
-            <TableCell align="left">Username</TableCell>
-            <TableCell align="center" sx={{ width: 200 }}>
+            <TableCell sx={{ textAlign: "left", verticalAlign: "middle" }}>
+              User ID
+            </TableCell>
+            <TableCell align="left" sx={{ verticalAlign: "middle" }}>
+              Username
+            </TableCell>
+            <TableCell
+              sx={{ textAlign: "center", verticalAlign: "middle", width: 200 }}
+            >
               Average Rating
             </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow
-              key={row.name}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
+          {(rowsPerPage > 0
+            ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            : rows
+          ).map((row) => (
+            <TableRow key={row.userID}>
+              <TableCell sx={{ textAlign: "left", verticalAlign: "middle" }}>
                 {row.userID}
               </TableCell>
-              <TableCell align="left">{row.username}</TableCell>
-              <TableCell align="center">
+              <TableCell
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  verticalAlign: "middle",
+                }}
+              >
+                <img
+                  src={yoga}
+                  alt="trainer pic"
+                  style={{
+                    width: "60px",
+                    height: "60px",
+                    marginRight: "12px",
+                    borderRadius: "50px",
+                  }}
+                />
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "4px",
+                  }}
+                >
+                  <span style={{ fontWeight: "550", fontSize: "16px" }}>
+                    {row.username}
+                  </span>
+                  <span style={{ color: "#666", fontSize: "14px" }}>
+                    {row.userEmail}
+                  </span>
+                </div>
+              </TableCell>
+              <TableCell align="center" sx={{ verticalAlign: "middle" }}>
                 <Box
                   sx={{
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    width: 200,
                     gap: "10px",
                   }}
                 >
@@ -89,7 +216,34 @@ export default function TrainerPerformance() {
               </TableCell>
             </TableRow>
           ))}
+          {emptyRows > 0 && (
+            <TableRow style={{ height: 53 * emptyRows }}>
+              <TableCell colSpan={3} />
+            </TableRow>
+          )}
         </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TablePagination
+              rowsPerPageOptions={[2, 4, 6, { label: "All", value: -1 }]}
+              colSpan={3}
+              count={rows.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              slotProps={{
+                select: {
+                  inputProps: {
+                    "aria-label": "rows per page",
+                  },
+                  native: true,
+                },
+              }}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              ActionsComponent={TablePaginationActions}
+            />
+          </TableRow>
+        </TableFooter>
       </Table>
     </TableContainer>
   );
