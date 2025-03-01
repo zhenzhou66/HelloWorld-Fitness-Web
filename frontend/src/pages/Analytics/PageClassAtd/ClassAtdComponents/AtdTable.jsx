@@ -6,13 +6,12 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import yoga from "../../../../assets/yoga.jpg";
-import {useState, useEffect} from "react";
+
+import { useState, useEffect } from "react";
 
 export default function BasicTable() {
-
   const [rows, setRows] = useState([]);
-  
+
   useEffect(() => {
     fetch(`http://localhost:5000/api/analytics/classPopularity/${2025}`)
       .then((response) => {
@@ -20,7 +19,7 @@ export default function BasicTable() {
         return response.json();
       })
       .then((data) => {
-        setRows(data.classInfo); 
+        setRows(data.classInfo);
       })
       .catch((error) => {
         console.error(error.message);
@@ -84,10 +83,16 @@ export default function BasicTable() {
                   </span>
                 </div>
               </TableCell>
-              <TableCell align="right">{new Date(row.schedule_date).toISOString().split('T')[0]}</TableCell>
-              <TableCell align="right">{row.start_time} - {row.end_time}</TableCell>
+              <TableCell align="right">
+                {new Date(row.schedule_date).toISOString().split("T")[0]}
+              </TableCell>
+              <TableCell align="right">
+                {row.start_time} - {row.end_time}
+              </TableCell>
               <TableCell align="right">{row.trainer_id}</TableCell>
-              <TableCell align="right">{row.present_count / row.total * 100}%</TableCell>
+              <TableCell align="right">
+                {(row.present_count / row.total) * 100}%
+              </TableCell>
               <TableCell align="right">{row.absent_count}</TableCell>
             </TableRow>
           ))}
