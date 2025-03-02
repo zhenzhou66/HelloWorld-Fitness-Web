@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -14,37 +14,24 @@ import CloseIcon from "@mui/icons-material/Close";
 
 export default function ViewClassPopup({ open, handleClose, selectedClass }) {
   if (!selectedClass) return null;
+  const [ratingBreakdown, setRatingBreakdown] = useState([]);
+  const [reviews, setReviews] = useState([]);
 
-  // Hardcoded reviews
-  const reviews = [
-    {
-      user: "AlexWu",
-      rating: 5,
-      comment:
-        "The trainer was very motivating and gave clear instructions. The class was a bit crowded, though.",
-    },
-    {
-      user: "James",
-      rating: 5,
-      comment:
-        "Excellent class and trainer. The zumba session was well-paced and exciting.",
-    },
-    {
-      user: "AlexWu",
-      rating: 5,
-      comment:
-        "The trainer was very motivating and gave clear instructions. The class was a bit crowded, though.",
-    },
-  ];
+  useEffect(() => {
+    fetch(`http://localhost:5000/api/feedback/classFeedbackDetails/${selectedClass.class_id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setRatingBreakdown(data.ratingBreakdown);
+        setReviews(data.feedbackDetail);
+      })
+      .catch((error) => console.error("Error fetching stats:", error));
+  }, [open, selectedClass?.class_id]);
 
-  // Hardcoded rating breakdown
-  const ratingBreakdown = [
-    { stars: 5, count: 4 },
-    { stars: 4, count: 3 },
-    { stars: 3, count: 3 },
-    { stars: 2, count: 0 },
-    { stars: 1, count: 0 },
-  ];
+  // Formatting date function
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB', { timeZone: 'Asia/Kuala_Lumpur' }); 
+  }
 
   return (
     <Dialog
@@ -78,7 +65,7 @@ export default function ViewClassPopup({ open, handleClose, selectedClass }) {
         {/* Class Profile (Edit class image here) */}
         <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
           <Avatar
-            src="/path-to-avatar.jpg" // <------ Class image here
+            src={`http://localhost:5000/uploads/${selectedClass.class_image}`} // <------ Class image here
             sx={{ width: 60, height: 60, mr: 2 }}
           />
           <Box>
@@ -86,7 +73,7 @@ export default function ViewClassPopup({ open, handleClose, selectedClass }) {
               Class Name
             </Typography>
             <Typography variant="h6" fontWeight="bold">
-              {selectedClass.className}
+              {selectedClass.class_name}
             </Typography>
           </Box>
           <div
@@ -97,14 +84,14 @@ export default function ViewClassPopup({ open, handleClose, selectedClass }) {
             }}
           >
             <Typography sx={{ fontWeight: "600", alignSelf: "flex-end" }}>
-              ID: {selectedClass.classID}
+              ID: {selectedClass.class_id}
             </Typography>
             <Typography sx={{ fontWeight: "525", alignSelf: "flex-end" }}>
-              {selectedClass.classDate}
+              {formatDate(selectedClass.schedule_date)}
             </Typography>
 
             <Typography sx={{ fontWeight: "525", alignSelf: "flex-end" }}>
-              {selectedClass.classStartTime} - {selectedClass.classEndTime}
+              {selectedClass.start_time} - {selectedClass.end_time}
             </Typography>
           </div>
         </Box>
@@ -116,10 +103,10 @@ export default function ViewClassPopup({ open, handleClose, selectedClass }) {
           </Typography>
           <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
             <Typography variant="h4" fontWeight="bold">
-              {selectedClass.avgRating.toFixed(1)}
+              {parseFloat(selectedClass.avgRating).toFixed(1) || 0}
             </Typography>
             <Rating
-              value={selectedClass.avgRating}
+              value={parseFloat(selectedClass.avgRating) || 0}
               precision={0.5}
               readOnly
               sx={{ ml: 1 }}
@@ -140,7 +127,7 @@ export default function ViewClassPopup({ open, handleClose, selectedClass }) {
               </Typography>
               <LinearProgress
                 variant="determinate"
-                value={(count / 5) * 100} // wanyin the 20 is here is total rating, but u can make it dynamic
+                value={(count / 5) * 100} 
                 sx={{
                   marginLeft: "10px",
                   flexGrow: 1,
@@ -160,10 +147,10 @@ export default function ViewClassPopup({ open, handleClose, selectedClass }) {
         <Box sx={{ mt: 3, maxHeight: "200px", overflowY: "auto" }}>
           {reviews.map((review, index) => (
             <Box key={index} sx={{ mb: 2 }}>
-              <Typography fontWeight="bold">{review.user}</Typography>
-              <Rating value={review.rating} readOnly sx={{ fontSize: 18 }} />
+              <Typography fontWeight="bold">{review.name}</Typography>
+              <Rating value={review.class_rating} readOnly sx={{ fontSize: 18 }} />
               <Typography variant="body2" sx={{ mt: 0.5 }}>
-                {review.comment}
+                {review.comments}
               </Typography>
             </Box>
           ))}

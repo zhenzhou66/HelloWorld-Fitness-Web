@@ -114,7 +114,7 @@ export default function ViewTrainerPopup({ open, handleClose, selectedClass }) {
               </Typography>
               <LinearProgress
                 variant="determinate"
-                value={(count / 5) * 100} // wanyin the 20 is here is total rating, but u can make it dynamic
+                value={(count / 5) * 100} 
                 sx={{
                   marginLeft: "10px",
                   flexGrow: 1,

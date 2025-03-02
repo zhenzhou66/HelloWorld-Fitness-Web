@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -13,47 +13,28 @@ import Box from "@mui/material/Box";
 import StarIcon from "@mui/icons-material/Star";
 import yoga from "../../../assets/yoga.jpg";
 import ViewClassPopup from "./ViewClassPopup";
-function createData(
-  classID,
-  className,
-  classDate,
-  classStartTime,
-  classEndTime,
-  avgRating,
-  ratingAmount
-) {
-  return {
-    classID,
-    className,
-    classDate,
-    classStartTime,
-    classEndTime,
-    avgRating,
-    ratingAmount,
-  };
-}
-
-const rows = [
-  createData("C001", "Yoga", "Jan 20, 2025", "8:00AM", "9:00AM", 3.0, 10),
-  createData("C002", "Zumba", "Feb 15, 2025", "10:00AM", "11:00AM", 4.5, 18),
-  createData("C003", "JZumba", "Mar 10, 2025", "1:00PM", "2:00PM", 5.0, 25),
-  createData("C004", "Michaedsad", "Apr 5, 2025", "3:00PM", "4:00PM", 4.8, 20),
-  createData(
-    "C005",
-    "Chris Brown",
-    "May 22, 2025",
-    "6:00PM",
-    "7:00PM",
-    3.9,
-    12
-  ),
-];
 
 export default function ClassPerformance() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(2);
   const [selectedClass, setSelectedClass] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const [rows, setRow] = useState([]);
+    
+  useEffect(() => {
+    fetch("http://localhost:5000/api/feedback/displayClassRating")
+      .then((response) => response.json())
+      .then((data) => {
+        setRow(data.classFeedback);
+      })
+      .catch((error) => console.error("Error fetching stats:", error));
+  }, []);
+
+   // Formatting date function
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB', { timeZone: 'Asia/Kuala_Lumpur' }); 
+  }
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -87,17 +68,17 @@ export default function ClassPerformance() {
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => (
                 <TableRow
-                  key={row.classID}
+                  key={row.class_id}
                   onClick={() => handleRowClick(row)}
                   sx={{
                     cursor: "pointer",
                     "&:hover": { backgroundColor: "#f5f5f5" },
                   }}
                 >
-                  <TableCell>{row.classID}</TableCell>
+                  <TableCell>{row.class_id}</TableCell>
                   <TableCell sx={{ display: "flex", alignItems: "center" }}>
                     <img
-                      src={yoga}
+                      src={`http://localhost:5000/uploads/${row.class_image}`}
                       alt="class pic"
                       style={{
                         width: "75px",
@@ -114,13 +95,13 @@ export default function ClassPerformance() {
                       }}
                     >
                       <span style={{ fontWeight: "550", fontSize: "16px" }}>
-                        {row.className}
+                        {row.class_name}
                       </span>
                       <span style={{ color: "#666", fontSize: "14px" }}>
-                        {row.classDate}
+                        {formatDate(row.schedule_date)}
                       </span>
                       <span style={{ color: "#666", fontSize: "14px" }}>
-                        {row.classStartTime} - {row.classEndTime}
+                        {row.start_time} - {row.end_time}
                       </span>
                     </Box>
                   </TableCell>
@@ -140,10 +121,10 @@ export default function ClassPerformance() {
                           fontWeight: 600,
                         }}
                       >
-                        {row.avgRating.toFixed(1)}
+                        {parseFloat(row.avgRating).toFixed(1) || 0}
                       </Box>
                       <Rating
-                        value={row.avgRating}
+                        value={parseFloat(row.avgRating)}
                         precision={0.5}
                         readOnly
                         emptyIcon={
