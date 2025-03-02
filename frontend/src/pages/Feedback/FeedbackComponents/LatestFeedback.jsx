@@ -1,54 +1,73 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { Card, CardContent, Avatar, Rating } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 
 // Dummy feedback data (sorted by most recent first)
-const feedbackData = [
-  {
-    id: 1,
-    user: "EmilyLai",
-    date: "Mar 1, 2025",
-    trainer: "AlexWu",
-    className: "Yoga Flow",
-    rating: 5,
-    comment:
-      "The trainer was very motivating and gave clear instructions. The class was a bit crowded, though.",
-  },
-  {
-    id: 2,
-    user: "EmilyLai",
-    date: "Feb 28, 2025",
-    trainer: "AlexWu",
-    className: "Zumba",
-    rating: 4,
-    comment:
-      "Excellent class and trainer. The Zumba session was well-paced and exciting.",
-  },
-  {
-    id: 3,
-    user: "EmilyLai",
-    date: "Feb 25, 2025",
-    trainer: "AlexWu",
-    className: "Yoga Flow",
-    rating: 3,
-    comment:
-      "The trainer was very motivating and gave clear instructions. The class was a bit crowded, though.",
-  },
-  {
-    id: 4,
-    user: "EmilyLai",
-    date: "Feb 20, 2025",
-    trainer: "AlexWu",
-    className: "Pilates",
-    rating: 5,
-    comment: "Great class with an energetic vibe!",
-  },
-];
+// const feedbackData = [
+//   {
+//     id: 1,
+//     user: "EmilyLai",
+//     date: "Mar 1, 2025",
+//     trainer: "AlexWu",
+//     className: "Yoga Flow",
+//     rating: 5,
+//     comment:
+//       "The trainer was very motivating and gave clear instructions. The class was a bit crowded, though.",
+//   },
+//   {
+//     id: 2,
+//     user: "EmilyLai",
+//     date: "Feb 28, 2025",
+//     trainer: "AlexWu",
+//     className: "Zumba",
+//     rating: 4,
+//     comment:
+//       "Excellent class and trainer. The Zumba session was well-paced and exciting.",
+//   },
+//   {
+//     id: 3,
+//     user: "EmilyLai",
+//     date: "Feb 25, 2025",
+//     trainer: "AlexWu",
+//     className: "Yoga Flow",
+//     rating: 3,
+//     comment:
+//       "The trainer was very motivating and gave clear instructions. The class was a bit crowded, though.",
+//   },
+//   {
+//     id: 4,
+//     user: "EmilyLai",
+//     date: "Feb 20, 2025",
+//     trainer: "AlexWu",
+//     className: "Pilates",
+//     rating: 5,
+//     comment: "Great class with an energetic vibe!",
+//   },
+// ];
 
-// Show only the latest 3 feedback items
-const latestFeedback = feedbackData.slice(0, 3);
+// // Show only the latest 3 feedback items
+// const latestFeedback = feedbackData.slice(0, 3);
 
 export default function LatestFeedback() {
+
+  //Displaying latest feedback
+  const [feedback, setFeedback] = useState([]);
+  
+  useEffect(() => {
+    fetch("http://localhost:5000/api/feedback/displayLatestFeedback")
+      .then((response) => response.json())
+      .then((data) => {
+        setFeedback(data.feedback);
+      })
+      .catch((error) => console.error("Error fetching stats:", error));
+  }, []);
+
+  // Formatting date function
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB', { timeZone: 'Asia/Kuala_Lumpur' }); 
+}
+
   return (
     <Card
       sx={{
@@ -67,9 +86,9 @@ export default function LatestFeedback() {
       >
         Latest Feedback
       </h2>
-      {latestFeedback.map((feedback) => (
+      {feedback.map((feedback) => (
         <CardContent
-          key={feedback.id}
+          key={feedback.feedback_id}
           sx={{
             marginBottom: "16px",
             padding: "12px",
@@ -87,10 +106,10 @@ export default function LatestFeedback() {
                 height: "40px",
               }}
             >
-              {feedback.user.charAt(0)}
+              {feedback.memberName.charAt(0)}
             </Avatar>
             <div>
-              <p style={{ fontWeight: "600", margin: 0 }}>{feedback.user}</p>
+              <p style={{ fontWeight: "600", margin: 0 }}>{feedback.memberName}</p>
               <p
                 style={{
                   fontSize: "0.875rem",
@@ -98,7 +117,7 @@ export default function LatestFeedback() {
                   margin: 0,
                 }}
               >
-                {feedback.date}
+                {formatDate(feedback.feedback_date)}
               </p>
             </div>
           </div>
@@ -109,12 +128,12 @@ export default function LatestFeedback() {
               marginBottom: "8px",
             }}
           >
-            <span style={{ fontWeight: "600" }}>{feedback.trainer}</span> -{" "}
-            {feedback.className}
+            <span style={{ fontWeight: "600" }}>{feedback.trainerName}</span> -{" "}
+            {feedback.class_name}
           </p>
           <Rating
             name="read-only"
-            value={feedback.rating}
+            value={(feedback.class_rating + feedback.trainer_rating)/2}
             precision={0.5}
             readOnly
             emptyIcon={
@@ -128,7 +147,7 @@ export default function LatestFeedback() {
               color: "#616161",
             }}
           >
-            {feedback.comment}
+            {feedback.comments}
           </p>
         </CardContent>
       ))}

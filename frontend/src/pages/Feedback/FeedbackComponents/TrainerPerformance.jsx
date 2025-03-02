@@ -60,7 +60,7 @@ export default function TrainerPerformance() {
         <TableHead sx={{ backgroundColor: "#e0e0e0" }}>
           <TableRow>
             <TableCell sx={{ textAlign: "left", verticalAlign: "middle" }}>
-              User ID
+              Trainer ID
             </TableCell>
             <TableCell align="left" sx={{ verticalAlign: "middle" }}>
               Username
