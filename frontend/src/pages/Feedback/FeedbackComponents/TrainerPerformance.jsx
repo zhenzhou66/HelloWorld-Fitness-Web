@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -11,33 +11,28 @@ import Paper from "@mui/material/Paper";
 import Rating from "@mui/material/Rating";
 import Box from "@mui/material/Box";
 import StarIcon from "@mui/icons-material/Star";
-import yoga from "../../../assets/yoga.jpg";
 import ViewTrainerPopup from "./ViewTrainerPopup";
-
-// Pagination Actions Component
-
-function getLabelText(value) {
-  return value.toFixed(1);
-}
-
-function createData(userID, username, userEmail, avgRating, ratingAmount) {
-  return { userID, username, userEmail, avgRating, ratingAmount };
-}
-
-const rows = [
-  createData("U001", "Emily Lai", "emilylai2006@gmail.com", 3.0, 10),
-  createData("U002", "Emilia Lai", "emilylai2005@gmail.com", 4.5, 15),
-  createData("U003", "John Doe", "johndoe@example.com", 4.2, 12),
-  createData("U004", "Jane Smith", "janesmith@example.com", 3.8, 9),
-  createData("U005", "Michael Lee", "michaellee@example.com", 4.7, 20),
-  createData("U006", "Chris Brown", "chrisbrown@example.com", 3.9, 11),
-];
 
 export default function TrainerPerformance() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(2);
   const [selectedClass, setSelectedClass] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const [rows, setRow] = useState([]);
+  
+  useEffect(() => {
+    fetch("http://localhost:5000/api/feedback/displayTrainerRating")
+      .then((response) => response.json())
+      .then((data) => {
+        setRow(data.trainerFeedback);
+      })
+      .catch((error) => console.error("Error fetching stats:", error));
+  }, []);
+
+  // Pagination Actions Component
+  function getLabelText(value) {
+    return value.toFixed(1);
+  }
 
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
@@ -54,6 +49,7 @@ export default function TrainerPerformance() {
     setSelectedClass(row);
     setOpenDialog(true);
   };
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="trainer performance table">
@@ -78,7 +74,7 @@ export default function TrainerPerformance() {
             : rows
           ).map((row) => (
             <TableRow
-              key={row.userID}
+              key={row.user_id}
               onClick={() => handleRowClick(row)}
               sx={{
                 cursor: "pointer",
@@ -86,7 +82,7 @@ export default function TrainerPerformance() {
               }}
             >
               <TableCell sx={{ textAlign: "left", verticalAlign: "middle" }}>
-                {row.userID}
+                {row.user_id}
               </TableCell>
               <TableCell
                 sx={{
@@ -96,7 +92,7 @@ export default function TrainerPerformance() {
                 }}
               >
                 <img
-                  src={yoga}
+                  src={`http://localhost:5000/uploads/${row.profile_picture}`}
                   alt="trainer pic"
                   style={{
                     width: "60px",
@@ -116,7 +112,7 @@ export default function TrainerPerformance() {
                     {row.username}
                   </span>
                   <span style={{ color: "#666", fontSize: "14px" }}>
-                    {row.userEmail}
+                    {row.email}
                   </span>
                 </div>
               </TableCell>
@@ -136,7 +132,7 @@ export default function TrainerPerformance() {
                       fontWeight: 600,
                     }}
                   >
-                    {getLabelText(row.avgRating)}
+                    {getLabelText(parseFloat(row.avgRating) || 0)}
                   </Box>
                   <Rating
                     name="read-only"

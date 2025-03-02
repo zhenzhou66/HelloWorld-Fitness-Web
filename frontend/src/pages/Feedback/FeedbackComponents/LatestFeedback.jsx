@@ -2,52 +2,6 @@ import React, {useState, useEffect} from "react";
 import { Card, CardContent, Avatar, Rating } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 
-// Dummy feedback data (sorted by most recent first)
-// const feedbackData = [
-//   {
-//     id: 1,
-//     user: "EmilyLai",
-//     date: "Mar 1, 2025",
-//     trainer: "AlexWu",
-//     className: "Yoga Flow",
-//     rating: 5,
-//     comment:
-//       "The trainer was very motivating and gave clear instructions. The class was a bit crowded, though.",
-//   },
-//   {
-//     id: 2,
-//     user: "EmilyLai",
-//     date: "Feb 28, 2025",
-//     trainer: "AlexWu",
-//     className: "Zumba",
-//     rating: 4,
-//     comment:
-//       "Excellent class and trainer. The Zumba session was well-paced and exciting.",
-//   },
-//   {
-//     id: 3,
-//     user: "EmilyLai",
-//     date: "Feb 25, 2025",
-//     trainer: "AlexWu",
-//     className: "Yoga Flow",
-//     rating: 3,
-//     comment:
-//       "The trainer was very motivating and gave clear instructions. The class was a bit crowded, though.",
-//   },
-//   {
-//     id: 4,
-//     user: "EmilyLai",
-//     date: "Feb 20, 2025",
-//     trainer: "AlexWu",
-//     className: "Pilates",
-//     rating: 5,
-//     comment: "Great class with an energetic vibe!",
-//   },
-// ];
-
-// // Show only the latest 3 feedback items
-// const latestFeedback = feedbackData.slice(0, 3);
-
 export default function LatestFeedback() {
 
   //Displaying latest feedback
@@ -66,7 +20,7 @@ export default function LatestFeedback() {
   function formatDate(dateString) {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-GB', { timeZone: 'Asia/Kuala_Lumpur' }); 
-}
+  }
 
   return (
     <Card
