@@ -85,11 +85,39 @@ router.post('/add', upload.single('classImage'), async (req, res) => {
             INSERT INTO classes (class_name, description, max_participants, schedule_date, start_time, end_time, trainer_id, class_image) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         `;
+        const classIdQuery = `
+            SELECT class_id from classes WHERE class_name = ?;
+        `;
         db.query(insertClassQuery, [className, description, maxParticipants, scheduleDate, startTime, endTime, trainerName, class_image], (err, results) => {
             if (err) {
                 return res.status(500).json({ message: 'Database error while adding class.', error: err });
             }
-            res.status(201).json({ message: 'Class added successfully!' });
+
+            db.query(classIdQuery, [className], (err, classId) => {
+                if (err) {
+                    return res.status(500).json({ message: 'Database error while adding class.', error: err });
+                }
+                const class_id = classId[0].class_id
+                const scheduleDateObj = new Date(scheduleDate); 
+                const send_date = new Date(scheduleDateObj); 
+                send_date.setDate(scheduleDateObj.getDate() - 1);
+
+                const notificationQuery = `INSERT INTO notifications 
+                    (title, message, type, send_date, end_date, target, class_id) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?)`;
+
+                const notificationMessage = `Don't forget your ${className} class tomorrow at ${startTime}.`;
+
+                db.query(notificationQuery, 
+                    [`${className} Class Reminder`, notificationMessage, 'Reminder', send_date, scheduleDate, 'General', class_id], 
+                    (err, notification) => {
+                        if (err) {
+                            return res.status(500).json({ message: 'Database error while adding class notification.', error: err });
+                        }
+                        res.status(201).json({ message: 'Class added successfully!' });
+                    }
+                );
+            }); 
         });        
 
     } catch (err) {
@@ -136,10 +164,17 @@ router.delete('/delete', async (req, res) => {
             WHERE class_id IN (${class_ids.map(() => '?').join(',')})
         `;
 
+        const deleteNotificationQuery = `DELETE FROM notifications WHERE class_id IN (${class_ids.map(() => '?').join(',')})`;
+
         const [result] = await db.promise().query(deleteQuery, class_ids);
 
         if (result.affectedRows > 0) {
-            res.status(200).json({ message: 'Class and class images deleted successfully!' });
+            const [notiResult] = await db.promise().query(deleteNotificationQuery, class_ids);
+            if (notiResult.affectedRows > 0) {
+                res.status(200).json({ message: 'Class and class images deleted successfully!' });
+            } else {
+                res.status(404).json({ message: 'No notification found to delete.' });
+            }
         } else {
             res.status(404).json({ message: 'No class found to delete.' });
         }
@@ -152,7 +187,6 @@ router.delete('/delete', async (req, res) => {
 
 router.put('/update', (req, res) => {
     const {class_id, class_name, description, end_time, max_participants, schedule_date, start_time, trainer_id} = req.body;
-    console.log(class_name);
 
     const checkNameQuery = 'SELECT class_name FROM classes WHERE class_name = ? AND class_id != ?';
     db.query(checkNameQuery, [class_name, class_id], (err, result) => {
@@ -173,19 +207,44 @@ router.put('/update', (req, res) => {
             return res.status(400).json({ message: "Schedule date must be in the future." });
         }
 
+        const getClassQuery = 'SELECT class_name FROM classes WHERE class_id = ?';
+
         const updateQuery = `
         UPDATE classes
         SET class_name = ?, description = ?, max_participants = ?, schedule_date = ?, start_time = ?, end_time = ?, trainer_id = ?
         WHERE class_id = ?
         `;
 
-        db.query(updateQuery, [class_name, description, max_participants, schedule_date, start_time, end_time, trainer_id, class_id], (err, result) => {
+        const updateNotificationQuery = `
+        UPDATE notifications
+        SET title = ?, message = ?, send_date = ?, end_date = ?
+        WHERE class_id = ? AND title = ?
+        `;
+
+        const notificationMessage = `Don't forget your ${class_name} class tomorrow at ${start_time}.`;
+        const scheduleDateObj = new Date(schedule_date); 
+        const send_date = new Date(scheduleDateObj); 
+        send_date.setDate(scheduleDateObj.getDate() - 1);
+
+        db.query(getClassQuery, [class_id], (err, className) => {
             if (err) {
                 return res.status(500).json({ message: 'Database error while updating class.' });
             }
-            
-            res.status(200).json({ message: 'Class updated successfully!' });
-                        
+            const originalName = className[0].class_name;
+
+            db.query(updateQuery, [class_name, description, max_participants, schedule_date, start_time, end_time, trainer_id, class_id], (err, result) => {
+                if (err) {
+                    return res.status(500).json({ message: 'Database error while updating class.' });
+                }
+
+                db.query(updateNotificationQuery, [`${class_name} Class Reminder`, notificationMessage, send_date, schedule_date, class_id, `${originalName} Class Reminder`], (err, result) => {
+                    if (err) {
+                        return res.status(500).json({ message: 'Database error while updating class.' });
+                    }
+                
+                    res.status(200).json({ message: 'Class updated successfully!' });
+                });       
+            });
         });
     });
 });
