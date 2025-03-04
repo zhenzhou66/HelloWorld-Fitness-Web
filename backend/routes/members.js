@@ -34,7 +34,7 @@ const multer = require('multer');
 const path = require('path');
 
 const storage = multer.diskStorage({
-    destination: './uploads/profile_pictures', 
+    destination: path.resolve(__dirname, '../../uploads/profile_pictures'), 
     filename: (req, file, cb) => {
         const username = req.body.username; 
         const ext = path.extname(file.originalname); 
@@ -145,7 +145,7 @@ router.delete('/delete', async (req, res) => {
         // Delete profile pictures from the filesystem
         for (const user of users) {
             if (user.profile_picture) {
-                const filePath = path.join(__dirname, '../uploads', user.profile_picture);
+                const filePath = path.join(__dirname, '../../uploads', user.profile_picture);
                 if (fs.existsSync(filePath)) {
                     await unlinkAsync(filePath);
                 }

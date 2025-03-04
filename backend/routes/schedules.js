@@ -45,7 +45,7 @@ const multer = require('multer');
 const path = require('path');
 
 const storage = multer.diskStorage({
-    destination: './uploads/class_image', 
+    destination: path.resolve(__dirname, '../../uploads/class_image'),  
     filename: (req, file, cb) => {
         const username = req.body.className; 
         const ext = path.extname(file.originalname); 
@@ -151,7 +151,7 @@ router.delete('/delete', async (req, res) => {
         // Delete class images from the filesystem
         for (const image of classes) {
             if (image.class_image) {
-                const filePath = path.join(__dirname, '../uploads', image.class_image);
+                const filePath = path.join(__dirname, '../../uploads', image.class_image);
                 if (fs.existsSync(filePath)) {
                     await unlinkAsync(filePath);
                 }
@@ -196,54 +196,63 @@ router.put('/update', (req, res) => {
         if (result.length > 0) {  
             return res.status(400).json({ message: 'Class name already exists.' });
         }
-
-        //Check if the date is in the future
-        const today = new Date();
-        today.setHours(0, 0, 0, 0); 
-
-        const classDate = new Date(schedule_date);
-        classDate.setHours(0, 0, 0, 0); 
-        if (classDate <= today) {
-            return res.status(400).json({ message: "Schedule date must be in the future." });
-        }
-
-        const getClassQuery = 'SELECT class_name FROM classes WHERE class_id = ?';
-
-        const updateQuery = `
-        UPDATE classes
-        SET class_name = ?, description = ?, max_participants = ?, schedule_date = ?, start_time = ?, end_time = ?, trainer_id = ?
-        WHERE class_id = ?
-        `;
-
-        const updateNotificationQuery = `
-        UPDATE notifications
-        SET title = ?, message = ?, send_date = ?, end_date = ?
-        WHERE class_id = ? AND title = ?
-        `;
-
-        const notificationMessage = `Don't forget your ${class_name} class tomorrow at ${start_time}.`;
-        const scheduleDateObj = new Date(schedule_date); 
-        const send_date = new Date(scheduleDateObj); 
-        send_date.setDate(scheduleDateObj.getDate() - 1);
-
-        db.query(getClassQuery, [class_id], (err, className) => {
+        const checkDateQuery = 'SELECT schedule_date FROM classes WHERE class_id = ?';
+        db.query(checkDateQuery, [class_id], (err, dateRResult) => {
             if (err) {
-                return res.status(500).json({ message: 'Database error while updating class.' });
+                return res.status(500).json({ message: 'Database error while checking class names.' });
             }
-            const originalName = className[0].class_name;
+            const oriSchedule_date = new Date(dateRResult[0].schedule_date);
 
-            db.query(updateQuery, [class_name, description, max_participants, schedule_date, start_time, end_time, trainer_id, class_id], (err, result) => {
+            //Check if the date is in the future
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); 
+
+            const classDate = new Date(schedule_date);
+            classDate.setHours(0, 0, 0, 0); 
+            if(today >= oriSchedule_date){
+                return res.status(400).json({ message: "Cannot edit date of past classes." });
+            }else if (classDate <= today) {
+                return res.status(400).json({ message: "Schedule date must be in the future." });
+            }
+
+            const getClassQuery = 'SELECT class_name FROM classes WHERE class_id = ?';
+
+            const updateQuery = `
+            UPDATE classes
+            SET class_name = ?, description = ?, max_participants = ?, schedule_date = ?, start_time = ?, end_time = ?, trainer_id = ?
+            WHERE class_id = ?
+            `;
+
+            const updateNotificationQuery = `
+            UPDATE notifications
+            SET title = ?, message = ?, send_date = ?, end_date = ?
+            WHERE class_id = ? AND title = ?
+            `;
+
+            const notificationMessage = `Don't forget your ${class_name} class tomorrow at ${start_time}.`;
+            const scheduleDateObj = new Date(schedule_date); 
+            const send_date = new Date(scheduleDateObj); 
+            send_date.setDate(scheduleDateObj.getDate() - 1);
+
+            db.query(getClassQuery, [class_id], (err, className) => {
                 if (err) {
                     return res.status(500).json({ message: 'Database error while updating class.' });
                 }
+                const originalName = className[0].class_name;
 
-                db.query(updateNotificationQuery, [`${class_name} Class Reminder`, notificationMessage, send_date, schedule_date, class_id, `${originalName} Class Reminder`], (err, result) => {
+                db.query(updateQuery, [class_name, description, max_participants, schedule_date, start_time, end_time, trainer_id, class_id], (err, result) => {
                     if (err) {
                         return res.status(500).json({ message: 'Database error while updating class.' });
                     }
-                
-                    res.status(200).json({ message: 'Class updated successfully!' });
-                });       
+
+                    db.query(updateNotificationQuery, [`${class_name} Class Reminder`, notificationMessage, send_date, schedule_date, class_id, `${originalName} Class Reminder`], (err, result) => {
+                        if (err) {
+                            return res.status(500).json({ message: 'Database error while updating class.' });
+                        }
+                    
+                        res.status(200).json({ message: 'Class updated successfully!' });
+                    });       
+                });
             });
         });
     });

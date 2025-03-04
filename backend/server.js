@@ -3,6 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const mysql = require('mysql2');
 const dotenv = require('dotenv');
+const path = require('path');
 
 dotenv.config();
 
@@ -55,7 +56,7 @@ app.use('/api/announcement', announcementRoutes);
 const feedbackRoutes = require('./routes/feedback');
 app.use('/api/feedback', feedbackRoutes);
 
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static(path.resolve(__dirname, '../uploads')));
 
 app.get('/', (req, res) => {
     res.send('Server is running!');

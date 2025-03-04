@@ -24,7 +24,7 @@ const multer = require('multer');
 const path = require('path');
 
 const storage = multer.diskStorage({
-    destination: './uploads/profile_pictures', 
+    destination: path.resolve(__dirname, '../../uploads/profile_pictures'), 
     filename: (req, file, cb) => {
         const username = req.body.username; 
         const ext = path.extname(file.originalname); 
@@ -81,7 +81,11 @@ router.post('/add', upload.single('profilePicture'), (req, res) => {
     });
 });
 
-router.delete('/delete', (req, res) => {
+const fs = require('fs');
+const util = require('util');
+const unlinkAsync = util.promisify(fs.unlink);
+
+router.delete('/delete', async (req, res) => {
     let { user_ids } = req.body; 
 
     if (!user_ids) {
@@ -92,21 +96,39 @@ router.delete('/delete', (req, res) => {
         user_ids = [user_ids];
     }
 
-    const deleteQuery = `
-        DELETE FROM user
-        WHERE user_id IN (${user_ids.map(() => '?').join(',')}) 
-    `;
+    try {
+        // Get profile pictures of users before deleting them
+        const [users] = await db.promise().query(
+            `SELECT profile_picture FROM user WHERE user_id IN (${user_ids.map(() => '?').join(',')})`,
+            user_ids
+        );
 
-    db.query(deleteQuery, user_ids, (err, result) => {
-        if (err) {
-            return res.status(500).json({ message: 'Database error while deleting trainers.', error: err });
+        // Delete profile pictures from the filesystem
+        for (const user of users) {
+            if (user.profile_picture) {
+                const filePath = path.join(__dirname, '../../uploads', user.profile_picture);
+                if (fs.existsSync(filePath)) {
+                    await unlinkAsync(filePath);
+                }
+            }
         }
+
+        const deleteQuery = `
+            DELETE FROM user
+            WHERE user_id IN (${user_ids.map(() => '?').join(',')}) 
+        `;
+
+        const [result] = await db.promise().query(deleteQuery, user_ids);
+
         if (result.affectedRows > 0) {
-            res.status(200).json({ message: 'Trainers deleted successfully!' });
+            res.status(200).json({ message: 'Trainers and profile pictures deleted successfully!' });
         } else {
             res.status(404).json({ message: 'No trainers found to delete.' });
         }
-    });
+    } catch (err) {
+        console.error('Error deleting trainers:', err);
+        res.status(500).json({ message: 'Internal server error.', error: err });
+    }
 });
 
 router.get('/trainer-info/:user_id', (req, res) => {
