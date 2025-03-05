@@ -3,3 +3,4 @@ backend/node_modules/
 frontend/node_modules/
 *.log
 .env
+.Hello_World_Fitness_App
