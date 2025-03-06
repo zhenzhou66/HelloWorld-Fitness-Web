@@ -95,15 +95,6 @@ const Members = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     }
 
-    // const handleGoalChange = (goal) => {
-    //     setFormData((prevData) => {
-    //         const goals = prevData.fitnessGoals.includes(goal)
-    //         ? prevData.fitnessGoals.filter((g) => g !== goal)
-    //         : [...prevData.fitnessGoals, goal];
-    //         return { ...prevData, fitnessGoals: goals };
-    //     });
-    // };
-
     const handleSubmit = (e) => {
         e.preventDefault();
         const url = 'http://localhost:5000/api/members/add';

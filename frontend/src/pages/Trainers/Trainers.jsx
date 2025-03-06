@@ -53,7 +53,7 @@ const Trainers = () => {
         dob: "", 
         height: "", 
         weight: "", 
-        fitnessGoals: [],
+        fitnessGoals: "",
     });
 
     const openModal = () => setModalOpen(true);
@@ -69,22 +69,13 @@ const Trainers = () => {
             dob: "", 
             height: "", 
             weight: "", 
-            fitnessGoals: [],
+            fitnessGoals: "",
         });
     };
     
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     }
-
-    const handleGoalChange = (goal) => {
-        setFormData((prevData) => {
-            const goals = prevData.fitnessGoals.includes(goal)
-            ? prevData.fitnessGoals.filter((g) => g !== goal)
-            : [...prevData.fitnessGoals, goal];
-            return { ...prevData, fitnessGoals: goals };
-        });
-    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -101,7 +92,7 @@ const Trainers = () => {
         formDataToSend.append("dob", formData.dob);
         formDataToSend.append("height", formData.height);
         formDataToSend.append("weight", formData.weight);
-        formDataToSend.append("fitnessGoals", formData.fitnessGoals.join(", "));
+        formDataToSend.append("fitnessGoals", formData.fitnessGoals);
         formDataToSend.append("dateJoined", new Date().toLocaleDateString('en-CA'));
         
         if (formData.profilePicture) {
@@ -501,7 +492,7 @@ const Trainers = () => {
                                         <div className={styles.fitnessGoalsOption}>
                                             {["Loss Weight", "Muscle Mass Gain", "Gain Weight", "Shape Body", "Others"].map((goal) => (
                                                 <label key={goal} className={styles.goalOption}>
-                                                    <input type="checkbox" value={goal} checked={formData.fitnessGoals.includes(goal)} onChange={() => handleGoalChange(goal)}
+                                                    <input type="radio" name="fitnessGoals" value={goal} checked={formData.fitnessGoals == goal} onChange={handleChange}
                                                     />
                                                     {goal}    
                                                 </label>
@@ -599,7 +590,7 @@ const Trainers = () => {
                             <div className={styles.fitnessGoalsOption}>
                                 {["Loss Weight", "Muscle Mass Gain", "Gain Weight", "Shape Body", "Others"].map((goal) => (
                                     <label key={goal} className={styles.goalOption}>
-                                        <input type="checkbox" value={goal}  checked={trainerInfo.fitness_goals.split(', ').includes(goal)} onChange={() => handleEditGoalChange(goal)}
+                                        <input type="radio" name="fitness_goals" value={goal}  checked={trainerInfo.fitness_goals == goal} onChange={handleEditChange}
                                         />
                                         
                                         {goal}    
