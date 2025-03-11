@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Mar 10, 2025 at 05:54 PM
+-- Generation Time: Mar 11, 2025 at 11:07 AM
 -- Server version: 10.1.25-MariaDB
 -- PHP Version: 5.6.31
 
@@ -371,6 +371,91 @@ INSERT INTO `points` (`id`, `user_id`, `activity_type`, `points`, `date_received
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `set_meal`
+--
+
+CREATE TABLE `set_meal` (
+  `set_meal_id` int(11) NOT NULL,
+  `meal_name` varchar(100) NOT NULL,
+  `description` varchar(200) NOT NULL,
+  `meal_type` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `set_meal`
+--
+
+INSERT INTO `set_meal` (`set_meal_id`, `meal_name`, `description`, `meal_type`) VALUES
+(1, 'Healthy Greens Delight', 'Grilled Chicken Salad + Steamed Broccoli + Vegetable Soup', 'Lose Weight'),
+(2, 'Balanced Energy Bowl', 'Oatmeal with Fruits + Grilled Salmon + Quinoa Salad', 'Lose Weight'),
+(3, 'Light & Nourishing Wrap', 'Chicken Wrap + Egg Salad + Brown Rice Bowl', 'Lose Weight'),
+(4, 'Protein-Packed Feast', 'Beef Steak + Shrimp Pasta + Avocado Toast', 'Gain Weight'),
+(5, 'Hearty Mexican Boost', 'Chicken Curry + Beef Tacos + Fruit Smoothie', 'Gain Weight'),
+(6, 'Wholesome Power Plate', 'Fish Curry with Rice + Turkey Sandwich + Grilled Vegetables', 'Gain Weight'),
+(7, 'Strength Builder Meal', 'Baked Chicken Breast + Quinoa Salad + Beef Tacos', 'Muscle Mass Gain'),
+(8, 'Omega Muscle Fuel', 'Egg Salad + Grilled Salmon + Brown Rice Bowl', 'Muscle Mass Gain'),
+(9, 'Protein Power Wrap', 'Chicken Wrap + Grilled Pork Chops + Vegetable Stir-Fry', 'Muscle Mass Gain'),
+(10, 'Balanced Fitness Meal', 'Turkey Sandwich + Caesar Salad + Fruit Smoothie', 'Shape Body'),
+(11, 'Plant-Based Power Plate', 'Vegetable Stir-Fry + Veggie Burger + Grilled Vegetables', 'Shape Body'),
+(12, 'Nutritious Wellness Bowl', 'Grilled Chicken Salad + Brown Rice Bowl + Tofu Stir-Fry', 'Shape Body');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `set_meal_details`
+--
+
+CREATE TABLE `set_meal_details` (
+  `set_meal_detail_id` int(11) NOT NULL,
+  `set_meal_id` int(11) NOT NULL,
+  `meal_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `set_meal_details`
+--
+
+INSERT INTO `set_meal_details` (`set_meal_detail_id`, `set_meal_id`, `meal_id`) VALUES
+(1, 1, 1),
+(2, 1, 24),
+(3, 1, 16),
+(4, 2, 7),
+(5, 2, 6),
+(6, 2, 5),
+(7, 3, 8),
+(8, 3, 11),
+(9, 3, 25),
+(10, 4, 4),
+(11, 4, 15),
+(12, 4, 18),
+(13, 5, 23),
+(14, 5, 13),
+(15, 5, 14),
+(16, 6, 19),
+(17, 6, 10),
+(18, 6, 12),
+(19, 7, 17),
+(20, 7, 5),
+(21, 7, 13),
+(22, 8, 11),
+(23, 8, 6),
+(24, 8, 25),
+(25, 9, 8),
+(26, 9, 20),
+(27, 9, 3),
+(28, 10, 10),
+(29, 10, 22),
+(30, 10, 14),
+(31, 11, 3),
+(32, 11, 21),
+(33, 11, 12),
+(34, 12, 1),
+(35, 12, 25),
+(36, 12, 9);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `transactions`
 --
 
@@ -451,31 +536,6 @@ CREATE TABLE `user_badge` (
 
 INSERT INTO `user_badge` (`id`, `user_id`, `badge_id`, `earned_date`) VALUES
 (1, 2, 1, '2025-03-11');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `user_meal`
---
-
-CREATE TABLE `user_meal` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `meal_id` int(11) NOT NULL,
-  `serving_count` decimal(5,2) NOT NULL,
-  `meal_date` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `user_meal`
---
-
-INSERT INTO `user_meal` (`id`, `user_id`, `meal_id`, `serving_count`, `meal_date`) VALUES
-(1, 2, 1, '1.00', '2025-01-15'),
-(2, 2, 5, '1.50', '2025-01-16'),
-(3, 2, 8, '2.00', '2025-01-17'),
-(4, 2, 14, '1.00', '2025-01-18'),
-(5, 2, 20, '0.75', '2025-01-19');
 
 -- --------------------------------------------------------
 
@@ -636,10 +696,7 @@ INSERT INTO `workout_plans` (`workout_plan_id`, `plan_name`, `description`, `dif
 (3, 'Advanced Muscle Building', 'An advanced plan focused on muscle hypertrophy.', 'Advanced', 'General', 'workout_image/3.webp'),
 (4, 'Full-Body Fitness', 'A full-body workout program to improve overall fitness.', 'Beginner', 'General', 'workout_image/4.jpg'),
 (5, 'Endurance Booster', 'Cardio-focused workouts for improving endurance.', 'Intermediate', 'General', 'workout_image/5.jpg'),
-(6, 'Core and Stability Training', 'Focused on core strength and stability exercises.', 'Advanced', 'General', 'workout_image/6.webp'),
-(7, 'ABC', 'bdbdbdh', 'Beginner', 'Member', 'workout_image/ABC.jpg'),
-(8, 'ABD', 'bdbdbdh', 'Intermediate', 'Member', 'workout_image/ABD.jpg'),
-(9, 'This', 'cfgh', 'Advanced', 'Member', 'workout_image/This.jpg');
+(6, 'Core and Stability Training', 'Focused on core strength and stability exercises.', 'Advanced', 'General', 'workout_image/6.webp');
 
 -- --------------------------------------------------------
 
@@ -679,18 +736,7 @@ INSERT INTO `workout_plan_details` (`id`, `workout_detail_id`, `workout_plan_id`
 (19, 9, 6),
 (20, 12, 6),
 (21, 16, 6),
-(22, 18, 6),
-(23, 4, 7),
-(24, 5, 7),
-(25, 10, 7),
-(26, 4, 8),
-(27, 5, 8),
-(28, 10, 8),
-(29, 12, 8),
-(30, 9, 9),
-(31, 17, 9),
-(32, 3, 9),
-(33, 14, 9);
+(22, 18, 6);
 
 --
 -- Indexes for dumped tables
@@ -791,6 +837,20 @@ ALTER TABLE `points`
   ADD KEY `user_id` (`user_id`);
 
 --
+-- Indexes for table `set_meal`
+--
+ALTER TABLE `set_meal`
+  ADD PRIMARY KEY (`set_meal_id`);
+
+--
+-- Indexes for table `set_meal_details`
+--
+ALTER TABLE `set_meal_details`
+  ADD PRIMARY KEY (`set_meal_detail_id`),
+  ADD KEY `meal_id` (`meal_id`),
+  ADD KEY `set_meal_id` (`set_meal_id`);
+
+--
 -- Indexes for table `transactions`
 --
 ALTER TABLE `transactions`
@@ -810,14 +870,6 @@ ALTER TABLE `user_badge`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`),
   ADD KEY `badge_id` (`badge_id`);
-
---
--- Indexes for table `user_meal`
---
-ALTER TABLE `user_meal`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `meal_id` (`meal_id`);
 
 --
 -- Indexes for table `user_membership`
@@ -932,7 +984,17 @@ ALTER TABLE `notifications`
 -- AUTO_INCREMENT for table `points`
 --
 ALTER TABLE `points`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+--
+-- AUTO_INCREMENT for table `set_meal`
+--
+ALTER TABLE `set_meal`
+  MODIFY `set_meal_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+--
+-- AUTO_INCREMENT for table `set_meal_details`
+--
+ALTER TABLE `set_meal_details`
+  MODIFY `set_meal_detail_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 --
 -- AUTO_INCREMENT for table `transactions`
 --
@@ -942,27 +1004,22 @@ ALTER TABLE `transactions`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 --
 -- AUTO_INCREMENT for table `user_badge`
 --
 ALTER TABLE `user_badge`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
---
--- AUTO_INCREMENT for table `user_meal`
---
-ALTER TABLE `user_meal`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `user_membership`
 --
 ALTER TABLE `user_membership`
-  MODIFY `user_membership_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `user_membership_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `user_workout_plans`
 --
 ALTER TABLE `user_workout_plans`
-  MODIFY `user_workout_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `user_workout_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 --
 -- AUTO_INCREMENT for table `user_workout_progress`
 --
@@ -977,12 +1034,12 @@ ALTER TABLE `workout_details`
 -- AUTO_INCREMENT for table `workout_plans`
 --
 ALTER TABLE `workout_plans`
-  MODIFY `workout_plan_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `workout_plan_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 --
 -- AUTO_INCREMENT for table `workout_plan_details`
 --
 ALTER TABLE `workout_plan_details`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 --
 -- Constraints for dumped tables
 --
@@ -1049,18 +1106,18 @@ ALTER TABLE `points`
   ADD CONSTRAINT `points_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Constraints for table `set_meal_details`
+--
+ALTER TABLE `set_meal_details`
+  ADD CONSTRAINT `set_meal_details_ibfk_1` FOREIGN KEY (`meal_id`) REFERENCES `meal` (`meal_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `set_meal_details_ibfk_2` FOREIGN KEY (`set_meal_id`) REFERENCES `set_meal` (`set_meal_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints for table `user_badge`
 --
 ALTER TABLE `user_badge`
   ADD CONSTRAINT `user_badge_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `user_badge_ibfk_2` FOREIGN KEY (`badge_id`) REFERENCES `badge` (`badge_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `user_meal`
---
-ALTER TABLE `user_meal`
-  ADD CONSTRAINT `user_meal_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `user_meal_ibfk_2` FOREIGN KEY (`meal_id`) REFERENCES `meal` (`meal_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `user_membership`
