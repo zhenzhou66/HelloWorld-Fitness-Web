@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Mar 06, 2025 at 02:39 PM
+-- Generation Time: Mar 10, 2025 at 05:54 PM
 -- Server version: 10.1.25-MariaDB
 -- PHP Version: 5.6.31
 
@@ -93,8 +93,19 @@ CREATE TABLE `badge` (
   `badge_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   `description` text NOT NULL,
-  `icon` varchar(255) NOT NULL
+  `icon` varchar(255) NOT NULL,
+  `points_needed` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `badge`
+--
+
+INSERT INTO `badge` (`badge_id`, `name`, `description`, `icon`, `points_needed`) VALUES
+(1, '100 Milestone', 'You have successfully collected your first 100 points!', 'badge_image/100 Milestone.png', 100),
+(2, '200 Milestone', 'You have successfully collected your first 200 points!', 'badge_image/200 Milestone.png', 200),
+(3, '300 Milestone', 'You have successfully collected your first 300 points!', 'badge_image/300 Milestone.png', 300),
+(4, '400 Milestone', 'You have successfully collected your first 400 points!', 'badge_image/400 Milestone.png', 400);
 
 -- --------------------------------------------------------
 
@@ -340,6 +351,23 @@ CREATE TABLE `points` (
   `date_received` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `points`
+--
+
+INSERT INTO `points` (`id`, `user_id`, `activity_type`, `points`, `date_received`) VALUES
+(3, 2, 'workout', 20, '2025-03-07'),
+(19, 4, 'workout', 10, '2025-03-10'),
+(20, 6, 'workout', 30, '2025-03-10'),
+(21, 2, 'attendance', 10, '2025-03-10'),
+(22, 2, 'workout', 30, '2025-03-10'),
+(23, 5, 'attendance', 10, '2025-03-10'),
+(24, 5, 'Workout', 20, '2025-03-10'),
+(25, 8, 'attendance', 10, '2025-03-10'),
+(26, 4, 'workout', 20, '2025-03-10'),
+(27, 2, 'workout', 26, '2025-03-10'),
+(28, 2, 'workout', 30, '2025-03-10');
+
 -- --------------------------------------------------------
 
 --
@@ -417,6 +445,13 @@ CREATE TABLE `user_badge` (
   `earned_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `user_badge`
+--
+
+INSERT INTO `user_badge` (`id`, `user_id`, `badge_id`, `earned_date`) VALUES
+(1, 2, 1, '2025-03-11');
+
 -- --------------------------------------------------------
 
 --
@@ -493,7 +528,10 @@ INSERT INTO `user_workout_plans` (`user_workout_id`, `user_id`, `workout_plan_id
 (3, 7, 3, 1, NULL, 'Friday'),
 (4, 9, 4, 0, NULL, 'Monday'),
 (5, 10, 5, 1, 1, 'Tuesday'),
-(6, 4, 6, 1, NULL, 'Thursday');
+(6, 4, 6, 1, NULL, 'Thursday'),
+(7, 2, 1, 1, NULL, 'Monday'),
+(8, 2, 3, 1, NULL, 'Tuesday'),
+(18, 2, 2, 1, NULL, 'Monday');
 
 -- --------------------------------------------------------
 
@@ -525,7 +563,13 @@ INSERT INTO `user_workout_progress` (`progress_id`, `user_workout_id`, `workout_
 (9, 3, 13, NULL, 0),
 (10, 5, 4, NULL, 1),
 (11, 5, 6, '10.00', 1),
-(12, 5, 17, '25.00', 1);
+(12, 5, 17, '25.00', 1),
+(25, 18, 4, NULL, 0),
+(26, 18, 6, NULL, 0),
+(27, 18, 10, NULL, 1),
+(28, 18, 4, NULL, 0),
+(29, 18, 6, NULL, 0),
+(30, 18, 10, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -592,7 +636,10 @@ INSERT INTO `workout_plans` (`workout_plan_id`, `plan_name`, `description`, `dif
 (3, 'Advanced Muscle Building', 'An advanced plan focused on muscle hypertrophy.', 'Advanced', 'General', 'workout_image/3.webp'),
 (4, 'Full-Body Fitness', 'A full-body workout program to improve overall fitness.', 'Beginner', 'General', 'workout_image/4.jpg'),
 (5, 'Endurance Booster', 'Cardio-focused workouts for improving endurance.', 'Intermediate', 'General', 'workout_image/5.jpg'),
-(6, 'Core and Stability Training', 'Focused on core strength and stability exercises.', 'Advanced', 'General', 'workout_image/6.webp');
+(6, 'Core and Stability Training', 'Focused on core strength and stability exercises.', 'Advanced', 'General', 'workout_image/6.webp'),
+(7, 'ABC', 'bdbdbdh', 'Beginner', 'Member', 'workout_image/ABC.jpg'),
+(8, 'ABD', 'bdbdbdh', 'Intermediate', 'Member', 'workout_image/ABD.jpg'),
+(9, 'This', 'cfgh', 'Advanced', 'Member', 'workout_image/This.jpg');
 
 -- --------------------------------------------------------
 
@@ -632,7 +679,18 @@ INSERT INTO `workout_plan_details` (`id`, `workout_detail_id`, `workout_plan_id`
 (19, 9, 6),
 (20, 12, 6),
 (21, 16, 6),
-(22, 18, 6);
+(22, 18, 6),
+(23, 4, 7),
+(24, 5, 7),
+(25, 10, 7),
+(26, 4, 8),
+(27, 5, 8),
+(28, 10, 8),
+(29, 12, 8),
+(30, 9, 9),
+(31, 17, 9),
+(32, 3, 9),
+(33, 14, 9);
 
 --
 -- Indexes for dumped tables
@@ -829,7 +887,7 @@ ALTER TABLE `attendance_gym`
 -- AUTO_INCREMENT for table `badge`
 --
 ALTER TABLE `badge`
-  MODIFY `badge_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `badge_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `classes`
 --
@@ -874,7 +932,7 @@ ALTER TABLE `notifications`
 -- AUTO_INCREMENT for table `points`
 --
 ALTER TABLE `points`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 --
 -- AUTO_INCREMENT for table `transactions`
 --
@@ -884,12 +942,12 @@ ALTER TABLE `transactions`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 --
 -- AUTO_INCREMENT for table `user_badge`
 --
 ALTER TABLE `user_badge`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `user_meal`
 --
@@ -899,17 +957,17 @@ ALTER TABLE `user_meal`
 -- AUTO_INCREMENT for table `user_membership`
 --
 ALTER TABLE `user_membership`
-  MODIFY `user_membership_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `user_membership_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 --
 -- AUTO_INCREMENT for table `user_workout_plans`
 --
 ALTER TABLE `user_workout_plans`
-  MODIFY `user_workout_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `user_workout_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 --
 -- AUTO_INCREMENT for table `user_workout_progress`
 --
 ALTER TABLE `user_workout_progress`
-  MODIFY `progress_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `progress_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 --
 -- AUTO_INCREMENT for table `workout_details`
 --
@@ -919,12 +977,12 @@ ALTER TABLE `workout_details`
 -- AUTO_INCREMENT for table `workout_plans`
 --
 ALTER TABLE `workout_plans`
-  MODIFY `workout_plan_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `workout_plan_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 --
 -- AUTO_INCREMENT for table `workout_plan_details`
 --
 ALTER TABLE `workout_plan_details`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 --
 -- Constraints for dumped tables
 --
