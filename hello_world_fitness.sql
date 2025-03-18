@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 11, 2025 at 11:55 AM
+-- Generation Time: Mar 14, 2025 at 09:17 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -365,7 +365,16 @@ INSERT INTO `points` (`id`, `user_id`, `activity_type`, `points`, `date_received
 (25, 8, 'attendance', 10, '2025-03-10'),
 (26, 4, 'workout', 20, '2025-03-10'),
 (27, 2, 'workout', 26, '2025-03-10'),
-(28, 2, 'workout', 30, '2025-03-10');
+(28, 2, 'workout', 30, '2025-03-10'),
+(29, 2, 'workout', 3, '2025-03-14'),
+(30, 2, 'workout', 6, '2025-03-14'),
+(31, 2, 'workout', 6, '2025-03-14'),
+(32, 2, 'workout', 6, '2025-03-14'),
+(33, 2, 'workout', 6, '2025-03-14'),
+(34, 2, 'workout', 3, '2025-03-14'),
+(35, 2, 'workout', 3, '2025-03-14'),
+(36, 2, 'workout', 3, '2025-03-14'),
+(37, 2, 'workout', 3, '2025-03-14');
 
 -- --------------------------------------------------------
 
@@ -574,23 +583,25 @@ CREATE TABLE `user_workout_plans` (
   `workout_plan_id` int(11) DEFAULT NULL,
   `is_active` tinyint(1) NOT NULL,
   `trainer_id` int(11) DEFAULT NULL,
-  `day_of_week` varchar(20) DEFAULT NULL
+  `day_of_week` varchar(20) DEFAULT NULL,
+  `duration_taken` int(11) DEFAULT 0,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user_workout_plans`
 --
 
-INSERT INTO `user_workout_plans` (`user_workout_id`, `user_id`, `workout_plan_id`, `is_active`, `trainer_id`, `day_of_week`) VALUES
-(1, 2, 1, 1, 1, 'Monday'),
-(2, 4, 2, 1, 5, 'Wednesday'),
-(3, 7, 3, 1, NULL, 'Friday'),
-(4, 9, 4, 0, NULL, 'Monday'),
-(5, 10, 5, 1, 1, 'Tuesday'),
-(6, 4, 6, 1, NULL, 'Thursday'),
-(7, 2, 1, 1, NULL, 'Monday'),
-(8, 2, 3, 1, NULL, 'Tuesday'),
-(18, 2, 2, 1, NULL, 'Monday');
+INSERT INTO `user_workout_plans` (`user_workout_id`, `user_id`, `workout_plan_id`, `is_active`, `trainer_id`, `day_of_week`, `duration_taken`, `updated_at`) VALUES
+(1, 2, 1, 1, 1, 'Monday', NULL, '2025-03-14 04:38:48'),
+(2, 4, 2, 1, 5, 'Wednesday', NULL, '2025-03-14 04:38:48'),
+(3, 7, 3, 1, NULL, 'Friday', NULL, '2025-03-14 04:38:48'),
+(4, 9, 4, 0, NULL, 'Monday', NULL, '2025-03-14 04:38:48'),
+(5, 10, 5, 1, 1, 'Tuesday', NULL, '2025-03-14 04:38:48'),
+(6, 4, 6, 1, NULL, 'Thursday', NULL, '2025-03-14 04:38:48'),
+(7, 2, 1, 1, NULL, 'Monday', NULL, '2025-03-14 04:38:48'),
+(8, 2, 3, 1, NULL, 'Tuesday', NULL, '2025-03-14 04:38:48'),
+(18, 2, 2, 1, NULL, 'Monday', 74, '2025-03-14 07:50:08');
 
 -- --------------------------------------------------------
 
@@ -602,7 +613,6 @@ CREATE TABLE `user_workout_progress` (
   `progress_id` int(11) NOT NULL,
   `user_workout_id` int(11) DEFAULT NULL,
   `workout_detail_id` int(11) DEFAULT NULL,
-  `duration_minutes` decimal(5,2) DEFAULT NULL,
   `is_completed` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -610,25 +620,52 @@ CREATE TABLE `user_workout_progress` (
 -- Dumping data for table `user_workout_progress`
 --
 
-INSERT INTO `user_workout_progress` (`progress_id`, `user_workout_id`, `workout_detail_id`, `duration_minutes`, `is_completed`) VALUES
-(1, 1, 1, NULL, 1),
-(2, 1, 5, 15.00, 1),
-(3, 1, 8, 12.00, 0),
-(4, 2, 4, 10.00, 1),
-(5, 2, 6, 8.00, 1),
-(6, 2, 10, NULL, 0),
-(7, 3, 2, 25.00, 1),
-(8, 3, 3, 30.00, 1),
-(9, 3, 13, NULL, 0),
-(10, 5, 4, NULL, 1),
-(11, 5, 6, 10.00, 1),
-(12, 5, 17, 25.00, 1),
-(25, 18, 4, NULL, 0),
-(26, 18, 6, NULL, 0),
-(27, 18, 10, NULL, 1),
-(28, 18, 4, NULL, 0),
-(29, 18, 6, NULL, 0),
-(30, 18, 10, NULL, 1);
+INSERT INTO `user_workout_progress` (`progress_id`, `user_workout_id`, `workout_detail_id`, `is_completed`) VALUES
+(1, 1, 1, 1),
+(2, 1, 5, 1),
+(3, 1, 8, 0),
+(4, 2, 4, 1),
+(5, 2, 6, 1),
+(6, 2, 10, 0),
+(7, 3, 2, 1),
+(8, 3, 3, 1),
+(9, 3, 13, 0),
+(10, 5, 4, 1),
+(11, 5, 6, 1),
+(12, 5, 17, 1),
+(25, 18, 4, 0),
+(26, 18, 6, 0),
+(27, 18, 10, 1),
+(28, 18, 4, 0),
+(29, 18, 6, 0),
+(30, 18, 10, 1),
+(31, 1, 1, 1),
+(32, 1, 5, 0),
+(33, 1, 8, 0),
+(34, 18, 4, 1),
+(35, 18, 6, 0),
+(36, 18, 10, 0),
+(37, 18, 4, 1),
+(38, 18, 6, 0),
+(39, 18, 10, 0),
+(40, 18, 4, 1),
+(41, 18, 6, 0),
+(42, 18, 10, 0),
+(43, 18, 4, 1),
+(44, 18, 6, 0),
+(45, 18, 10, 0),
+(46, NULL, 16, 1),
+(47, NULL, 9, 0),
+(48, NULL, 17, 0),
+(49, NULL, 16, 1),
+(50, NULL, 9, 0),
+(51, NULL, 17, 0),
+(52, NULL, 16, 1),
+(53, NULL, 9, 0),
+(54, NULL, 17, 0),
+(55, NULL, 16, 0),
+(56, NULL, 9, 0),
+(57, NULL, 17, 1);
 
 -- --------------------------------------------------------
 
@@ -735,7 +772,10 @@ INSERT INTO `workout_plan_details` (`id`, `workout_detail_id`, `workout_plan_id`
 (19, 9, 6),
 (20, 12, 6),
 (21, 16, 6),
-(22, 18, 6);
+(22, 18, 6),
+(41, 16, NULL),
+(42, 9, NULL),
+(43, 17, NULL);
 
 --
 -- Indexes for dumped tables
@@ -995,7 +1035,7 @@ ALTER TABLE `notifications`
 -- AUTO_INCREMENT for table `points`
 --
 ALTER TABLE `points`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT for table `set_meal`
@@ -1037,13 +1077,13 @@ ALTER TABLE `user_membership`
 -- AUTO_INCREMENT for table `user_workout_plans`
 --
 ALTER TABLE `user_workout_plans`
-  MODIFY `user_workout_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `user_workout_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `user_workout_progress`
 --
 ALTER TABLE `user_workout_progress`
-  MODIFY `progress_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `progress_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
 -- AUTO_INCREMENT for table `workout_details`
@@ -1055,13 +1095,13 @@ ALTER TABLE `workout_details`
 -- AUTO_INCREMENT for table `workout_plans`
 --
 ALTER TABLE `workout_plans`
-  MODIFY `workout_plan_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `workout_plan_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `workout_plan_details`
 --
 ALTER TABLE `workout_plan_details`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- Constraints for dumped tables
