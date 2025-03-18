@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 14, 2025 at 09:17 AM
+-- Generation Time: Mar 18, 2025 at 07:23 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -583,25 +583,23 @@ CREATE TABLE `user_workout_plans` (
   `workout_plan_id` int(11) DEFAULT NULL,
   `is_active` tinyint(1) NOT NULL,
   `trainer_id` int(11) DEFAULT NULL,
-  `day_of_week` varchar(20) DEFAULT NULL,
-  `duration_taken` int(11) DEFAULT 0,
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `day_of_week` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user_workout_plans`
 --
 
-INSERT INTO `user_workout_plans` (`user_workout_id`, `user_id`, `workout_plan_id`, `is_active`, `trainer_id`, `day_of_week`, `duration_taken`, `updated_at`) VALUES
-(1, 2, 1, 1, 1, 'Monday', NULL, '2025-03-14 04:38:48'),
-(2, 4, 2, 1, 5, 'Wednesday', NULL, '2025-03-14 04:38:48'),
-(3, 7, 3, 1, NULL, 'Friday', NULL, '2025-03-14 04:38:48'),
-(4, 9, 4, 0, NULL, 'Monday', NULL, '2025-03-14 04:38:48'),
-(5, 10, 5, 1, 1, 'Tuesday', NULL, '2025-03-14 04:38:48'),
-(6, 4, 6, 1, NULL, 'Thursday', NULL, '2025-03-14 04:38:48'),
-(7, 2, 1, 1, NULL, 'Monday', NULL, '2025-03-14 04:38:48'),
-(8, 2, 3, 1, NULL, 'Tuesday', NULL, '2025-03-14 04:38:48'),
-(18, 2, 2, 1, NULL, 'Monday', 74, '2025-03-14 07:50:08');
+INSERT INTO `user_workout_plans` (`user_workout_id`, `user_id`, `workout_plan_id`, `is_active`, `trainer_id`, `day_of_week`) VALUES
+(1, 2, 1, 1, 1, 'Monday'),
+(2, 4, 2, 1, 5, 'Wednesday'),
+(3, 7, 3, 1, NULL, 'Friday'),
+(4, 9, 4, 0, NULL, 'Monday'),
+(5, 10, 5, 1, 1, 'Tuesday'),
+(6, 4, 6, 1, NULL, 'Thursday'),
+(7, 2, 1, 1, NULL, 'Monday'),
+(8, 2, 3, 1, NULL, 'Tuesday'),
+(18, 2, 2, 1, NULL, 'Monday');
 
 -- --------------------------------------------------------
 
@@ -610,62 +608,35 @@ INSERT INTO `user_workout_plans` (`user_workout_id`, `user_id`, `workout_plan_id
 --
 
 CREATE TABLE `user_workout_progress` (
-  `progress_id` int(11) NOT NULL,
+  `user_workout_progress_id` int(11) NOT NULL,
   `user_workout_id` int(11) DEFAULT NULL,
-  `workout_detail_id` int(11) DEFAULT NULL,
-  `is_completed` tinyint(1) NOT NULL
+  `duration_taken` int(11) DEFAULT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user_workout_progress`
 --
 
-INSERT INTO `user_workout_progress` (`progress_id`, `user_workout_id`, `workout_detail_id`, `is_completed`) VALUES
-(1, 1, 1, 1),
-(2, 1, 5, 1),
-(3, 1, 8, 0),
-(4, 2, 4, 1),
-(5, 2, 6, 1),
-(6, 2, 10, 0),
-(7, 3, 2, 1),
-(8, 3, 3, 1),
-(9, 3, 13, 0),
-(10, 5, 4, 1),
-(11, 5, 6, 1),
-(12, 5, 17, 1),
-(25, 18, 4, 0),
-(26, 18, 6, 0),
-(27, 18, 10, 1),
-(28, 18, 4, 0),
-(29, 18, 6, 0),
-(30, 18, 10, 1),
-(31, 1, 1, 1),
-(32, 1, 5, 0),
-(33, 1, 8, 0),
-(34, 18, 4, 1),
-(35, 18, 6, 0),
-(36, 18, 10, 0),
-(37, 18, 4, 1),
-(38, 18, 6, 0),
-(39, 18, 10, 0),
-(40, 18, 4, 1),
-(41, 18, 6, 0),
-(42, 18, 10, 0),
-(43, 18, 4, 1),
-(44, 18, 6, 0),
-(45, 18, 10, 0),
-(46, NULL, 16, 1),
-(47, NULL, 9, 0),
-(48, NULL, 17, 0),
-(49, NULL, 16, 1),
-(50, NULL, 9, 0),
-(51, NULL, 17, 0),
-(52, NULL, 16, 1),
-(53, NULL, 9, 0),
-(54, NULL, 17, 0),
-(55, NULL, 16, 0),
-(56, NULL, 9, 0),
-(57, NULL, 17, 1);
+INSERT INTO `user_workout_progress` (`user_workout_progress_id`, `user_workout_id`, `duration_taken`, `updated_at`) VALUES
+(1, 1, NULL, '2025-03-18 06:10:02'),
+(4, 2, NULL, '2025-03-18 06:10:02'),
+(7, 3, NULL, '2025-03-18 06:10:02'),
+(10, 5, NULL, '2025-03-18 06:10:02'),
+(34, 18, 74, '2025-03-18 06:11:58');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_workout_progress_detail`
+--
+
+CREATE TABLE `user_workout_progress_detail` (
+  `id` int(11) NOT NULL,
+  `user_workout_progress_id` int(11) DEFAULT NULL,
+  `workout_detail_id` int(11) DEFAULT NULL,
+  `is_completed` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -931,9 +902,16 @@ ALTER TABLE `user_workout_plans`
 -- Indexes for table `user_workout_progress`
 --
 ALTER TABLE `user_workout_progress`
-  ADD PRIMARY KEY (`progress_id`),
-  ADD KEY `user_workout_id` (`user_workout_id`),
-  ADD KEY `workout_detail_id` (`workout_detail_id`);
+  ADD PRIMARY KEY (`user_workout_progress_id`),
+  ADD KEY `user_workout_id` (`user_workout_id`);
+
+--
+-- Indexes for table `user_workout_progress_detail`
+--
+ALTER TABLE `user_workout_progress_detail`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `workout_detail_id` (`workout_detail_id`),
+  ADD KEY `user_workout_progress_detail_ibfk_1` (`user_workout_progress_id`);
 
 --
 -- Indexes for table `workout_details`
@@ -1083,7 +1061,13 @@ ALTER TABLE `user_workout_plans`
 -- AUTO_INCREMENT for table `user_workout_progress`
 --
 ALTER TABLE `user_workout_progress`
-  MODIFY `progress_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
+  MODIFY `user_workout_progress_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
+
+--
+-- AUTO_INCREMENT for table `user_workout_progress_detail`
+--
+ALTER TABLE `user_workout_progress_detail`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `workout_details`
@@ -1207,8 +1191,14 @@ ALTER TABLE `user_workout_plans`
 -- Constraints for table `user_workout_progress`
 --
 ALTER TABLE `user_workout_progress`
-  ADD CONSTRAINT `user_workout_progress_ibfk_1` FOREIGN KEY (`user_workout_id`) REFERENCES `user_workout_plans` (`user_workout_id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `user_workout_progress_ibfk_2` FOREIGN KEY (`workout_detail_id`) REFERENCES `workout_details` (`workout_detail_id`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `user_workout_progress_ibfk_1` FOREIGN KEY (`user_workout_id`) REFERENCES `user_workout_plans` (`user_workout_id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Constraints for table `user_workout_progress_detail`
+--
+ALTER TABLE `user_workout_progress_detail`
+  ADD CONSTRAINT `user_workout_progress_detail_ibfk_1` FOREIGN KEY (`user_workout_progress_id`) REFERENCES `user_workout_progress` (`user_workout_progress_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `user_workout_progress_detail_ibfk_2` FOREIGN KEY (`workout_detail_id`) REFERENCES `workout_details` (`workout_detail_id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints for table `workout_plan_details`
