@@ -355,6 +355,7 @@ textarea {
     padding: 10px 15px;
     border-radius: 5px;
     cursor: pointer;
+    height: 35px;
 }
   
 .updateBtn {
