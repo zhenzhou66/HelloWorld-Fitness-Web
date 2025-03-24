@@ -30,7 +30,7 @@ function InfoCards() {
       </div>
       <div className={classes.card}>
         <p>Attendance Rate</p>
-        <h3>{statistics.attendanceRate.toFixed(2)}%</h3>
+        <h3>{statistics.attendanceRate? (statistics.attendanceRate.toFixed(2)): ``}%</h3>
       </div>
       <div className={classes.card}>
         <p>Peak Attendance Hour</p>
