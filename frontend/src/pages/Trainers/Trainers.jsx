@@ -546,7 +546,7 @@ const Trainers = () => {
                                 <img src={`http://localhost:5000/uploads/${trainerInfo.profile_picture}`} alt="Profile" className={styles.profilePicture} />
                                 <div>
                                     <label>Username:</label>
-                                    <input type="text" name="username" value={trainerInfo.username} onChange={handleEditChange} required/>
+                                    <input type="text" name="username" value={trainerInfo.username} readOnly required/>
                                 </div>
                             </div>
                             <hr className={styles.edithr} />
