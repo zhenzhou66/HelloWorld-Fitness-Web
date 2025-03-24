@@ -56,4 +56,50 @@ router.get("/active-members/:year", (req, res) => {
     });
 });
 
+router.get("/getAttendanceCode", (req, res) => {
+    const query = `SELECT code FROM attendance_code 
+                   WHERE class_id IS NULL AND available_from < NOW() AND available_until > NOW()`;
+
+    db.query(query, (error, results) => {
+        if (error) {
+            return res.status(500).json({ error: "Database query failed" });
+        }
+        if (results.length === 0) {
+            return res.status(404).json({ error: "No active attendance code" });
+        }
+        res.json({ success: true, code: results[0].code });
+    });
+});
+
+router.post("/generateAttendanceCode", async (req, res) => {
+    function generateRandomCode() {
+        return String(Math.floor(Math.random() * 1000)).padStart(3, "0");
+    }
+
+    async function insertAttendanceCode() {
+
+        const code = generateRandomCode();
+        const checkQuery = `SELECT * FROM attendance_code WHERE code = ? AND available_from < NOW() AND available_until > NOW()`;
+        const insertQuery = `INSERT INTO attendance_code (code, available_from, available_until) 
+                             VALUES (?, NOW(), TIMESTAMP(DATE(NOW()), '23:59:59'))`;
+
+        try {
+            const [existing] = await db.promise().query(checkQuery, [code]);
+
+            if (existing.length > 0) {
+                return insertAttendanceCode(); 
+            }
+
+            // Insert new unique code
+            await db.promise().query(insertQuery, [code]);
+            res.json({ success: true, code });
+
+        } catch (error) {
+            return res.status(500).json({ error: "Database query failed" });
+        }
+    }
+
+    insertAttendanceCode();
+});
+
 module.exports = router;

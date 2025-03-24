@@ -23,31 +23,36 @@ body {
 .Sidebar {
   z-index: 1000;
   padding: 0px;
-  height: 100vh; /* Ensure the sidebar spans the full height of the viewport */
+  height: 100vh; 
   min-width: 190px;
-  width: 14%;
+  width: 16%;
   max-width: 220px;
   background-color: rgb(255, 255, 255);
   display: flex;
-  flex-direction: column; /* Stack the elements vertically */
+  flex-direction: column; 
   position: fixed;
+}
+
+.SidebarList::-webkit-scrollbar {
+  display: none; 
 }
 
 .logo {
   width: 60%;
   height: auto;
   margin-top: 35px;
-  margin-left: 20px; /* Add spacing around the logo */
-  object-fit: contain; /* Ensure the image scales properly */
+  margin-left: 20px; 
+  object-fit: contain;
 }
 
 .SidebarList {
   height: 100%;
   width: 100%;
   padding: 0;
-  align-items: center; /* Center items horizontally */
-  overflow-y: hidden; /* Enable scrolling if the content overflows */
+  align-items: center;
+  overflow-y: auto; 
   box-sizing: border-box;
+  scrollbar-width: none;
 }
 
 .SidebarList .row {
@@ -151,6 +156,7 @@ body {
   align-items: stretch;
   height: 100vh;
   width: calc(100% - 17%);
+  overflow-x: hidden;
 }
 
 .HeaderProfile {
