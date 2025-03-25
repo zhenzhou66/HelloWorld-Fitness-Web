@@ -350,7 +350,7 @@ const Members = () => {
                             </td>
                             <td>
                                 <div className={styles.mprofileContainer}>
-                                    <img src={`http://localhost:5000/uploads/${member.profile_picture}`} alt="Profile" className={styles.mprofilePicture} />
+                                    <img src={member.profile_picture? `http://localhost:5000/uploads/${member.profile_picture}`:`http://localhost:5000/uploads/profile_pictures/default.jpg`} alt="Profile" className={styles.mprofilePicture} />
                                     <div className={styles.mprofileDetails}>
                                         <span className={styles.mprofileName}>{member.username}</span>
                                         <span className={styles.mprofileEmail}>{member.email}</span>
