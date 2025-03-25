@@ -71,6 +71,9 @@
   text-align: left;
   vertical-align: middle;
 }
+.memberTable tr:hover {
+  background:#f3f3f3;
+}
 
 .memberTable td {
   vertical-align: middle;
@@ -316,7 +319,7 @@ input[type="checkbox"] {
   background: white;
   padding: 20px;
   border-radius: 10px;
-  max-width: 500px;
+  max-width: 550px;
   width: 100%;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow-y: scroll;
@@ -393,7 +396,7 @@ input[type="checkbox"] {
 }
 
 .rightColumn {
-  width: 150px;
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -426,6 +429,10 @@ input, select {
   align-items: center;
   gap: 5px;
   cursor: pointer;
+}
+
+.radioButton{
+  margin-top: 10px;
 }
 
 .fitnessGoals {
@@ -555,6 +562,7 @@ input, select {
   border-radius: 50%;
   height: 80px;
   width: 80px;
+  object-fit: cover;
 }
 
 .edith3text {
