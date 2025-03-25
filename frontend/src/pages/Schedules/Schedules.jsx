@@ -323,7 +323,7 @@ const Schedules = () => {
               </td>
               <td>
                 <div className={styles.classdetailsContainer}>
-                  <img src={`http://localhost:5000/uploads/${classes.class_image}`} alt="Class Image" className={styles.classImage} />
+                  <img src={classes.class_image? `http://localhost:5000/uploads/${classes.class_image}`: `http://localhost:5000/uploads/default.jpg`} alt="Class Image" className={styles.classImage} />
                   <div className={styles.classDetails}>
                     <span className={styles.className}>{classes.class_name}</span>
                     <span className={styles.classDescription}>{classes.description}</span>
