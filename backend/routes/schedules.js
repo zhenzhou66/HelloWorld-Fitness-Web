@@ -62,7 +62,7 @@ router.post('/add', upload.single('classImage'), async (req, res) => {
     try {
         const { className, description, scheduleDate, startTime, endTime, maxParticipants, trainerName} = req.body;
 
-        const class_image = req.file ? `class_image/${req.file.filename}` : null; 
+        const class_image = req.file ? `class_image/${req.file.filename}` : `default.jpg`; 
 
         // Check if name already exists
         const [existingClass] = await db.promise().query('SELECT * FROM classes WHERE class_name = ?', [className]);

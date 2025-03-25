@@ -50,7 +50,7 @@ const upload = multer({
 router.post('/add', upload.single('profilePicture'), async (req, res) => {
     try {
         const { name, email, phone, username, password, gender, dob, height, weight, membershipPlan, fitnessGoals, dateJoined } = req.body;
-        const profilePicture = req.file ? `profile_pictures/${req.file.filename}` : null;
+        const profilePicture = req.file ? `profile_pictures/${req.file.filename}` : `default.jpg`;
         // Validate age
         const birthDate = new Date(dob);
         const today = new Date();

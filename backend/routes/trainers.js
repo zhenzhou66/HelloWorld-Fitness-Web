@@ -39,7 +39,7 @@ const upload = multer({
 
 router.post('/add', upload.single('profilePicture'), (req, res) => {
     const { name, email, phone, username, password, gender, dob, height, weight, fitnessGoals, dateJoined } = req.body;
-    const profilePicture = req.file ? `profile_pictures/${req.file.filename}` : null;
+    const profilePicture = req.file ? `profile_pictures/${req.file.filename}` : `default.jpg`;
 
     const calculateAge = (dob) => {
         const birthDate = new Date(dob);
