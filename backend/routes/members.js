@@ -145,7 +145,7 @@ router.delete('/delete', async (req, res) => {
 
         // Delete profile pictures from the filesystem
         for (const user of users) {
-            if (user.profile_picture) {
+            if (user.profile_picture != "default.jpg") {
                 const filePath = path.join(__dirname, '../../uploads', user.profile_picture);
                 if (fs.existsSync(filePath)) {
                     await unlinkAsync(filePath);

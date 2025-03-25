@@ -150,7 +150,7 @@ router.delete('/delete', async (req, res) => {
 
         // Delete class images from the filesystem
         for (const image of classes) {
-            if (image.class_image) {
+            if (image.class_image != "default.jpg") {
                 const filePath = path.join(__dirname, '../../uploads', image.class_image);
                 if (fs.existsSync(filePath)) {
                     await unlinkAsync(filePath);
