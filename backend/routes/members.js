@@ -122,6 +122,7 @@ router.post('/add', upload.single('profilePicture'), async (req, res) => {
 
 const fs = require('fs');
 const util = require('util');
+const { end } = require('../../Hello_World_Fitness_App/backend/db');
 const unlinkAsync = util.promisify(fs.unlink);
 
 router.delete('/delete', async (req, res) => {
@@ -240,8 +241,8 @@ router.put('/update', (req, res) => {
                     }
                     const duration = result[0].duration;
 
-                    const startDateQuery = 'SELECT * FROM user_membership WHERE user_id = ?';
-                    db.query(startDateQuery, [user_id], (err, result) => {
+                    const endDateQuery = 'SELECT * FROM user_membership WHERE user_id = ?';
+                    db.query(endDateQuery, [user_id], (err, result) => {
                         if (err) {
                             console.error('Error fetching start_date:', err);
                             return res.status(500).json({ message: 'Error fetching start date.' });
@@ -249,18 +250,48 @@ router.put('/update', (req, res) => {
                         if (!result || result.length === 0) {
                             return res.status(404).json({ message: 'Start date not found for this membership.' });
                         }
-                        if(result[0].status == "Active"){
-                            return res.status(404).json({ message: 'You are not allowed to update membership plan when you are still active.' });
-                        }
-                        const startDate = new Date(result[0].start_date);
-                        const endDate = new Date(startDate);
-                        endDate.setMonth(startDate.getMonth() + duration);
-
-                        const currentDate = new Date();
-                        const status = (currentDate >= startDate && currentDate <= endDate) ? 'Active' : 'Expired';
+                        const originalEndDate = result[0].end_date;
+                        const originStatus = (new Date(originalEndDate) > new Date()) ? 'Active':'Expired';
                         const updateMembershipQuery = "UPDATE user_membership SET membership_id = ?, start_date = ?, end_date = ?, status = ? WHERE user_id = ?";
 
-                        db.query(updateMembershipQuery, [membership_id, startDate, endDate, status, user_id], (err, result) => {
+                        if(result[0].status !== originStatus){
+                            const updateStatusQuery = "UPDATE user_membership SET status = ? WHERE user_id = ?";
+                            db.query(updateStatusQuery, [originStatus, user_id], (err, statusResult) => {
+                                if (err) {
+                                    console.error('Error updating membership:', err);
+                                    return res.status(500).json({ message: 'Error updating membership details.' });
+                                }
+                                db.query(endDateQuery, [user_id], (err, dateResult) => {
+                                    if (err) {
+                                        console.error('Error updating membership:', err);
+                                        return res.status(500).json({ message: 'Error updating membership details.' });
+                                    }
+                                    if(result[0].status == "Active" && String(result[0].membership_id)  !== membership_id){
+                                        return res.status(404).json({ message: 'You are not allowed to update membership plan when you are still active.' });
+                                    }
+                                    const startDate = new Date();
+                                    const endDate = new Date(startDate);
+                                    endDate.setMonth(startDate.getMonth() + duration);
+                                                
+                                    db.query(updateMembershipQuery, [membership_id, startDate, endDate, 'Active', user_id], (err, result) => {
+                                        if (err) {
+                                            console.error('Error updating membership:', err);
+                                            return res.status(500).json({ message: 'Error updating membership details.' });
+                                        }
+                                        res.status(200).json({ message: 'Member updated successfully!' });
+                                    });
+                                });
+                            });
+                        }
+
+                        if(result[0].status == "Active" && String(result[0].membership_id)  !== membership_id){
+                            return res.status(404).json({ message: 'You are not allowed to update membership plan when you are still active.' });
+                        }
+                        const startDate = new Date();
+                        const endDate = new Date(startDate);
+                        endDate.setMonth(startDate.getMonth() + duration);
+                        
+                        db.query(updateMembershipQuery, [membership_id, startDate, endDate, 'Active', user_id], (err, result) => {
                             if (err) {
                                 console.error('Error updating membership:', err);
                                 return res.status(500).json({ message: 'Error updating membership details.' });

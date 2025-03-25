@@ -166,17 +166,17 @@ router.delete('/delete', async (req, res) => {
 
         const deleteNotificationQuery = `DELETE FROM notifications WHERE class_id IN (${class_ids.map(() => '?').join(',')})`;
 
-        const [result] = await db.promise().query(deleteQuery, class_ids);
+        const [result] = await db.promise().query(deleteNotificationQuery, class_ids);
 
         if (result.affectedRows > 0) {
-            const [notiResult] = await db.promise().query(deleteNotificationQuery, class_ids);
+            const [notiResult] = await db.promise().query(deleteQuery, class_ids);
             if (notiResult.affectedRows > 0) {
-                res.status(200).json({ message: 'Class and class images deleted successfully!' });
+                res.status(200).json({ message: 'Class deleted successfully!' });
             } else {
-                res.status(404).json({ message: 'No notification found to delete.' });
+                res.status(404).json({ message: 'No class found to delete.' });
             }
         } else {
-            res.status(404).json({ message: 'No class found to delete.' });
+            res.status(404).json({ message: 'No notification found to delete.' });
         }
 
     } catch (err) {
