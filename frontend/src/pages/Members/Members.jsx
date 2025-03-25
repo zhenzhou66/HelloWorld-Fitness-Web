@@ -571,7 +571,7 @@ const Members = () => {
                         <h2>Edit Member Information</h2>
                         <form onSubmit={(e) => handleSave(e, memberInfo)}>
                             <div className={styles.profileSection}>
-                                <img src={memberInfo.profile_picture ? `http://localhost:5000/uploads/${memberInfo.profile_picture}` : `http://localhost:5000/uploads/profile_pictures/default.jpg`} alt="Profile" className={styles.profilePicture} />
+                                <img src={memberInfo.profile_picture ? `http://localhost:5000/uploads/${memberInfo.profile_picture}` : `http://localhost:5000/uploads/default.jpg`} alt="Profile" className={styles.profilePicture} />
                                 <div>
                                     <label>Username:</label>
                                     <input type="text" name="username" value={memberInfo.username} readOnly required/>

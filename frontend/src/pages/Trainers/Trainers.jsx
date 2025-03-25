@@ -332,7 +332,7 @@ const Trainers = () => {
                             </td>
                             <td>
                                 <div className={styles.mprofileContainer}>
-                                    <img src={`http://localhost:5000/uploads/${trainer.profile_picture}`} alt="Profile" className={styles.mprofilePicture} />
+                                    <img src={trainer.profile_picture? `http://localhost:5000/uploads/${trainer.profile_picture}`: `http://localhost:5000/uploads/default.jpg`} alt="Profile" className={styles.mprofilePicture} />
                                     <div className={styles.mprofileDetails}>
                                         <span className={styles.mprofileName}>{trainer.username}</span>
                                         <span className={styles.mprofileEmail}>{trainer.email}</span>
