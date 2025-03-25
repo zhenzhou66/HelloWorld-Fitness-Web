@@ -232,7 +232,7 @@ router.get('/paymentStatus/:year', (req, res) => {
     const query = `
         SELECT 
         SUM(CASE WHEN payment_status = 'Paid' THEN amount ELSE 0 END) AS Paid,
-        SUM(CASE WHEN payment_status IN ('Overdue', 'Pending') THEN amount ELSE 0 END) AS Unpaid
+        SUM(CASE WHEN payment_status != 'Paid' THEN amount ELSE 0 END) AS Unpaid
         FROM transactions  
         WHERE YEAR(payment_date) = ?;
  
