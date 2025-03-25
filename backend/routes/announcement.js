@@ -67,7 +67,7 @@ router.post('/add', async (req, res) => {
             INSERT INTO notifications (title, message, type, send_date, end_date, target, user_id, class_id) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         `;
-        const [insertResult] = await db.promise().query(insertQuery, [title, message, type, send_date, end_date, target, user_id || null, class_id || null]);
+        const [insertResult] = await db.promise().query(insertQuery, [title, message, type, send_date, end_date || null, target, user_id || null, class_id || null]);
 
         res.status(201).json({ message: 'Announcement added successfully!' });
 
