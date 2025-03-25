@@ -209,9 +209,9 @@ router.put('/update', (req, res) => {
 
             const classDate = new Date(schedule_date);
             classDate.setHours(0, 0, 0, 0); 
-            if(today >= oriSchedule_date){
+            if(today >= oriSchedule_date && classDate.getTime() !== oriSchedule_date.getTime()){
                 return res.status(400).json({ message: "Cannot edit date of past classes." });
-            }else if (classDate <= today) {
+            }else if (oriSchedule_date >= today && classDate <= today) {
                 return res.status(400).json({ message: "Schedule date must be in the future." });
             }
 

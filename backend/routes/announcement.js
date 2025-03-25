@@ -55,7 +55,7 @@ router.delete('/delete', async (req, res) => {
 router.post('/add', async (req, res) => {
     try {
         const { title, message, type, send_date, end_date, user_id, class_id, target } = req.body;
-
+        
         // Check if title already exists
         const [existingTitle] = await db.promise().query('SELECT title FROM notifications WHERE title = ?', [title]);
         if (existingTitle.length > 0) {
@@ -67,7 +67,7 @@ router.post('/add', async (req, res) => {
             INSERT INTO notifications (title, message, type, send_date, end_date, target, user_id, class_id) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         `;
-        const [insertResult] = await db.promise().query(insertQuery, [title, message, type, send_date, end_date, target, user_id, class_id]);
+        const [insertResult] = await db.promise().query(insertQuery, [title, message, type, send_date, end_date, target, user_id || null, class_id || null]);
 
         res.status(201).json({ message: 'Announcement added successfully!' });
 
