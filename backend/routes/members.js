@@ -122,7 +122,7 @@ router.post('/add', upload.single('profilePicture'), async (req, res) => {
 
 const fs = require('fs');
 const util = require('util');
-const { end } = require('../../Hello_World_Fitness_App/backend/db');
+const { end } = require('../db');
 const unlinkAsync = util.promisify(fs.unlink);
 
 router.delete('/delete', async (req, res) => {
