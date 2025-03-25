@@ -22,19 +22,19 @@ function InfoCards() {
     <div className={classes.upperSection}>
       <div className={classes.card}>
         <p>Total Check-ins Today</p>
-        <h3>{statistics.totalCheckIn}</h3>
+        <h3>{statistics.totalCheckIn ? statistics.totalCheckIn:0}</h3>
       </div>
       <div className={classes.card}>
         <p>Average Attendance per Day</p>
-        <h3>{Math.floor(Number(statistics.avgAttendance))}</h3>
+        <h3>{isNaN(statistics.avgAttendance)? "N/A": Math.floor(Number(statistics.avgAttendance))}</h3>
       </div>
       <div className={classes.card}>
         <p>Attendance Rate</p>
-        <h3>{statistics.attendanceRate? (statistics.attendanceRate.toFixed(2)): ``}%</h3>
+        <h3>{statistics.attendanceRate ? (statistics.attendanceRate.toFixed(2))+"%": `N/A`}</h3>
       </div>
       <div className={classes.card}>
         <p>Peak Attendance Hour</p>
-        <h3>{statistics.peakHour}</h3>
+        <h3>{isNaN(statistics.peakHour)? "N/A":statistics.peakHour}</h3>
       </div>
     </div>
   );

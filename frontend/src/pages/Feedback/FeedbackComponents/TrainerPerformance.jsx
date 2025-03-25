@@ -99,6 +99,7 @@ export default function TrainerPerformance() {
                     height: "60px",
                     marginRight: "12px",
                     borderRadius: "50px",
+                    objectFit: "cover",
                   }}
                 />
                 <div

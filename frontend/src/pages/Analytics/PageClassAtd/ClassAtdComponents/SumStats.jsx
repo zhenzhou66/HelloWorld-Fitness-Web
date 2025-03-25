@@ -20,19 +20,19 @@ function SumStats() {
 
   return (
     <div className={classes.rightsection}>
-      <h3> Summarry Statistics</h3>
+      <h3> Summary Statistics</h3>
 
       <div className={classes.stat}>
         <h4> Total Students</h4>
-        <p> {statistics.totalStudent}</p>
+        <p> {statistics.totalStudent? statistics.totalStudent:0}</p>
       </div>
       <div className={classes.stat}>
         <h4> Present</h4>
-        <p> {statistics.presentStudent}</p>
+        <p> {statistics.presentStudent ? statistics.presentStudent:0}</p>
       </div>
       <div className={classes.stat}>
         <h4> Absent</h4>
-        <p> {statistics.absentStudent}</p>
+        <p> {statistics.absentStudent ? statistics.absentStudent:0 }</p>
       </div>
     </div>
   );

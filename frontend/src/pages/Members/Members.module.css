@@ -431,9 +431,6 @@ input, select {
   cursor: pointer;
 }
 
-.radioButton{
-  margin-top: 10px;
-}
 
 .fitnessGoals {
   display: flex;
@@ -529,6 +526,10 @@ input, select {
   overflow-y: scroll;
 }
 
+.editContent input{
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
 .deleteIcon{
   color: #555;
   text-align: center;

@@ -92,6 +92,16 @@ td {
     background-color: #efefef;
     font-weight: bold;
 }
+.announcementsTable tr:hover {
+    background: #f3f3f3;
+}
+input[type=radio] {
+    margin-top: 10px;
+}
+.checkboxAid1 input[type="checkbox"] {
+    transform: scale(0.9);
+    margin: 5px;
+}
 
 .checkboxAid {
     display: flex;
@@ -106,8 +116,10 @@ td {
 
 .checkboxContainer {
     display: flex;
-    align-items: center;
+    flex-direction: row;
+    /* align-items: center; */
     gap: 10px;
+    /* min-width: 180px; */
 }
 
 .deleteMemberButton {
@@ -142,13 +154,6 @@ td {
     color: #ff5733;
 }
 
-input[type="checkbox"] {
-    margin-right: 5px;
-}
-
-.checkboxclassid input[type="checkbox"] {
-    margin: 20px;
-}
 
 .addAOverlay {
     position: fixed;

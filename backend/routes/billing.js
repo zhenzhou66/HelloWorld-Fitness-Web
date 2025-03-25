@@ -66,7 +66,7 @@ router.get('/user-info/:user_id', async (req, res) => {
     }
 
     const userQuery = `
-        SELECT u.name, u.email, um.end_date FROM user u 
+        SELECT u.name, u.email, um.end_date, u.profile_picture FROM user u 
         INNER JOIN user_membership um ON u.user_id = um.user_id 
         WHERE u.user_id = ?
     `;

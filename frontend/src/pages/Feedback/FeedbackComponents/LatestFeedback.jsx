@@ -53,15 +53,17 @@ export default function LatestFeedback() {
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            <Avatar
-              sx={{
-                backgroundColor: "#e0e0e0",
-                width: "40px",
-                height: "40px",
+            <img
+              src={`http://localhost:5000/uploads/${feedback.profile_picture}`}
+              alt="trainer pic"
+              style={{
+                width: "60px",
+                height: "60px",
+                marginRight: "12px",
+                borderRadius: "50px",
+                objectFit: "cover",
               }}
-            >
-              {feedback.memberName.charAt(0)}
-            </Avatar>
+            />
             <div>
               <p style={{ fontWeight: "600", margin: 0 }}>{feedback.memberName}</p>
               <p
