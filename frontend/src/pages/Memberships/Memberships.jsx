@@ -275,7 +275,7 @@ export default function Memberships() {
               <label>Price:</label>
               <input type="number" name="price" placeholder="Exp. 100" value={editMembership ? editMembership.price : newMembership.price} onChange={handleInputChange} required />
 
-              <label>Duration:</label>
+              <label>Duration (months):</label>
               <input type="number" name="duration" placeholder="Exp. 1-12" value={editMembership ? editMembership.duration : newMembership.duration} onChange={handleInputChange} required/>
 
               <div className={styles.buttonSection}>

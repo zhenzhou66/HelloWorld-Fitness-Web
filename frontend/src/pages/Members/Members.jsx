@@ -473,12 +473,12 @@ const Members = () => {
                                                 <label className={styles.genderLabel}>Gender:</label>
                                                 <div className={styles.radioGroup}>
                                                     <label className={styles.radioLabel}>
-                                                        <input type="radio" name="gender" value="Male" checked={formData.gender === "Male"} onChange={handleChange} 
+                                                        <input className={styles.radioButton} type="radio" name="gender" value="Male" checked={formData.gender === "Male"} onChange={handleChange} 
                                                         />
                                                         Male
                                                     </label>
                                                     <label className={styles.radioLabel}>
-                                                        <input type="radio" name="gender" value="Female" checked={formData.gender === "Female"} onChange={handleChange}
+                                                        <input className={styles.radioButton} type="radio" name="gender" value="Female" checked={formData.gender === "Female"} onChange={handleChange}
                                                         />
                                                         Female
                                                     </label>
@@ -571,7 +571,7 @@ const Members = () => {
                         <h2>Edit Member Information</h2>
                         <form onSubmit={(e) => handleSave(e, memberInfo)}>
                             <div className={styles.profileSection}>
-                                <img src={`http://localhost:5000/uploads/${memberInfo.profile_picture}`} alt="Profile" className={styles.profilePicture} />
+                                <img src={memberInfo.profile_picture ? `http://localhost:5000/uploads/${memberInfo.profile_picture}` : `http://localhost:5000/uploads/profile_pictures/default.jpg`} alt="Profile" className={styles.profilePicture} />
                                 <div>
                                     <label>Username:</label>
                                     <input type="text" name="username" value={memberInfo.username} readOnly required/>
@@ -584,12 +584,12 @@ const Members = () => {
                             <label>Gender:</label>
                             <div className={styles.radioGroup}>
                                 <label className={styles.radioLabel}>
-                                    <input type="radio" name="gender" value="Male" checked={memberInfo.gender === "Male"} onChange={handleEditChange} 
+                                    <input className={styles.radioButton} type="radio" name="gender" value="Male" checked={memberInfo.gender === "Male"} onChange={handleEditChange} 
                                     />
                                     Male
                                 </label>
                                 <label className={styles.radioLabel}>
-                                    <input type="radio" name="gender" value="Female" checked={memberInfo.gender === "Female"} onChange={handleEditChange}
+                                    <input className={styles.radioButton} type="radio" name="gender" value="Female" checked={memberInfo.gender === "Female"} onChange={handleEditChange}
                                     />
                                     Female
                                 </label>

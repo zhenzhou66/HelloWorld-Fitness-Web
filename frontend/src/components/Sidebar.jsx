@@ -7,8 +7,8 @@ import logo from "../assets/logo-black.png";
 function Sidebar() {
   const navigate = useNavigate();
   const handleLogout = () => {
-    localStorage.removeItem("user"); 
-    navigate("/login"); 
+    localStorage.removeItem("user");
+    navigate("/login");
   };
 
   return (
@@ -22,7 +22,7 @@ function Sidebar() {
               className={classes.row}
               onClick={() => {
                 if (val.action === "logout") {
-                  handleLogout(); 
+                  handleLogout();
                 } else {
                   navigate(val.link);
                 }

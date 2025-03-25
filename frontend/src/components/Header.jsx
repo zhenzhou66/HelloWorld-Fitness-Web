@@ -13,12 +13,12 @@ const Header = () => {
     "/Members": {
       title: "Member Management",
       description:
-        "Add, Update, Search, View, and Delete member records to update the member database.",
+        "Add, update, search, view, and delete member records to update the member database.",
     },
     "/Trainers": {
       title: "Trainer Management",
       description:
-        "Add, Update, Search, View, and Delete trainer records to update the trainer database.",
+        "Add, update, search, view, and delete trainer records to update the trainer database.",
     },
     "/Memberships": {
       title: "Membership Management",
@@ -27,12 +27,12 @@ const Header = () => {
     },
     "/Schedules": {
       title: "Class Schedules",
-      description: "Create, Update & Manage gym class schedules.",
+      description: "Create, update & manage gym class schedules.",
     },
     "/Analytics": {
       title: "Analytics",
       description:
-        "View & Generate report of analytics on member attendance, class popularity & more.",
+        "View and generate report of analytics on member attendance, class popularity & more.",
     },
     "/Billing": {
       title: "Billing",
@@ -44,7 +44,7 @@ const Header = () => {
     },
     "/Feedback": {
       title: "Feedback",
-      description: "Track Trainers peformance & View feedback from members.",
+      description: "Track trainer's peformance and view feedback from members.",
     },
   };
 
