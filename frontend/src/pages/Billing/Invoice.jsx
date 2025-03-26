@@ -38,7 +38,8 @@ function Invoice({ transactionData }) {
                         <p className={styles.billToTitle}>Bill To</p>
 
                         <div className={styles.userProfile}>
-                            <img src={logo} alt="Profile" className={styles.mprofilePicture} />
+                            <img src={transactionData.profile_picture ? `http://localhost:5000/uploads/${transactionData.profile_picture}` :
+                 `http://localhost:5000/uploads/default.jpg`} alt="Profile" className={styles.mprofilePicture} />
                             <div className={styles.mprofileDetails}>
                                 <span className={styles.mprofileName}>{transactionData.name}</span>
                                 <span className={styles.mprofileEmail}>{transactionData.email}</span>

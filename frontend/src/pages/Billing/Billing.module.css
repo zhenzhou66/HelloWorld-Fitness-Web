@@ -101,6 +101,9 @@
     height: auto;
     min-height: 50px;
   }
+  .transactionTable tr:hover {
+    background: #f3f3f3;
+  }
 
 
   .checkboxuserid {

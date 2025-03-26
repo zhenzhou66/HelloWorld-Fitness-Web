@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import classes from "../GymAtd.module.css";
 import PropTypes from "prop-types";
 import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
@@ -161,7 +160,7 @@ export default function CustomPaginationActionsTable() {
               )
             : sortedRows
           ).map((row) => (
-            <TableRow key={row.userID}>
+            <TableRow key={row.gym_attendance_id}>
               <TableCell component="th" scope="row">
                 {row.user_id}
               </TableCell>

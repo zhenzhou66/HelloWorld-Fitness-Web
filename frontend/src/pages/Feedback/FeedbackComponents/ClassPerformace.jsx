@@ -11,7 +11,6 @@ import Paper from "@mui/material/Paper";
 import Rating from "@mui/material/Rating";
 import Box from "@mui/material/Box";
 import StarIcon from "@mui/icons-material/Star";
-import yoga from "../../../assets/yoga.jpg";
 import ViewClassPopup from "./ViewClassPopup";
 
 export default function ClassPerformance() {
@@ -85,6 +84,8 @@ export default function ClassPerformance() {
                         height: "75px",
                         marginRight: "12px",
                         borderRadius: "8px",
+                        objectFit: "cover",
+
                       }}
                     />
                     <Box

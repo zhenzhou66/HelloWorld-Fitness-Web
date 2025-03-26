@@ -257,7 +257,7 @@ const Announcements = () => {
       <table className={styles.announcementsTable}>
         <thead>
           <tr>
-            <th className={styles.checkboxAid}>
+            <th className={styles.checkboxAid1}>
               <div className={styles.checkboxContainer}>
                 <input type="checkbox" checked={SelectAll} onChange={handleSelectAll}/>
                 <span>Notification ID</span>

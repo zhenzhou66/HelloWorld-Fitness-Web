@@ -468,12 +468,12 @@ const Members = () => {
                                                 <label className={styles.genderLabel}>Gender:</label>
                                                 <div className={styles.radioGroup}>
                                                     <label className={styles.radioLabel}>
-                                                        <input className={styles.radioButton} type="radio" name="gender" value="Male" checked={formData.gender === "Male"} onChange={handleChange} 
+                                                        <input type="radio" name="gender" value="Male" checked={formData.gender === "Male"} onChange={handleChange} 
                                                         />
                                                         Male
                                                     </label>
                                                     <label className={styles.radioLabel}>
-                                                        <input className={styles.radioButton} type="radio" name="gender" value="Female" checked={formData.gender === "Female"} onChange={handleChange}
+                                                        <input type="radio" name="gender" value="Female" checked={formData.gender === "Female"} onChange={handleChange}
                                                         />
                                                         Female
                                                     </label>
@@ -531,7 +531,7 @@ const Members = () => {
 
                                         <label>What are your fitness goals?</label>
                                         <div className={styles.fitnessGoalsOption}>
-                                            {["Loss Weight", "Muscle Mass Gain", "Gain Weight", "Shape Body", "Others"].map((goal) => (
+                                            {["Lose Weight", "Muscle Mass Gain", "Gain Weight", "Shape Body", "Others"].map((goal) => (
                                                 <label key={goal} className={styles.goalOption}>
                                                     <input type="radio" name="fitnessGoals" value={goal} checked={formData.fitnessGoals == goal} onChange={handleChange}
                                                     />
@@ -598,12 +598,12 @@ const Members = () => {
                             <label>Gender:</label>
                             <div className={styles.radioGroup}>
                                 <label className={styles.radioLabel}>
-                                    <input className={styles.radioButton} type="radio" name="gender" value="Male" checked={memberInfo.gender === "Male"} onChange={handleEditChange} 
+                                    <input type="radio" name="gender" value="Male" checked={memberInfo.gender === "Male"} onChange={handleEditChange} 
                                     />
                                     Male
                                 </label>
                                 <label className={styles.radioLabel}>
-                                    <input className={styles.radioButton} type="radio" name="gender" value="Female" checked={memberInfo.gender === "Female"} onChange={handleEditChange}
+                                    <input type="radio" name="gender" value="Female" checked={memberInfo.gender === "Female"} onChange={handleEditChange}
                                     />
                                     Female
                                 </label>
@@ -656,7 +656,7 @@ const Members = () => {
 
                             <label>Fitness goals:</label>
                             <div className={styles.fitnessGoalsOption}>
-                                {["Loss Weight", "Muscle Mass Gain", "Gain Weight", "Shape Body", "Others"].map((goal) => (
+                                {["Lose Weight", "Muscle Mass Gain", "Gain Weight", "Shape Body", "Others"].map((goal) => (
                                     <label key={goal} className={styles.goalOption}>
                                         <input type="radio" name="fitness_goals" value={goal}  checked={memberInfo.fitness_goals == goal} onChange={handleEditChange}
                                         />

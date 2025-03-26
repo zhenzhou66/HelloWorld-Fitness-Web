@@ -4,6 +4,7 @@ import ClassAtd from "./PageClassAtd/ClassAtd";
 import Financial from "./PageFinancial/Financial";
 import GymAtd from "./PageGymAtd/GymAtd";
 import NavBar from "./NavBar/NavBar";
+import ReactToPrint from "react-to-print";
 
 function Analytics() {
   const [selectedComponent, setSelectedComponent] = useState("PageOne");
