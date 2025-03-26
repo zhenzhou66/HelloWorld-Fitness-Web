@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Mar 06, 2025 at 02:39 PM
--- Server version: 10.1.25-MariaDB
--- PHP Version: 5.6.31
+-- Host: 127.0.0.1
+-- Generation Time: Mar 24, 2025 at 04:58 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -29,8 +29,7 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `attendance_classes` (
   `class_attendance_id` int(11) NOT NULL,
-  `user_id` int(11) DEFAULT NULL,
-  `class_id` int(11) DEFAULT NULL,
+  `participant_id` int(11) DEFAULT NULL,
   `attendance_time` datetime NOT NULL,
   `status` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -39,12 +38,12 @@ CREATE TABLE `attendance_classes` (
 -- Dumping data for table `attendance_classes`
 --
 
-INSERT INTO `attendance_classes` (`class_attendance_id`, `user_id`, `class_id`, `attendance_time`, `status`) VALUES
-(1, 2, 1, '2025-01-10 08:15:00', 'Present'),
-(2, 4, 2, '2025-01-11 09:30:00', 'Present'),
-(3, 9, 3, '2025-01-12 10:45:00', 'Absent'),
-(4, 7, 4, '2025-01-13 08:00:00', 'Present'),
-(7, 2, 6, '2025-03-22 00:15:33', 'Present');
+INSERT INTO `attendance_classes` (`class_attendance_id`, `participant_id`, `attendance_time`, `status`) VALUES
+(1, 2, '2025-01-10 08:15:00', 'Present'),
+(2, 3, '2025-01-11 09:30:00', 'Present'),
+(3, 4, '2025-01-12 10:45:00', 'Absent'),
+(4, 6, '2025-01-13 08:00:00', 'Present'),
+(7, 1, '2025-03-22 00:15:33', 'Present');
 
 -- --------------------------------------------------------
 
@@ -56,8 +55,18 @@ CREATE TABLE `attendance_code` (
   `id` int(11) NOT NULL,
   `code` varchar(50) NOT NULL,
   `available_from` datetime DEFAULT NULL,
-  `available_until` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `available_until` datetime DEFAULT NULL,
+  `class_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `attendance_code`
+--
+
+INSERT INTO `attendance_code` (`id`, `code`, `available_from`, `available_until`, `class_id`) VALUES
+(1, '118', '2025-03-22 00:10:34', '2025-03-22 01:10:34', 6),
+(2, '649', '2025-03-22 00:10:47', '2025-03-22 01:10:47', 8),
+(3, '361', '2025-03-24 23:26:56', '2025-03-25 00:26:56', 7);
 
 -- --------------------------------------------------------
 
@@ -93,8 +102,19 @@ CREATE TABLE `badge` (
   `badge_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   `description` text NOT NULL,
-  `icon` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `icon` varchar(255) NOT NULL,
+  `points_needed` int(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `badge`
+--
+
+INSERT INTO `badge` (`badge_id`, `name`, `description`, `icon`, `points_needed`) VALUES
+(1, '100 Milestone', 'You have successfully collected your first 100 points!', 'badge_image/100 Milestone.png', 100),
+(2, '200 Milestone', 'You have successfully collected your first 200 points!', 'badge_image/200 Milestone.png', 200),
+(3, '300 Milestone', 'You have successfully collected your first 300 points!', 'badge_image/300 Milestone.png', 300),
+(4, '400 Milestone', 'You have successfully collected your first 400 points!', 'badge_image/400 Milestone.png', 400);
 
 -- --------------------------------------------------------
 
@@ -119,14 +139,14 @@ CREATE TABLE `classes` (
 --
 
 INSERT INTO `classes` (`class_id`, `class_name`, `description`, `max_participants`, `schedule_date`, `start_time`, `end_time`, `trainer_id`, `class_image`) VALUES
-(1, 'Yoga Flow', 'A relaxing yoga session focused on flexibility and mindfulness.', 20, '2025-01-20', '08:00:00', '09:00:00', 1, 'class_image/1.jpg'),
-(2, 'Zumba Dance', 'High-energy dance workout to improve cardiovascular fitness.', 25, '2025-01-20', '10:00:00', '11:00:00', 5, 'class_image/2.jpeg'),
-(3, 'Strength Training', 'Build muscle strength through resistance training and weightlifting.', 15, '2025-01-21', '15:00:00', '16:30:00', 8, 'class_image/3.webp'),
-(4, 'Cardio Blast', 'A dynamic cardio session to burn calories and boost endurance.', 20, '2025-01-21', '18:00:00', '19:00:00', 5, 'class_image/4.jpg'),
-(5, 'Pilates Core', 'Focused on improving core strength, posture, and flexibility using Pilates.', 18, '2025-01-22', '07:30:00', '08:30:00', 8, 'class_image/5.jpg'),
-(6, 'Functional Fitness', 'Improve everyday movements through functional strength and agility exercises.', 15, '2025-01-22', '17:00:00', '18:30:00', 1, 'class_image/6.jpg'),
-(7, 'HIIT', 'High-Intensity Interval Training session for maximum calorie burn in less time.', 20, '2025-01-23', '06:00:00', '06:45:00', 1, 'class_image/7.jpg'),
-(8, 'Boxing Basics', 'A beginner-friendly boxing class focusing on technique and fitness.', 12, '2025-01-23', '19:00:00', '20:00:00', 1, 'class_image/8.webp');
+(1, 'Yoga Flow', 'A relaxing yoga session focused on flexibility and mindfulness.', 20, '2025-03-20', '08:00:00', '09:00:00', 1, 'class_image/1.jpg'),
+(2, 'Zumba Dance', 'High-energy dance workout to improve cardiovascular fitness.', 25, '2025-03-20', '10:00:00', '11:00:00', 5, 'class_image/2.jpeg'),
+(3, 'Strength Training', 'Build muscle strength through resistance training and weightlifting.', 15, '2025-03-21', '15:00:00', '16:30:00', 8, 'class_image/3.webp'),
+(4, 'Cardio Blast', 'A dynamic cardio session to burn calories and boost endurance.', 20, '2025-03-21', '18:00:00', '19:00:00', 5, 'class_image/4.jpg'),
+(5, 'Pilates Core', 'Focused on improving core strength, posture, and flexibility using Pilates.', 18, '2025-03-24', '07:30:00', '08:30:00', 8, 'class_image/5.jpg'),
+(6, 'Functional Fitness', 'Improve everyday movements through functional strength and agility exercises.', 15, '2025-03-24', '17:00:00', '18:30:00', 1, 'class_image/6.jpg'),
+(7, 'HIIT', 'High-Intensity Interval Training session for maximum calorie burn in less time.', 20, '2025-03-25', '06:00:00', '06:45:00', 1, 'class_image/7.jpg'),
+(8, 'Boxing Basics', 'A beginner-friendly boxing class focusing on technique and fitness.', 12, '2025-03-25', '19:00:00', '20:00:00', 1, 'class_image/8.webp');
 
 -- --------------------------------------------------------
 
@@ -136,9 +156,9 @@ INSERT INTO `classes` (`class_id`, `class_name`, `description`, `max_participant
 
 CREATE TABLE `class_participants` (
   `participant_id` int(11) NOT NULL,
-  `class_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `class_id` int(11) DEFAULT NULL,
+  `user_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `class_participants`
@@ -150,7 +170,9 @@ INSERT INTO `class_participants` (`participant_id`, `class_id`, `user_id`) VALUE
 (3, 4, 4),
 (4, 6, 9),
 (5, 7, 4),
-(6, 6, 2);
+(6, 6, 2),
+(8, 7, 2),
+(9, 8, 2);
 
 -- --------------------------------------------------------
 
@@ -176,7 +198,8 @@ CREATE TABLE `feedback` (
 INSERT INTO `feedback` (`feedback_id`, `member_id`, `trainer_id`, `class_id`, `feedback_date`, `trainer_rating`, `class_rating`, `comments`) VALUES
 (1, 2, 1, 1, '2025-03-10', 5, 4, 'The trainer was very motivating and gave clear instructions. The class was a bit crowded, though.'),
 (2, 4, 5, 2, '2025-03-11', 4, 5, 'Excellent class and trainer. The zumba session was well-paced and exciting.'),
-(3, 10, 1, 3, '2025-03-12', 3, 4, 'Trainer was helpful, but the class started late.');
+(3, 10, 1, 3, '2025-03-12', 3, 4, 'Trainer was helpful, but the class started late.'),
+(4, 2, 1, 6, '2025-03-24', 5, 1, 'Ajajaj');
 
 -- --------------------------------------------------------
 
@@ -267,8 +290,9 @@ CREATE TABLE `member_performance_feedback` (
   `progress_date` date NOT NULL,
   `fitness_performance` text NOT NULL,
   `weak_areas` text NOT NULL,
-  `trainer_feedback` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `trainer_feedback` text NOT NULL,
+  `user_workout_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `member_performance_feedback`
@@ -286,9 +310,9 @@ INSERT INTO `member_performance_feedback` (`progress_id`, `trainer_id`, `progres
 
 CREATE TABLE `member_trainer` (
   `id` int(11) NOT NULL,
-  `member_id` int(11) NOT NULL,
-  `trainer_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `member_id` int(11) DEFAULT NULL,
+  `trainer_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `member_trainer`
@@ -338,7 +362,121 @@ CREATE TABLE `points` (
   `activity_type` varchar(255) NOT NULL,
   `points` int(11) NOT NULL,
   `date_received` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `points`
+--
+
+INSERT INTO `points` (`id`, `user_id`, `activity_type`, `points`, `date_received`) VALUES
+(3, 2, 'workout', 20, '2025-03-07'),
+(19, 4, 'workout', 10, '2025-03-10'),
+(20, 6, 'workout', 30, '2025-03-10'),
+(21, 2, 'attendance', 10, '2025-03-10'),
+(22, 2, 'workout', 30, '2025-03-10'),
+(23, 5, 'attendance', 10, '2025-03-10'),
+(24, 5, 'Workout', 20, '2025-03-10'),
+(25, 8, 'attendance', 10, '2025-03-10'),
+(26, 4, 'workout', 20, '2025-03-10'),
+(27, 2, 'workout', 26, '2025-03-10'),
+(28, 2, 'workout', 30, '2025-03-10'),
+(29, 2, 'workout', 3, '2025-03-14'),
+(30, 2, 'workout', 6, '2025-03-14'),
+(31, 2, 'workout', 6, '2025-03-14'),
+(32, 2, 'workout', 6, '2025-03-14'),
+(33, 2, 'workout', 6, '2025-03-14'),
+(34, 2, 'workout', 3, '2025-03-14'),
+(35, 2, 'workout', 3, '2025-03-14'),
+(36, 2, 'workout', 3, '2025-03-14'),
+(37, 2, 'workout', 3, '2025-03-14'),
+(38, 2, 'workout', 13, '2025-03-19'),
+(39, 2, 'workout', 6, '2025-03-19'),
+(40, 2, 'workout', 5, '2025-03-24');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `set_meal`
+--
+
+CREATE TABLE `set_meal` (
+  `set_meal_id` int(11) NOT NULL,
+  `meal_name` varchar(100) NOT NULL,
+  `description` varchar(200) NOT NULL,
+  `meal_type` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `set_meal`
+--
+
+INSERT INTO `set_meal` (`set_meal_id`, `meal_name`, `description`, `meal_type`) VALUES
+(1, 'Healthy Greens Delight', 'Grilled Chicken Salad + Steamed Broccoli + Vegetable Soup', 'Lose Weight'),
+(2, 'Balanced Energy Bowl', 'Oatmeal with Fruits + Grilled Salmon + Quinoa Salad', 'Lose Weight'),
+(3, 'Light & Nourishing Wrap', 'Chicken Wrap + Egg Salad + Brown Rice Bowl', 'Lose Weight'),
+(4, 'Protein-Packed Feast', 'Beef Steak + Shrimp Pasta + Avocado Toast', 'Gain Weight'),
+(5, 'Hearty Mexican Boost', 'Chicken Curry + Beef Tacos + Fruit Smoothie', 'Gain Weight'),
+(6, 'Wholesome Power Plate', 'Fish Curry with Rice + Turkey Sandwich + Grilled Vegetables', 'Gain Weight'),
+(7, 'Strength Builder Meal', 'Baked Chicken Breast + Quinoa Salad + Beef Tacos', 'Muscle Mass Gain'),
+(8, 'Omega Muscle Fuel', 'Egg Salad + Grilled Salmon + Brown Rice Bowl', 'Muscle Mass Gain'),
+(9, 'Protein Power Wrap', 'Chicken Wrap + Grilled Pork Chops + Vegetable Stir-Fry', 'Muscle Mass Gain'),
+(10, 'Balanced Fitness Meal', 'Turkey Sandwich + Caesar Salad + Fruit Smoothie', 'Shape Body'),
+(11, 'Plant-Based Power Plate', 'Vegetable Stir-Fry + Veggie Burger + Grilled Vegetables', 'Shape Body'),
+(12, 'Nutritious Wellness Bowl', 'Grilled Chicken Salad + Brown Rice Bowl + Tofu Stir-Fry', 'Shape Body');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `set_meal_details`
+--
+
+CREATE TABLE `set_meal_details` (
+  `set_meal_detail_id` int(11) NOT NULL,
+  `set_meal_id` int(11) DEFAULT NULL,
+  `meal_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `set_meal_details`
+--
+
+INSERT INTO `set_meal_details` (`set_meal_detail_id`, `set_meal_id`, `meal_id`) VALUES
+(1, 1, 1),
+(2, 1, 24),
+(3, 1, 16),
+(4, 2, 7),
+(5, 2, 6),
+(6, 2, 5),
+(7, 3, 8),
+(8, 3, 11),
+(9, 3, 25),
+(10, 4, 4),
+(11, 4, 15),
+(12, 4, 18),
+(13, 5, 23),
+(14, 5, 13),
+(15, 5, 14),
+(16, 6, 19),
+(17, 6, 10),
+(18, 6, 12),
+(19, 7, 17),
+(20, 7, 5),
+(21, 7, 13),
+(22, 8, 11),
+(23, 8, 6),
+(24, 8, 25),
+(25, 9, 8),
+(26, 9, 20),
+(27, 9, 3),
+(28, 10, 10),
+(29, 10, 22),
+(30, 10, 14),
+(31, 11, 3),
+(32, 11, 21),
+(33, 11, 12),
+(34, 12, 1),
+(35, 12, 25),
+(36, 12, 9);
 
 -- --------------------------------------------------------
 
@@ -415,24 +553,10 @@ CREATE TABLE `user_badge` (
   `user_id` int(11) DEFAULT NULL,
   `badge_id` int(11) DEFAULT NULL,
   `earned_date` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Table structure for table `user_meal`
---
-
-CREATE TABLE `user_meal` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `meal_id` int(11) NOT NULL,
-  `serving_count` decimal(5,2) NOT NULL,
-  `meal_date` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `user_meal`
+-- Dumping data for table `user_badge`
 --
 
 INSERT INTO `user_badge` (`id`, `user_id`, `badge_id`, `earned_date`) VALUES
@@ -492,7 +616,8 @@ INSERT INTO `user_workout_plans` (`user_workout_id`, `user_id`, `workout_plan_id
 (6, 4, 6, 1, NULL, 'Thursday'),
 (7, 2, 1, 1, NULL, 'Monday'),
 (8, 2, 3, 1, NULL, 'Tuesday'),
-(18, 2, 2, 1, NULL, 'Monday');
+(18, 2, 2, 1, NULL, 'Monday'),
+(22, 2, 13, 1, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -501,30 +626,47 @@ INSERT INTO `user_workout_plans` (`user_workout_id`, `user_id`, `workout_plan_id
 --
 
 CREATE TABLE `user_workout_progress` (
-  `progress_id` int(11) NOT NULL,
-  `user_workout_id` int(11) NOT NULL,
-  `workout_detail_id` int(11) NOT NULL,
-  `duration_minutes` decimal(5,2) DEFAULT NULL,
-  `is_completed` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `user_workout_progress_id` int(11) NOT NULL,
+  `user_workout_id` int(11) DEFAULT NULL,
+  `duration_taken` int(11) DEFAULT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user_workout_progress`
 --
 
-INSERT INTO `user_workout_progress` (`progress_id`, `user_workout_id`, `workout_detail_id`, `duration_minutes`, `is_completed`) VALUES
-(1, 1, 1, NULL, 1),
-(2, 1, 5, '15.00', 1),
-(3, 1, 8, '12.00', 0),
-(4, 2, 4, '10.00', 1),
-(5, 2, 6, '8.00', 1),
-(6, 2, 10, NULL, 0),
-(7, 3, 2, '25.00', 1),
-(8, 3, 3, '30.00', 1),
-(9, 3, 13, NULL, 0),
-(10, 5, 4, NULL, 1),
-(11, 5, 6, '10.00', 1),
-(12, 5, 17, '25.00', 1);
+INSERT INTO `user_workout_progress` (`user_workout_progress_id`, `user_workout_id`, `duration_taken`, `updated_at`) VALUES
+(58, 18, 157, '2025-03-19 01:39:57'),
+(59, 18, 105, '2025-03-19 01:46:21'),
+(60, 22, 6514, '2025-03-24 15:51:21');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_workout_progress_detail`
+--
+
+CREATE TABLE `user_workout_progress_detail` (
+  `id` int(11) NOT NULL,
+  `user_workout_progress_id` int(11) DEFAULT NULL,
+  `workout_detail_id` int(11) DEFAULT NULL,
+  `is_completed` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `user_workout_progress_detail`
+--
+
+INSERT INTO `user_workout_progress_detail` (`id`, `user_workout_progress_id`, `workout_detail_id`, `is_completed`) VALUES
+(1, 58, 4, 1),
+(2, 58, 6, 1),
+(3, 58, 10, 0),
+(4, 59, 4, 1),
+(5, 59, 6, 0),
+(6, 59, 10, 0),
+(7, 60, 10, 1),
+(8, 60, 17, 0);
 
 -- --------------------------------------------------------
 
@@ -591,7 +733,8 @@ INSERT INTO `workout_plans` (`workout_plan_id`, `plan_name`, `description`, `dif
 (3, 'Advanced Muscle Building', 'An advanced plan focused on muscle hypertrophy.', 'Advanced', 'General', 'workout_image/3.webp'),
 (4, 'Full-Body Fitness', 'A full-body workout program to improve overall fitness.', 'Beginner', 'General', 'workout_image/4.jpg'),
 (5, 'Endurance Booster', 'Cardio-focused workouts for improving endurance.', 'Intermediate', 'General', 'workout_image/5.jpg'),
-(6, 'Core and Stability Training', 'Focused on core strength and stability exercises.', 'Advanced', 'General', 'workout_image/6.webp');
+(6, 'Core and Stability Training', 'Focused on core strength and stability exercises.', 'Advanced', 'General', 'workout_image/6.webp'),
+(13, 'SUMMON', 'Jwjwj', 'Beginner', 'Coach', 'workout_image/SUMMON.jpg');
 
 -- --------------------------------------------------------
 
@@ -601,9 +744,9 @@ INSERT INTO `workout_plans` (`workout_plan_id`, `plan_name`, `description`, `dif
 
 CREATE TABLE `workout_plan_details` (
   `id` int(11) NOT NULL,
-  `workout_detail_id` int(11) NOT NULL,
-  `workout_plan_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `workout_detail_id` int(11) DEFAULT NULL,
+  `workout_plan_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `workout_plan_details`
@@ -634,7 +777,9 @@ INSERT INTO `workout_plan_details` (`id`, `workout_detail_id`, `workout_plan_id`
 (22, 18, 6),
 (41, 16, NULL),
 (42, 9, NULL),
-(43, 17, NULL);
+(43, 17, NULL),
+(44, 10, 13),
+(45, 17, 13);
 
 --
 -- Indexes for dumped tables
@@ -645,8 +790,7 @@ INSERT INTO `workout_plan_details` (`id`, `workout_detail_id`, `workout_plan_id`
 --
 ALTER TABLE `attendance_classes`
   ADD PRIMARY KEY (`class_attendance_id`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `class_id` (`class_id`);
+  ADD KEY `participant_id` (`participant_id`);
 
 --
 -- Indexes for table `attendance_code`
@@ -830,12 +974,14 @@ ALTER TABLE `workout_plan_details`
 -- AUTO_INCREMENT for table `attendance_classes`
 --
 ALTER TABLE `attendance_classes`
-  MODIFY `class_attendance_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `class_attendance_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
 --
 -- AUTO_INCREMENT for table `attendance_code`
 --
 ALTER TABLE `attendance_code`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
 --
 -- AUTO_INCREMENT for table `attendance_gym`
 --
@@ -846,7 +992,8 @@ ALTER TABLE `attendance_gym`
 -- AUTO_INCREMENT for table `badge`
 --
 ALTER TABLE `badge`
-  MODIFY `badge_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `badge_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
 --
 -- AUTO_INCREMENT for table `classes`
 --
@@ -857,12 +1004,13 @@ ALTER TABLE `classes`
 -- AUTO_INCREMENT for table `class_participants`
 --
 ALTER TABLE `class_participants`
-  MODIFY `participant_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `participant_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
 --
 -- AUTO_INCREMENT for table `feedback`
 --
 ALTER TABLE `feedback`
-  MODIFY `feedback_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `feedback_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `meal`
@@ -898,7 +1046,20 @@ ALTER TABLE `notifications`
 -- AUTO_INCREMENT for table `points`
 --
 ALTER TABLE `points`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+
+--
+-- AUTO_INCREMENT for table `set_meal`
+--
+ALTER TABLE `set_meal`
+  MODIFY `set_meal_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT for table `set_meal_details`
+--
+ALTER TABLE `set_meal_details`
+  MODIFY `set_meal_detail_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+
 --
 -- AUTO_INCREMENT for table `transactions`
 --
@@ -915,12 +1076,8 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `user_badge`
 --
 ALTER TABLE `user_badge`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `user_meal`
---
-ALTER TABLE `user_meal`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
 --
 -- AUTO_INCREMENT for table `user_membership`
 --
@@ -931,12 +1088,20 @@ ALTER TABLE `user_membership`
 -- AUTO_INCREMENT for table `user_workout_plans`
 --
 ALTER TABLE `user_workout_plans`
-  MODIFY `user_workout_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `user_workout_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+
 --
 -- AUTO_INCREMENT for table `user_workout_progress`
 --
 ALTER TABLE `user_workout_progress`
-  MODIFY `progress_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `user_workout_progress_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+
+--
+-- AUTO_INCREMENT for table `user_workout_progress_detail`
+--
+ALTER TABLE `user_workout_progress_detail`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
 --
 -- AUTO_INCREMENT for table `workout_details`
 --
@@ -947,12 +1112,14 @@ ALTER TABLE `workout_details`
 -- AUTO_INCREMENT for table `workout_plans`
 --
 ALTER TABLE `workout_plans`
-  MODIFY `workout_plan_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `workout_plan_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
 --
 -- AUTO_INCREMENT for table `workout_plan_details`
 --
 ALTER TABLE `workout_plan_details`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+
 --
 -- Constraints for dumped tables
 --
@@ -961,8 +1128,13 @@ ALTER TABLE `workout_plan_details`
 -- Constraints for table `attendance_classes`
 --
 ALTER TABLE `attendance_classes`
-  ADD CONSTRAINT `attendance_classes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `attendance_classes_ibfk_2` FOREIGN KEY (`class_id`) REFERENCES `classes` (`class_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `attendance_classes_ibfk_1` FOREIGN KEY (`participant_id`) REFERENCES `class_participants` (`participant_id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Constraints for table `attendance_code`
+--
+ALTER TABLE `attendance_code`
+  ADD CONSTRAINT `attendance_code_ibfk_1` FOREIGN KEY (`class_id`) REFERENCES `classes` (`class_id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints for table `attendance_gym`
