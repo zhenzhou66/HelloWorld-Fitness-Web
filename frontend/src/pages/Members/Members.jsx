@@ -43,12 +43,14 @@ const Members = () => {
 
     //Fetch membership plans
     const [membershipPlans, setMembershipPlans] = useState([]);
+    const [trainers, setTrainers] = useState([]);
 
     useEffect(() => {
         fetch('http://localhost:5000/api/members/membership-plans')
             .then((response) => response.json())
             .then((data) => {
-                setMembershipPlans(data);
+                setMembershipPlans(data.results);
+                setTrainers(data.trainerResults);
             })
             .catch((error) => console.error("Error fetching membership plans:", error));
     }, []);
@@ -67,6 +69,7 @@ const Members = () => {
         weight: "", 
         membershipPlan: "", 
         fitnessGoals: "",
+        trainerId:""
     });
 
     const openModal = () => {
@@ -88,6 +91,7 @@ const Members = () => {
             weight: "", 
             membershipPlan: "", 
             fitnessGoals: "",
+            trainerId:"",
         });
     };
     
@@ -112,6 +116,7 @@ const Members = () => {
         formDataToSend.append("weight", formData.weight);
         formDataToSend.append("membershipPlan", formData.membershipPlan);
         formDataToSend.append("fitnessGoals", formData.fitnessGoals);
+        formDataToSend.append("trainerId", formData.trainerId);
         formDataToSend.append("dateJoined", new Date().toLocaleDateString('en-CA'));
         
         if (formData.profilePicture) {
@@ -245,16 +250,6 @@ const Members = () => {
     const handleEditChange = (e) => {
          const { name, value } = e.target;
          setMemberInfo(prevState => ({ ...prevState, [name]: value }));
-    };
-
-    const handleEditGoalChange = (goal) => {
-        setMemberInfo(prevState => {
-            const updatedGoals = prevState.fitness_goals.split(', ').includes(goal)
-                ? prevState.fitness_goals.split(', ').filter(g => g !== goal)
-                : [...prevState.fitness_goals.split(', '), goal];
-            
-            return { ...prevState, fitness_goals: updatedGoals.join(', ') };
-        });
     };
 
     const handleSave = (e, updatedMember) => {
@@ -515,6 +510,25 @@ const Members = () => {
                                             ))}
                                         </select>
 
+                                        {formData.membershipPlan === "2" || formData.membershipPlan === "4" ? (
+                                            <>
+                                                <label>Select Trainer:</label>
+                                                <select
+                                                name="trainerId"
+                                                value={formData.trainerId}
+                                                onChange={handleChange}
+                                                className={styles.addnmembershipDropdown}
+                                                >
+                                                <option value="" disabled>Select Trainer</option>
+                                                {trainers.map((trainer) => (
+                                                    <option key={trainer.user_id} value={trainer.user_id}>
+                                                    {trainer.name}
+                                                    </option>
+                                                ))}
+                                                </select>
+                                            </>
+                                        ) : null}
+
                                         <label>What are your fitness goals?</label>
                                         <div className={styles.fitnessGoalsOption}>
                                             {["Loss Weight", "Muscle Mass Gain", "Gain Weight", "Shape Body", "Others"].map((goal) => (
@@ -620,6 +634,26 @@ const Members = () => {
                                     <option key={plan.membership_id} value={plan.membership_id}>{plan.plan_name}</option>
                                 ))}
                             </select>
+
+                            {memberInfo.membership_id === "2" || memberInfo.membership_id === "4" ? (
+                                <>
+                                    <label>Select Trainer:</label>
+                                    <select
+                                    name="trainer_id"
+                                    value={memberInfo.trainer_id}
+                                    onChange={handleEditChange}
+                                    className={styles.addnmembershipDropdown}
+                                    >
+                                    <option value="" disabled>Select Trainer</option>
+                                    {trainers.map((trainer) => (
+                                        <option key={trainer.user_id} value={trainer.user_id}>
+                                        {trainer.name}
+                                        </option>
+                                    ))}
+                                    </select>
+                                </>
+                            ) : null}
+
                             <label>Fitness goals:</label>
                             <div className={styles.fitnessGoalsOption}>
                                 {["Loss Weight", "Muscle Mass Gain", "Gain Weight", "Shape Body", "Others"].map((goal) => (
