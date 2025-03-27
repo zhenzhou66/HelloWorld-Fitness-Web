@@ -7,7 +7,7 @@ import { Trash, Edit, X } from "lucide-react";
 
 const Trainers = () => {
     const [trainers, setTrainers] = useState({ trainersDetails: [], trainersCount: 0 });
-    const [filteredTrainers, setFilteredTrainers] = useState([]); 
+    const [filteredTrainers, setFilteredTrainers] = useState([]);
 
     // Fetching users
     useEffect(() => {
@@ -15,7 +15,7 @@ const Trainers = () => {
             .then((response) => response.json())
             .then((data) => {
                 setTrainers(data);
-                setFilteredTrainers(data.trainersDetails); 
+                setFilteredTrainers(data.trainersDetails);
             })
             .catch((error) => console.error("Error fetching trainers:", error));
     }, []);
@@ -23,7 +23,7 @@ const Trainers = () => {
     // Formatting date function
     function formatDate(dateString) {
         const date = new Date(dateString);
-        return date.toLocaleDateString('en-GB', { timeZone: 'Asia/Kuala_Lumpur' }); 
+        return date.toLocaleDateString('en-GB', { timeZone: 'Asia/Kuala_Lumpur' });
     }
 
     // Searching function
@@ -31,11 +31,11 @@ const Trainers = () => {
 
     useEffect(() => {
         if (search.trim() === "") {
-            setFilteredTrainers(trainers.trainersDetails); 
+            setFilteredTrainers(trainers.trainersDetails);
         } else {
             setFilteredTrainers(
-              trainers.trainersDetails.filter((trainers) => 
-                trainers.username.toLowerCase().includes(search.toLowerCase())
+                trainers.trainersDetails.filter((trainers) =>
+                    trainers.username.toLowerCase().includes(search.toLowerCase())
                 )
             );
         }
@@ -43,16 +43,16 @@ const Trainers = () => {
 
     // For Add New Trainers
     const [isModalOpen, setModalOpen] = useState(false);
-    const [formData, setFormData] = useState({ 
-        name: "", 
-        email: "", 
-        phone: "", 
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        phone: "",
         username: "",
         password: "",
-        gender: "", 
-        dob: "", 
-        height: "", 
-        weight: "", 
+        gender: "",
+        dob: "",
+        height: "",
+        weight: "",
         fitnessGoals: "",
     });
 
@@ -60,25 +60,41 @@ const Trainers = () => {
     const closeModal = () => {
         setModalOpen(false);
         setFormData({
-            name: "", 
-            email: "", 
-            phone: "", 
+            name: "",
+            email: "",
+            phone: "",
             username: "",
             password: "",
-            gender: "", 
-            dob: "", 
-            height: "", 
-            weight: "", 
+            gender: "",
+            dob: "",
+            height: "",
+            weight: "",
             fitnessGoals: "",
         });
     };
-    
+
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     }
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+
+        //email validation
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailRegex.test(formData.email)) {
+            alert("Please enter a valid email address.");
+            return;
+        }
+
+        //contact no validation
+        const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+        if (!phoneRegex.test(formData.phone)) {
+            alert("Please enter a valid phone number.");
+            return;
+        }
+
         const url = 'http://localhost:5000/api/trainers/add';
         const method = 'POST';
 
@@ -94,7 +110,7 @@ const Trainers = () => {
         formDataToSend.append("weight", formData.weight);
         formDataToSend.append("fitnessGoals", formData.fitnessGoals);
         formDataToSend.append("dateJoined", new Date().toLocaleDateString('en-CA'));
-        
+
         if (formData.profilePicture) {
             formDataToSend.append("profilePicture", formData.profilePicture);
         }
@@ -103,31 +119,31 @@ const Trainers = () => {
             method,
             body: formDataToSend,
         })
-        .then(async (response) => {
-            const data = await response.json();
-    
-            if (!response.ok) {
-                throw new Error(data.message || "An error occurred while adding the trainer.");
-            }
-    
-            alert(data.message); 
-            fetchTrainers();
-            closeModal();
-        })
-        .catch((error) => {
-            alert(error.message); 
-            console.error(error);
-        });
+            .then(async (response) => {
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || "An error occurred while adding the trainer.");
+                }
+
+                alert(data.message);
+                fetchTrainers();
+                closeModal();
+            })
+            .catch((error) => {
+                alert(error.message);
+                console.error(error);
+            });
     };
 
     const fetchTrainers = () => {
         fetch("http://localhost:5000/api/trainers/display")
-          .then((response) => response.json())
-          .then((data) => {
-            setTrainers(data);
-            setFilteredTrainers(data.trainersDetails);
-          })
-          .catch((error) => console.error("Error fetching stats:", error));
+            .then((response) => response.json())
+            .then((data) => {
+                setTrainers(data);
+                setFilteredTrainers(data.trainersDetails);
+            })
+            .catch((error) => console.error("Error fetching stats:", error));
     };
 
     // For Select All Function
@@ -137,24 +153,24 @@ const Trainers = () => {
     const handleSelectAll = (event) => {
         const isChecked = event.target.checked;
         setSelectAll(isChecked);
-    
+
         const updatedTrainers = {};
         currentTrainers.forEach(trainers => {
             updatedTrainers[trainers.user_id] = isChecked;
         });
-    
+
         setSelectedTrainers(updatedTrainers);
     };
 
     const handleSelectTrainer = (event, user_id) => {
         const isChecked = event.target.checked;
-    
+
         setSelectedTrainers((prev) => {
             const updatedTrainers = { ...prev, [user_id]: isChecked };
-    
+
             const allSelected = Object.values(updatedTrainers).every((val) => val === true);
             setSelectAll(allSelected);
-    
+
             return updatedTrainers;
         });
     };
@@ -165,12 +181,12 @@ const Trainers = () => {
 
     const handleDeleteClick = (user_id = null) => {
         let selectedTrainersIds;
-    
+
         if (user_id) {
             selectedTrainersIds = [user_id];
         } else {
             selectedTrainersIds = Object.keys(selectedTrainers).filter(id => selectedTrainers[id]);
-            
+
             if (selectedTrainersIds.length === 0) {
                 alert("Please select at least one trainer to delete.");
                 return;
@@ -186,36 +202,36 @@ const Trainers = () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ user_ids: trainersToDelete }),
         })
-        .then(response => response.json())
-        .then(data => {
-            alert(data.message);
-            fetchTrainers(); 
-            setSelectedTrainers({});
-            setSelectAll(false);
-            setShowDeleteConfirm(false);
-            setTrainersToDelete([]);
-        })
-        .catch(error => {
-            console.error("Error deleting trainers:", error);
-        });
-    };    
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                fetchTrainers();
+                setSelectedTrainers({});
+                setSelectAll(false);
+                setShowDeleteConfirm(false);
+                setTrainersToDelete([]);
+            })
+            .catch(error => {
+                console.error("Error deleting trainers:", error);
+            });
+    };
 
     // For Edit Trainer Details
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const[trainerInfo, setTrainerInfo] = useState(null);
+    const [trainerInfo, setTrainerInfo] = useState(null);
 
     const openEditModal = (trainer) => {
         fetch(`http://localhost:5000/api/trainers/trainer-info/${trainer.user_id}`, {
             method: "GET",
         })
-        .then(response => response.json())
-        .then(data => { 
-            setTrainerInfo(data);
-            setIsEditModalOpen(true);
-        })
-        .catch(error => {
-            console.error("Error fetching trainer information:", error);
-        });  
+            .then(response => response.json())
+            .then(data => {
+                setTrainerInfo(data);
+                setIsEditModalOpen(true);
+            })
+            .catch(error => {
+                console.error("Error fetching trainer information:", error);
+            });
     };
 
     const closeEditModal = () => {
@@ -224,8 +240,8 @@ const Trainers = () => {
     };
 
     const handleEditChange = (e) => {
-         const { name, value } = e.target;
-         setTrainerInfo(prevState => ({ ...prevState, [name]: value }));
+        const { name, value } = e.target;
+        setTrainerInfo(prevState => ({ ...prevState, [name]: value }));
     };
 
     const handleEditGoalChange = (goal) => {
@@ -233,13 +249,21 @@ const Trainers = () => {
             const updatedGoals = prevState.fitness_goals.split(', ').includes(goal)
                 ? prevState.fitness_goals.split(', ').filter(g => g !== goal)
                 : [...prevState.fitness_goals.split(', '), goal];
-            
+
             return { ...prevState, fitness_goals: updatedGoals.join(', ') };
         });
     };
 
     const handleSave = (e, updatedTrainer) => {
         e.preventDefault()
+
+        //phone validation
+        const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+        if (!phoneRegex.test(updatedTrainer.contact_number)) {
+            alert("Please enter a valid phone number.");
+            return;
+        }
+
         console.log(updatedTrainer);
 
         fetch(`http://localhost:5000/api/trainers/update`, {
@@ -247,16 +271,16 @@ const Trainers = () => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(updatedTrainer),
         })
-        .then(response => response.json())
-        .then(data => {
-            alert(data.message); 
-            closeEditModal();
-            fetchTrainers(); 
-        })
-        .catch(error => {
-            alert(error.message); 
-            console.error("Error updating trainer:", error);
-        });
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                closeEditModal();
+                fetchTrainers();
+            })
+            .catch(error => {
+                alert(error.message);
+                console.error("Error updating trainer:", error);
+            });
     };
 
     // Bottom Page Function
@@ -292,12 +316,12 @@ const Trainers = () => {
                 </h3>
                 <div className={styles.memberActions}>
                     <div className={styles.searchContainer}>
-                        <input 
-                        type="text" 
-                        className={styles.searchInput} 
-                        value={search} 
-                        onChange={(e) => setSearch(e.target.value)} 
-                        placeholder="Search" 
+                        <input
+                            type="text"
+                            className={styles.searchInput}
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            placeholder="Search"
                         />
                     </div>
                     <button className={styles.addMemberButton} onClick={openModal}>Add Trainer</button>
@@ -326,13 +350,13 @@ const Trainers = () => {
                         <tr key={trainer.user_id}>
                             <td className={styles.checkboxuserid}>
                                 <div className={styles.checkboxContainer}>
-                                    <input type="checkbox" checked={selectedTrainers[trainer.user_id] || false} onChange={(e) => handleSelectTrainer(e, trainer.user_id)}/>
+                                    <input type="checkbox" checked={selectedTrainers[trainer.user_id] || false} onChange={(e) => handleSelectTrainer(e, trainer.user_id)} />
                                     <span>{trainer.user_id}</span>
                                 </div>
                             </td>
                             <td>
                                 <div className={styles.mprofileContainer}>
-                                    <img src={trainer.profile_picture? `http://localhost:5000/uploads/${trainer.profile_picture}`: `http://localhost:5000/uploads/default.jpg`} alt="Profile" className={styles.mprofilePicture} />
+                                    <img src={trainer.profile_picture ? `http://localhost:5000/uploads/${trainer.profile_picture}` : `http://localhost:5000/uploads/default.jpg`} alt="Profile" className={styles.mprofilePicture} />
                                     <div className={styles.mprofileDetails}>
                                         <span className={styles.mprofileName}>{trainer.username}</span>
                                         <span className={styles.mprofileEmail}>{trainer.email}</span>
@@ -342,17 +366,17 @@ const Trainers = () => {
                             <td>
                                 <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
                                     {trainer.gender === "Female" ? (
-                                    <>
-                                        <FemaleIcon style={{ color: "#ff69b4" }} />
-                                        <span>Female</span>
-                                    </>
+                                        <>
+                                            <FemaleIcon style={{ color: "#ff69b4" }} />
+                                            <span>Female</span>
+                                        </>
                                     ) : trainer.gender === "Male" ? (
-                                    <>
-                                        <MaleIcon style={{ color: "#007bff" }} />
-                                        <span>Male</span>
-                                    </>
+                                        <>
+                                            <MaleIcon style={{ color: "#007bff" }} />
+                                            <span>Male</span>
+                                        </>
                                     ) : (
-                                    <span>{trainer.gender}</span>
+                                        <span>{trainer.gender}</span>
                                     )}
                                 </div>
                             </td>
@@ -374,7 +398,7 @@ const Trainers = () => {
             <div className={styles.pagination}>
                 {Array.from({ length: totalPages }, (_, index) => (
                     <button
-                        key={index + 1} 
+                        key={index + 1}
                         className={currentPage === index + 1 ? styles.active : ""}
                         onClick={() => handlePageChange(index + 1)}
                     >
@@ -388,9 +412,9 @@ const Trainers = () => {
                 <div className={styles.modalOverlayDeleteM}>
                     <div className={styles.modalDeleteM} style={{ textAlign: "center" }}>
                         <button className={styles.closeButton} onClick={() => setShowDeleteConfirm(false)}>
-                        <X size={24} />
+                            <X size={24} />
                         </button>
-                        <Trash className={styles.deleteIcon} size={40}/>
+                        <Trash className={styles.deleteIcon} size={40} />
                         <p style={{ marginBottom: "30px" }}>Are you sure you want to delete this trainer?</p>
                         <div className={styles.modalButtons}>
                             <button className={styles.cancelDeleteButton} onClick={() => setShowDeleteConfirm(false)}>
@@ -413,49 +437,47 @@ const Trainers = () => {
                             <span className={styles.textstyle}>Add New Trainer</span>
                             <X className={styles.XButton} onClick={closeModal} />
                         </div>
-                    
+
                         <div className={styles.progressTabs}>
-                            <div className={`${styles.tab} ${
-                                step === 1 ? styles.activeTab : styles.inactiveTab
+                            <div className={`${styles.tab} ${step === 1 ? styles.activeTab : styles.inactiveTab
                                 }`}
-                                >
-                                    Personal Information
+                            >
+                                Personal Information
                             </div>
-                            <div className={`${styles.tab} ${
-                                step === 2 ? styles.activeTab : styles.inactiveTab
+                            <div className={`${styles.tab} ${step === 2 ? styles.activeTab : styles.inactiveTab
                                 }`}
-                                >
-                                    Fitness Goals
+                            >
+                                Fitness Goals
                             </div>
                         </div>
 
-                        <form onSubmit={handleSubmit} className={styles.formContainer}>    
+                        <form onSubmit={handleSubmit} className={styles.formContainer}>
                             <div className={styles.formGrid}>
                                 {step == 1 ? (
                                     <>
                                         <div className={styles.leftColumn}>
-                                            <label>Name:</label>
+                                            <label className={styles.required}>Name:</label>
                                             <input type="text" name="name" placeholder="Name as per IC" value={formData.name} onChange={handleChange} required />
 
-                                            <label>Email:</label>
+                                            <label className={styles.required}>Email:</label>
                                             <input type="email" name="email" placeholder="Email Address" value={formData.email} onChange={handleChange} required />
 
-                                            <label>Phone Number:</label>
+                                            <label className={styles.required}>Phone Number:</label>
                                             <input type="text" name="phone" placeholder="Your phone number" value={formData.phone} onChange={handleChange} required />
-                                
-                                            <label>Username:</label>
+
+                                            <label className={styles.required}>Username:</label>
                                             <input type="text" name="username" placeholder="Set your username" value={formData.username} onChange={handleChange} required />
 
-                                            <label>Password:</label>
+                                            <label className={styles.required}>Password:</label>
                                             <input type="password" name="password" placeholder="Set your password" value={formData.password} onChange={handleChange} required />
                                         </div>
 
                                         <div className={styles.rightColumn}>
                                             <label className={styles.genderContainer}>
-                                                <label className={styles.genderLabel}>Gender:</label>
+                                                <label className={`${styles.genderLabel} ${styles.required}`}>Gender:</label>
                                                 <div className={styles.radioGroup}>
                                                     <label className={styles.radioLabel}>
-                                                        <input type="radio" name="gender" value="Male" checked={formData.gender === "Male"} onChange={handleChange} 
+                                                        <input type="radio" name="gender" value="Male" checked={formData.gender === "Male"} onChange={handleChange}
                                                         />
                                                         Male
                                                     </label>
@@ -465,24 +487,24 @@ const Trainers = () => {
                                                         Female
                                                     </label>
                                                 </div>
-                                            </label>                                        
-                                        
-                                            <label>Date of Birth:</label>
+                                            </label>
+
+                                            <label className={styles.required}>Date of Birth:</label>
                                             <input type="date" name="dob" value={formData.dob} onChange={handleChange} required />
                                             <label>Profile Picture:</label>
-                                        <input type="file" name="profilePicture" onChange={(e) => setFormData({ ...formData, profilePicture: e.target.files[0] })} />
+                                            <input type="file" name="profilePicture" onChange={(e) => setFormData({ ...formData, profilePicture: e.target.files[0] })} />
                                         </div>
                                     </>
                                 ) : (
                                     <div className={styles.fitnessGoals}>
                                         <div className={styles.heightWeightContainer}>
                                             <div className={styles.inputGroup}>
-                                                <label>Height:</label>
+                                                <label className={styles.required}>Height:</label>
                                                 <input type="number" name="height" placeholder="Enter Height" value={formData.height} onChange={handleChange} required />
                                                 <span className={styles.unit}>cm</span>
                                             </div>
                                             <div className={styles.inputGroup}>
-                                                <label>Weight:</label>
+                                                <label className={styles.required}>Weight:</label>
                                                 <input type="number" name="weight" placeholder="Enter weight" value={formData.weight} onChange={handleChange} required />
                                                 <span className={styles.unit}>kg</span>
                                             </div>
@@ -494,7 +516,7 @@ const Trainers = () => {
                                                 <label key={goal} className={styles.goalOption}>
                                                     <input type="radio" name="fitnessGoals" value={goal} checked={formData.fitnessGoals == goal} onChange={handleChange}
                                                     />
-                                                    {goal}    
+                                                    {goal}
                                                 </label>
                                             ))}
                                         </div>
@@ -504,29 +526,30 @@ const Trainers = () => {
 
                             <div className={styles.footerbutton}>
                                 {step > 1 && (
-                                    <button 
-                                        type="button" 
-                                        className={styles.cancelButton} 
+                                    <button
+                                        type="button"
+                                        className={styles.cancelButton}
                                         onClick={() => setStep(step - 1)}
                                     >
                                         Back
                                     </button>
                                 )}
-
-                                {step < 2 ? (
-                                    <button 
-                                        type="button" 
+                                {step === 2 && (
+                                    <button
+                                        type="submit"
                                         className={styles.nextButton}
-                                        onClick={handleNextStep} 
-                                    >
-                                        Next
-                                    </button>
-                                ) : (
-                                    <button 
-                                        type="submit" 
-                                        className={styles.nextButton} 
                                     >
                                         Submit
+                                    </button>
+                                )}
+
+                                {step === 1 && (
+                                    <button
+                                        type="button"
+                                        className={styles.nextButton}
+                                        onClick={handleNextStep}
+                                    >
+                                        Next
                                     </button>
                                 )}
                             </div>
@@ -543,20 +566,20 @@ const Trainers = () => {
                         <h2>Edit Trainer Information</h2>
                         <form onSubmit={(e) => handleSave(e, trainerInfo)}>
                             <div className={styles.profileSection}>
-                                <img src={trainerInfo.profile_picture? `http://localhost:5000/uploads/${trainerInfo.profile_picture}`: `http://localhost:5000/uploads/default.jpg`} alt="Profile" className={styles.profilePicture} />
+                                <img src={trainerInfo.profile_picture ? `http://localhost:5000/uploads/${trainerInfo.profile_picture}` : `http://localhost:5000/uploads/default.jpg`} alt="Profile" className={styles.profilePicture} />
                                 <div>
                                     <label>Username:</label>
-                                    <input type="text" name="username" value={trainerInfo.username} readOnly required/>
+                                    <input type="text" name="username" value={trainerInfo.username} readOnly required />
                                 </div>
                             </div>
                             <hr className={styles.edithr} />
                             <h3 className={styles.edith3text}>Personal Information</h3>
                             <label>Name:</label>
-                            <input type="text" name="name" value={trainerInfo.name} onChange={handleEditChange} required/>
+                            <input type="text" name="name" value={trainerInfo.name} onChange={handleEditChange} required />
                             <label>Gender:</label>
                             <div className={styles.radioGroup}>
                                 <label className={styles.radioLabel}>
-                                    <input type="radio" name="gender" value="Male" checked={trainerInfo.gender === "Male"} onChange={handleEditChange} 
+                                    <input type="radio" name="gender" value="Male" checked={trainerInfo.gender === "Male"} onChange={handleEditChange}
                                     />
                                     Male
                                 </label>
@@ -565,14 +588,14 @@ const Trainers = () => {
                                     />
                                     Female
                                 </label>
-                            </div>                        
+                            </div>
                             <label>Date of Birth:</label>
-                            <input type="date" name="date_of_birth" value={new Date(trainerInfo.date_of_birth).toLocaleDateString('en-CA')} onChange={handleEditChange} required/>
+                            <input type="date" name="date_of_birth" value={new Date(trainerInfo.date_of_birth).toLocaleDateString('en-CA')} onChange={handleEditChange} required />
                             <label>Email:</label>
-                            <input type="email" name="email" value={trainerInfo.email} onChange={handleEditChange} required/>
+                            <input type="email" name="email" value={trainerInfo.email} onChange={handleEditChange} required />
                             <label>Phone Number:</label>
-                            <input type="text" name="contact_number" value={trainerInfo.contact_number} onChange={handleEditChange} required/>
-                            <hr className={styles.edithr}/>
+                            <input type="text" name="contact_number" value={trainerInfo.contact_number} onChange={handleEditChange} required />
+                            <hr className={styles.edithr} />
                             <h3 className={styles.edith3text}>Fitness Information</h3>
                             <div className={styles.heightWeightContainer}>
                                 <div className={styles.inputGroup}>
@@ -590,10 +613,10 @@ const Trainers = () => {
                             <div className={styles.fitnessGoalsOption}>
                                 {["Lose Weight", "Muscle Mass Gain", "Gain Weight", "Shape Body", "Others"].map((goal) => (
                                     <label key={goal} className={styles.goalOption}>
-                                        <input type="radio" name="fitness_goals" value={goal}  checked={trainerInfo.fitness_goals == goal} onChange={handleEditChange}
+                                        <input type="radio" name="fitness_goals" value={goal} checked={trainerInfo.fitness_goals == goal} onChange={handleEditChange}
                                         />
-                                        
-                                        {goal}    
+
+                                        {goal}
                                     </label>
                                 ))}
                             </div>
@@ -606,6 +629,7 @@ const Trainers = () => {
                 </div>
             )}
         </div>
-    )}
+    )
+}
 
 export default Trainers;

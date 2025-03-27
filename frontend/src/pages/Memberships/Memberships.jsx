@@ -273,7 +273,7 @@ export default function Memberships() {
               <textarea name="description" rows="8" placeholder="Enter description..." value={editMembership ? editMembership.description : newMembership.description} onChange={handleInputChange} required />
 
               <label>Price:</label>
-              <input type="number" name="price" placeholder="Exp. 100" value={editMembership ? editMembership.price : newMembership.price} onChange={handleInputChange} required />
+              <input type="number" name="price" min="0" placeholder="Exp. 100" value={editMembership ? editMembership.price : newMembership.price} onChange={handleInputChange} required />
 
               <label>Duration (months):</label>
               <input type="number" name="duration" min="1" placeholder="Exp. 1-12" value={editMembership ? editMembership.duration : newMembership.duration} onChange={handleInputChange} required/>

@@ -167,7 +167,7 @@ const handlePrintClick=(transaction)=>{
             onChange={(e) => setStatusFilter(e.target.value)}
           >
             <option value="" disabled hidden>
-              Sort By
+              Filter By
             </option>
             <option value="">All</option>
             <option value="Paid">Paid</option>

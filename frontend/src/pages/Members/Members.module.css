@@ -319,7 +319,7 @@ input[type="checkbox"] {
   background: white;
   padding: 20px;
   border-radius: 10px;
-  max-width: 550px;
+  max-width: 570px;
   width: 100%;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow-y: scroll;
@@ -368,7 +368,6 @@ input[type="checkbox"] {
   text-align: center;
   padding: 5px 0;
   font-weight: bold;
-  cursor: pointer;
 }
 
 .activeTab {
@@ -574,6 +573,11 @@ input, select {
 .edithr {
   margin-top: 5px;
   margin-bottom: 5px;
+}
+
+label.required::after {
+  content: " *";
+  color: red;
 }
 
 @media (max-width: 1024px) {

@@ -7,7 +7,7 @@ import { Trash, Edit, X } from "lucide-react";
 
 const Members = () => {
     const [members, setMembers] = useState({ membersDetails: [], membersCount: 0 });
-    const [filteredMembers, setFilteredMembers] = useState([]); 
+    const [filteredMembers, setFilteredMembers] = useState([]);
 
     // Fetching users
     useEffect(() => {
@@ -15,7 +15,7 @@ const Members = () => {
             .then((response) => response.json())
             .then((data) => {
                 setMembers(data);
-                setFilteredMembers(data.membersDetails); 
+                setFilteredMembers(data.membersDetails);
             })
             .catch((error) => console.error("Error fetching members:", error));
     }, []);
@@ -23,7 +23,7 @@ const Members = () => {
     // Formatting date function
     function formatDate(dateString) {
         const date = new Date(dateString);
-        return date.toLocaleDateString('en-GB', { timeZone: 'Asia/Kuala_Lumpur' }); 
+        return date.toLocaleDateString('en-GB', { timeZone: 'Asia/Kuala_Lumpur' });
     }
 
     // Searching function
@@ -31,10 +31,10 @@ const Members = () => {
 
     useEffect(() => {
         if (search.trim() === "") {
-            setFilteredMembers(members.membersDetails); 
+            setFilteredMembers(members.membersDetails);
         } else {
             setFilteredMembers(
-                members.membersDetails.filter((member) => 
+                members.membersDetails.filter((member) =>
                     member.username.toLowerCase().includes(search.toLowerCase())
                 )
             );
@@ -57,50 +57,65 @@ const Members = () => {
 
     // For Add New Member
     const [isModalOpen, setModalOpen] = useState(false);
-    const [formData, setFormData] = useState({ 
-        name: "", 
-        email: "", 
-        phone: "", 
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        phone: "",
         username: "",
         password: "",
-        gender: "", 
-        dob: "", 
-        height: "", 
-        weight: "", 
-        membershipPlan: "", 
+        gender: "",
+        dob: "",
+        height: "",
+        weight: "",
+        membershipPlan: "",
         fitnessGoals: "",
-        trainerId:""
+        trainerId: ""
     });
 
     const openModal = () => {
         setStep(1);
         setModalOpen(true);
     };
-    
+
     const closeModal = () => {
         setModalOpen(false);
         setFormData({
-            name: "", 
-            email: "", 
-            phone: "", 
+            name: "",
+            email: "",
+            phone: "",
             username: "",
             password: "",
-            gender: "", 
-            dob: "", 
-            height: "", 
-            weight: "", 
-            membershipPlan: "", 
+            gender: "",
+            dob: "",
+            height: "",
+            weight: "",
+            membershipPlan: "",
             fitnessGoals: "",
-            trainerId:"",
+            trainerId: "",
         });
     };
-    
+
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     }
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        //email validation
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailRegex.test(formData.email)) {
+            alert("Please enter a valid email address.");
+            return; 
+        }
+
+        //contact no validation
+        const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+        if (!phoneRegex.test(formData.phone)) {
+            alert("Please enter a valid phone number.");
+            return;
+        }
+
         const url = 'http://localhost:5000/api/members/add';
         const method = 'POST';
 
@@ -118,7 +133,7 @@ const Members = () => {
         formDataToSend.append("fitnessGoals", formData.fitnessGoals);
         formDataToSend.append("trainerId", formData.trainerId);
         formDataToSend.append("dateJoined", new Date().toLocaleDateString('en-CA'));
-        
+
         if (formData.profilePicture) {
             formDataToSend.append("profilePicture", formData.profilePicture);
         }
@@ -127,31 +142,31 @@ const Members = () => {
             method,
             body: formDataToSend,
         })
-        .then(async (response) => {
-            const data = await response.json();
-    
-            if (!response.ok) {
-                throw new Error(data.message || "An error occurred while adding the member.");
-            }
-    
-            alert(data.message); 
-            fetchMembers();
-            closeModal();
-        })
-        .catch((error) => {
-            alert(error.message); 
-            console.error(error);
-        });
+            .then(async (response) => {
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || "An error occurred while adding the member.");
+                }
+
+                alert(data.message);
+                fetchMembers();
+                closeModal();
+            })
+            .catch((error) => {
+                alert(error.message);
+                console.error(error);
+            });
     };
 
     const fetchMembers = () => {
         fetch("http://localhost:5000/api/members/display")
-          .then((response) => response.json())
-          .then((data) => {
-            setMembers(data);
-            setFilteredMembers(data.membersDetails);
-          })
-          .catch((error) => console.error("Error fetching stats:", error));
+            .then((response) => response.json())
+            .then((data) => {
+                setMembers(data);
+                setFilteredMembers(data.membersDetails);
+            })
+            .catch((error) => console.error("Error fetching stats:", error));
     };
 
     // For Select All Function
@@ -161,24 +176,24 @@ const Members = () => {
     const handleSelectAll = (event) => {
         const isChecked = event.target.checked;
         setSelectAll(isChecked);
-    
+
         const updatedMembers = {};
         currentMembers.forEach(member => {
             updatedMembers[member.user_id] = isChecked;
         });
-    
+
         setSelectedMembers(updatedMembers);
     };
 
     const handleSelectMember = (event, user_id) => {
         const isChecked = event.target.checked;
-    
+
         setSelectedMembers((prev) => {
             const updatedMembers = { ...prev, [user_id]: isChecked };
-    
+
             const allSelected = Object.values(updatedMembers).every((val) => val === true);
             setSelectAll(allSelected);
-    
+
             return updatedMembers;
         });
     };
@@ -189,12 +204,12 @@ const Members = () => {
 
     const handleDeleteClick = (user_id = null) => {
         let selectedMembersIds;
-    
+
         if (user_id) {
             selectedMembersIds = [user_id];
         } else {
             selectedMembersIds = Object.keys(selectedMembers).filter(id => selectedMembers[id]);
-            
+
             if (selectedMembersIds.length === 0) {
                 alert("Please select at least one member to delete.");
                 return;
@@ -210,36 +225,36 @@ const Members = () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ user_ids: membersToDelete }),
         })
-        .then(response => response.json())
-        .then(data => {
-            alert(data.message);
-            fetchMembers(); 
-            setSelectedMembers({});
-            setSelectAll(false);
-            setShowDeleteConfirm(false);
-            setMembersToDelete([]);
-        })
-        .catch(error => {
-            console.error("Error deleting members:", error);
-        });
-    };    
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                fetchMembers();
+                setSelectedMembers({});
+                setSelectAll(false);
+                setShowDeleteConfirm(false);
+                setMembersToDelete([]);
+            })
+            .catch(error => {
+                console.error("Error deleting members:", error);
+            });
+    };
 
     // For Edit Member Details
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const[memberInfo, setMemberInfo] = useState(null);
+    const [memberInfo, setMemberInfo] = useState(null);
 
     const openEditModal = (member) => {
         fetch(`http://localhost:5000/api/members/membership-info/${member.user_id}`, {
             method: "GET",
         })
-        .then(response => response.json())
-        .then(data => { 
-            setMemberInfo(data);
-            setIsEditModalOpen(true);
-        })
-        .catch(error => {
-            console.error("Error fetching member information:", error);
-        });  
+            .then(response => response.json())
+            .then(data => {
+                setMemberInfo(data);
+                setIsEditModalOpen(true);
+            })
+            .catch(error => {
+                console.error("Error fetching member information:", error);
+            });
     };
 
     const closeEditModal = () => {
@@ -248,28 +263,35 @@ const Members = () => {
     };
 
     const handleEditChange = (e) => {
-         const { name, value } = e.target;
-         setMemberInfo(prevState => ({ ...prevState, [name]: value }));
+        const { name, value } = e.target;
+        setMemberInfo(prevState => ({ ...prevState, [name]: value }));
     };
 
     const handleSave = (e, updatedMember) => {
         e.preventDefault()
+
+        //phone validation
+        const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+        if (!phoneRegex.test(updatedMember.contact_number)) {
+            alert("Please enter a valid phone number.");
+            return;
+        }
 
         fetch(`http://localhost:5000/api/members/update`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(updatedMember),
         })
-        .then(response => response.json())
-        .then(data => {
-            alert(data.message); 
-            closeEditModal();
-            fetchMembers(); 
-        })
-        .catch(error => {
-            alert(error.message); 
-            console.error("Error updating member:", error);
-        });
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                closeEditModal();
+                fetchMembers();
+            })
+            .catch(error => {
+                alert(error.message);
+                console.error("Error updating member:", error);
+            });
     };
 
     // Bottom Page Function
@@ -305,12 +327,12 @@ const Members = () => {
                 </h3>
                 <div className={styles.memberActions}>
                     <div className={styles.searchContainer}>
-                        <input 
-                        type="text" 
-                        className={styles.searchInput} 
-                        value={search} 
-                        onChange={(e) => setSearch(e.target.value)} 
-                        placeholder="Search" 
+                        <input
+                            type="text"
+                            className={styles.searchInput}
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            placeholder="Search"
                         />
                     </div>
                     <button className={styles.addMemberButton} onClick={openModal}>Add Member</button>
@@ -339,13 +361,13 @@ const Members = () => {
                         <tr key={member.user_id}>
                             <td className={styles.checkboxuserid}>
                                 <div className={styles.checkboxContainer}>
-                                    <input type="checkbox" checked={selectedMembers[member.user_id] || false} onChange={(e) => handleSelectMember(e, member.user_id)}/>
+                                    <input type="checkbox" checked={selectedMembers[member.user_id] || false} onChange={(e) => handleSelectMember(e, member.user_id)} />
                                     <span>{member.user_id}</span>
                                 </div>
                             </td>
                             <td>
                                 <div className={styles.mprofileContainer}>
-                                    <img src={member.profile_picture? `http://localhost:5000/uploads/${member.profile_picture}`:`http://localhost:5000/uploads/default.jpg`} alt="Profile" className={styles.mprofilePicture} />
+                                    <img src={member.profile_picture ? `http://localhost:5000/uploads/${member.profile_picture}` : `http://localhost:5000/uploads/default.jpg`} alt="Profile" className={styles.mprofilePicture} />
                                     <div className={styles.mprofileDetails}>
                                         <span className={styles.mprofileName}>{member.username}</span>
                                         <span className={styles.mprofileEmail}>{member.email}</span>
@@ -355,17 +377,17 @@ const Members = () => {
                             <td>
                                 <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
                                     {member.gender === "Female" ? (
-                                    <>
-                                        <FemaleIcon style={{ color: "#ff69b4" }} />
-                                        <span>Female</span>
-                                    </>
+                                        <>
+                                            <FemaleIcon style={{ color: "#ff69b4" }} />
+                                            <span>Female</span>
+                                        </>
                                     ) : member.gender === "Male" ? (
-                                    <>
-                                        <MaleIcon style={{ color: "#007bff" }} />
-                                        <span>Male</span>
-                                    </>
+                                        <>
+                                            <MaleIcon style={{ color: "#007bff" }} />
+                                            <span>Male</span>
+                                        </>
                                     ) : (
-                                    <span>{member.gender}</span>
+                                        <span>{member.gender}</span>
                                     )}
                                 </div>
                             </td>
@@ -387,7 +409,7 @@ const Members = () => {
             <div className={styles.pagination}>
                 {Array.from({ length: totalPages }, (_, index) => (
                     <button
-                        key={index + 1} 
+                        key={index + 1}
                         className={currentPage === index + 1 ? styles.active : ""}
                         onClick={() => handlePageChange(index + 1)}
                     >
@@ -401,9 +423,9 @@ const Members = () => {
                 <div className={styles.modalOverlayDeleteM}>
                     <div className={styles.modalDeleteM} style={{ textAlign: "center" }}>
                         <button className={styles.closeButton} onClick={() => setShowDeleteConfirm(false)}>
-                        <X size={24} />
+                            <X size={24} />
                         </button>
-                        <Trash className={styles.deleteIcon} size={40}/>
+                        <Trash className={styles.deleteIcon} size={40} />
                         <p style={{ marginBottom: "30px" }}>Are you sure you want to delete this member?</p>
                         <div className={styles.modalButtons}>
                             <button className={styles.cancelDeleteButton} onClick={() => setShowDeleteConfirm(false)}>
@@ -426,49 +448,47 @@ const Members = () => {
                             <span className={styles.textstyle}>Add New Member</span>
                             <X className={styles.XButton} onClick={closeModal} />
                         </div>
-                    
+
                         <div className={styles.progressTabs}>
-                            <div className={`${styles.tab} ${
-                                step === 1 ? styles.activeTab : styles.inactiveTab
+                            <div className={`${styles.tab} ${step === 1 ? styles.activeTab : styles.inactiveTab
                                 }`}
-                                >
-                                    Personal Information
+                            >
+                                Personal Information
                             </div>
-                            <div className={`${styles.tab} ${
-                                step === 2 ? styles.activeTab : styles.inactiveTab
+                            <div className={`${styles.tab} ${step === 2 ? styles.activeTab : styles.inactiveTab
                                 }`}
-                                >
-                                    Fitness Goals
+                            >
+                                Fitness Goals
                             </div>
                         </div>
 
-                        <form onSubmit={handleSubmit} className={styles.formContainer}>    
+                        <form onSubmit={handleSubmit} className={styles.formContainer}>
                             <div className={styles.formGrid}>
                                 {step == 1 ? (
                                     <>
                                         <div className={styles.leftColumn}>
-                                            <label>Name:</label>
+                                            <label className={styles.required}>Name:</label>
                                             <input type="text" name="name" placeholder="Name as per IC" value={formData.name} onChange={handleChange} required />
 
-                                            <label>Email:</label>
+                                            <label className={styles.required}>Email:</label>
                                             <input type="email" name="email" placeholder="Email Address" value={formData.email} onChange={handleChange} required />
 
-                                            <label>Phone Number:</label>
+                                            <label className={styles.required}>Phone Number:</label>
                                             <input type="text" name="phone" placeholder="Your phone number" value={formData.phone} onChange={handleChange} required />
-                                
-                                            <label>Username:</label>
+
+                                            <label className={styles.required}>Username:</label>
                                             <input type="text" name="username" placeholder="Set your username" value={formData.username} onChange={handleChange} required />
 
-                                            <label>Password:</label>
+                                            <label className={styles.required}>Password:</label>
                                             <input type="password" name="password" placeholder="Set your password" value={formData.password} onChange={handleChange} required />
                                         </div>
 
                                         <div className={styles.rightColumn}>
                                             <label className={styles.genderContainer}>
-                                                <label className={styles.genderLabel}>Gender:</label>
+                                                <label className={`${styles.genderLabel} ${styles.required}`}>Gender:</label>
                                                 <div className={styles.radioGroup}>
                                                     <label className={styles.radioLabel}>
-                                                        <input type="radio" name="gender" value="Male" checked={formData.gender === "Male"} onChange={handleChange} 
+                                                        <input type="radio" name="gender" value="Male" checked={formData.gender === "Male"} onChange={handleChange}
                                                         />
                                                         Male
                                                     </label>
@@ -478,9 +498,9 @@ const Members = () => {
                                                         Female
                                                     </label>
                                                 </div>
-                                            </label>                                        
-                                        
-                                            <label>Date of Birth:</label>
+                                            </label>
+
+                                            <label className={styles.required}>Date of Birth:</label>
                                             <input type="date" name="dob" value={formData.dob} onChange={handleChange} required />
                                             <label>Profile Picture:</label>
                                             <input type="file" name="profilePicture" onChange={(e) => setFormData({ ...formData, profilePicture: e.target.files[0] })} />
@@ -490,19 +510,19 @@ const Members = () => {
                                     <div className={styles.fitnessGoals}>
                                         <div className={styles.heightWeightContainer}>
                                             <div className={styles.inputGroup}>
-                                                <label>Height:</label>
+                                                    <label className={styles.required}>Height:</label>
                                                 <input type="number" name="height" placeholder="Enter Height" value={formData.height} onChange={handleChange} required />
                                                 <span className={styles.unit}>cm</span>
                                             </div>
                                             <div className={styles.inputGroup}>
-                                                <label>Weight:</label>
+                                                    <label className={styles.required}>Weight:</label>
                                                 <input type="number" name="weight" placeholder="Enter weight" value={formData.weight} onChange={handleChange} required />
                                                 <span className={styles.unit}>kg</span>
                                             </div>
                                         </div>
 
-                                        <label>Membership Plan:</label>
-                                        <select name="membershipPlan" value={formData.membershipPlan} onChange={handleChange} className={styles.addnmembershipDropdown}
+                                            <label className={styles.required}>Membership Plan:</label>
+                                        <select name="membershipPlan" value={formData.membershipPlan} onChange={handleChange} className={styles.addnmembershipDropdown} required
                                         >
                                             <option value="" disabled selected>Select Membership Plan</option>
                                             {membershipPlans.map((plan) => (
@@ -512,30 +532,31 @@ const Members = () => {
 
                                         {formData.membershipPlan === "2" || formData.membershipPlan === "4" ? (
                                             <>
-                                                <label>Select Trainer:</label>
+                                                <label className={styles.required}>Select Trainer:</label>
                                                 <select
-                                                name="trainerId"
-                                                value={formData.trainerId}
-                                                onChange={handleChange}
-                                                className={styles.addnmembershipDropdown}
+                                                    name="trainerId"
+                                                    value={formData.trainerId}
+                                                    onChange={handleChange}
+                                                    className={styles.addnmembershipDropdown}
+                                                    required
                                                 >
-                                                <option value="" disabled>Select Trainer</option>
-                                                {trainers.map((trainer) => (
-                                                    <option key={trainer.user_id} value={trainer.user_id}>
-                                                    {trainer.name}
-                                                    </option>
-                                                ))}
+                                                    <option value="" disabled>Select Trainer</option>
+                                                    {trainers.map((trainer) => (
+                                                        <option key={trainer.user_id} value={trainer.user_id}>
+                                                            {trainer.name}
+                                                        </option>
+                                                    ))}
                                                 </select>
                                             </>
                                         ) : null}
 
-                                        <label>What are your fitness goals?</label>
+                                        <label className={styles.required}>What are your fitness goals?</label>
                                         <div className={styles.fitnessGoalsOption}>
                                             {["Lose Weight", "Muscle Mass Gain", "Gain Weight", "Shape Body", "Others"].map((goal) => (
                                                 <label key={goal} className={styles.goalOption}>
-                                                    <input type="radio" name="fitnessGoals" value={goal} checked={formData.fitnessGoals == goal} onChange={handleChange}
+                                                    <input type="radio" name="fitnessGoals" value={goal} checked={formData.fitnessGoals == goal} onChange={handleChange} required
                                                     />
-                                                    {goal}    
+                                                    {goal}
                                                 </label>
                                             ))}
                                         </div>
@@ -545,28 +566,28 @@ const Members = () => {
 
                             <div className={styles.footerbutton}>
                                 {step > 1 && (
-                                    <button 
-                                        type="button" 
-                                        className={styles.cancelButton} 
+                                    <button
+                                        type="button"
+                                        className={styles.cancelButton}
                                         onClick={() => setStep(step - 1)}
                                     >
                                         Back
                                     </button>
                                 )}
                                 {step === 2 && (
-                                    <button 
-                                        type="submit" 
-                                        className={styles.nextButton} 
+                                    <button
+                                        type="submit"
+                                        className={styles.nextButton}
                                     >
                                         Submit
                                     </button>
                                 )}
 
                                 {step === 1 && (
-                                    <button 
-                                        type="button" 
+                                    <button
+                                        type="button"
                                         className={styles.nextButton}
-                                        onClick={handleNextStep} 
+                                        onClick={handleNextStep}
                                     >
                                         Next
                                     </button>
@@ -588,17 +609,17 @@ const Members = () => {
                                 <img src={memberInfo.profile_picture ? `http://localhost:5000/uploads/${memberInfo.profile_picture}` : `http://localhost:5000/uploads/default.jpg`} alt="Profile" className={styles.profilePicture} />
                                 <div>
                                     <label>Username:</label>
-                                    <input type="text" name="username" value={memberInfo.username} readOnly required/>
+                                    <input type="text" name="username" value={memberInfo.username} readOnly required />
                                 </div>
                             </div>
                             <hr className={styles.edithr} />
                             <h3 className={styles.edith3text}>Personal Information</h3>
                             <label>Name:</label>
-                            <input type="text" name="name" value={memberInfo.name} onChange={handleEditChange} required/>
+                            <input type="text" name="name" value={memberInfo.name} onChange={handleEditChange} required />
                             <label>Gender:</label>
                             <div className={styles.radioGroup}>
                                 <label className={styles.radioLabel}>
-                                    <input type="radio" name="gender" value="Male" checked={memberInfo.gender === "Male"} onChange={handleEditChange} 
+                                    <input type="radio" name="gender" value="Male" checked={memberInfo.gender === "Male"} onChange={handleEditChange}
                                     />
                                     Male
                                 </label>
@@ -607,14 +628,14 @@ const Members = () => {
                                     />
                                     Female
                                 </label>
-                            </div>                        
+                            </div>
                             <label>Date of Birth:</label>
-                            <input type="date" name="date_of_birth" value={new Date(memberInfo.date_of_birth).toLocaleDateString('en-CA')} onChange={handleEditChange} required/>
+                            <input type="date" name="date_of_birth" value={new Date(memberInfo.date_of_birth).toLocaleDateString('en-CA')} onChange={handleEditChange} required />
                             <label>Email:</label>
-                            <input type="email" name="email" value={memberInfo.email} onChange={handleEditChange} required/>
+                            <input type="email" name="email" value={memberInfo.email} onChange={handleEditChange} required />
                             <label>Phone Number:</label>
-                            <input type="text" name="contact_number" value={memberInfo.contact_number} onChange={handleEditChange} required/>
-                            <hr className={styles.edithr}/>
+                            <input type="text" name="contact_number" value={memberInfo.contact_number} onChange={handleEditChange} required />
+                            <hr className={styles.edithr} />
                             <h3 className={styles.edith3text}>Fitness Information</h3>
                             <div className={styles.heightWeightContainer}>
                                 <div className={styles.inputGroup}>
@@ -639,17 +660,17 @@ const Members = () => {
                                 <>
                                     <label>Select Trainer:</label>
                                     <select
-                                    name="trainer_id"
-                                    value={memberInfo.trainer_id}
-                                    onChange={handleEditChange}
-                                    className={styles.addnmembershipDropdown}
+                                        name="trainer_id"
+                                        value={memberInfo.trainer_id}
+                                        onChange={handleEditChange}
+                                        className={styles.addnmembershipDropdown}
                                     >
-                                    <option value="" disabled>Select Trainer</option>
-                                    {trainers.map((trainer) => (
-                                        <option key={trainer.user_id} value={trainer.user_id}>
-                                        {trainer.name}
-                                        </option>
-                                    ))}
+                                        <option value="" disabled>Select Trainer</option>
+                                        {trainers.map((trainer) => (
+                                            <option key={trainer.user_id} value={trainer.user_id}>
+                                                {trainer.name}
+                                            </option>
+                                        ))}
                                     </select>
                                 </>
                             ) : null}
@@ -658,10 +679,10 @@ const Members = () => {
                             <div className={styles.fitnessGoalsOption}>
                                 {["Lose Weight", "Muscle Mass Gain", "Gain Weight", "Shape Body", "Others"].map((goal) => (
                                     <label key={goal} className={styles.goalOption}>
-                                        <input type="radio" name="fitness_goals" value={goal}  checked={memberInfo.fitness_goals == goal} onChange={handleEditChange}
+                                        <input type="radio" name="fitness_goals" value={goal} checked={memberInfo.fitness_goals == goal} onChange={handleEditChange} required
                                         />
-                                        
-                                        {goal}    
+
+                                        {goal}
                                     </label>
                                 ))}
                             </div>
@@ -674,6 +695,7 @@ const Members = () => {
                 </div>
             )}
         </div>
-    )}
+    )
+}
 
 export default Members;

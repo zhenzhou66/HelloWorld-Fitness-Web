@@ -291,6 +291,7 @@ const Announcements = () => {
             <th>Title</th>
             <th>Message</th>
             <th>Type</th>
+            <th>Target</th>
             <th>Publish Date</th>
             <th>Actions</th>
           </tr>
@@ -308,6 +309,7 @@ const Announcements = () => {
               <td className={styles.aTitle}>{announcements.title}</td>
               <td className={styles.aMessage}>{announcements.message}</td>
               <td className={styles.aType}>{announcements.type}</td>
+              <td className={styles.aType}>{announcements.target}</td>
               <td className={styles.aPublishDate}>{formatDate(announcements.send_date)}</td>
               <td className={styles.actions}>
                 <button className={styles.editButton} onClick={() => openEditModal(announcements)}>
@@ -425,7 +427,7 @@ const Announcements = () => {
       {isEditModalOpen && (
         <div className={styles.Editoverlay}>
           <div className={styles.modal}>
-            <h2>Edit Announcement</h2>
+            <h2>{`Edit ${selectedAnnouncement?.target || ""} Announcement`}</h2>
             <button className={styles.closeBtn} onClick={() => setIsEditModalOpen(false)}>
               <X size={24} />
             </button>
