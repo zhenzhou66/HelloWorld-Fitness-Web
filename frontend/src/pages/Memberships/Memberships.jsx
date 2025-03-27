@@ -276,7 +276,7 @@ export default function Memberships() {
               <input type="number" name="price" placeholder="Exp. 100" value={editMembership ? editMembership.price : newMembership.price} onChange={handleInputChange} required />
 
               <label>Duration (months):</label>
-              <input type="number" name="duration" placeholder="Exp. 1-12" value={editMembership ? editMembership.duration : newMembership.duration} onChange={handleInputChange} required/>
+              <input type="number" name="duration" min="1" placeholder="Exp. 1-12" value={editMembership ? editMembership.duration : newMembership.duration} onChange={handleInputChange} required/>
 
               <div className={styles.buttonSection}>
                 <button type="button" className={styles.cancelButton} onClick={toggleModal}>Cancel</button>

@@ -10,10 +10,10 @@ router.get('/display', (req, res) => {
 
     db.query(membershipDetails, (err, detailResult) => {
         if (err) return res.status(500).json({ message: 'Database error in revenue query.' });
-        
+
         db.query(membershipCount, (err, countResult) => {
             if (err) return res.status(500).json({ message: 'Database error in members query.' });
-            
+
             res.status(200).json({
                 membershipDetails: detailResult || [],
                 membershipCount: countResult[0].membershipCount || 0
@@ -23,64 +23,55 @@ router.get('/display', (req, res) => {
 });
 
 router.post('/add', (req, res) => {
-    const { plan_name, description, price, duration} = req.body;
+    const { plan_name, description, price, duration } = req.body;
 
     const checkPlanNameQuery = 'SELECT plan_name FROM membership WHERE plan_name = ?';
 
-    db.query(checkPlanNameQuery,[plan_name], (err, rows)=>{
+    db.query(checkPlanNameQuery, [plan_name], (err, rows) => {
         if (err) {
             return res.status(500).json({ message: 'Database error while checking plan name.' });
         }
         if (rows.length > 0) {
             return res.status(400).json({ message: 'Plan name already exists. Please choose another one.' });
-        }else{
+        } else {
             const insertQuery = 'INSERT INTO membership (plan_name, description, price, duration) VALUES (?, ?, ?, ?)';
 
             db.query(insertQuery, [plan_name, description, price, duration], (err, result) => {
                 if (err) {
                     return res.status(500).json({ message: 'Database error while adding membership.' });
                 }
-                res.status(201).json({ message: 'Membership added successfully!'});
+                res.status(201).json({ message: 'Membership added successfully!' });
             });
         }
     });
 });
 
 router.put('/edit/:membership_id', (req, res) => {
-    const { membership_id } = req.params; 
+    const { membership_id } = req.params;
     const { plan_name, description, price, duration } = req.body;
 
     if (!plan_name || !description || !price || !duration) {
         return res.status(400).json({ message: 'All fields are required!' });
     }
 
-    const checkPlanNameQuery = 'SELECT plan_name FROM membership WHERE plan_name = ?';
-
-    db.query(checkPlanNameQuery,[plan_name], (err, rows)=>{
-        if (err) {
-            return res.status(500).json({ message: 'Database error while checking plan name.' });
-        }
-        if (rows.length > 0) {
-            return res.status(400).json({ message: 'Plan name already exists. Please choose another one.' });
-        }else{
-            const updateQuery = `
+    const updateQuery = `
                 UPDATE membership
                 SET plan_name = ?, description = ?, price = ?, duration = ?
                 WHERE membership_id = ?
             `;
 
-            db.query(updateQuery, [plan_name, description, price, duration, membership_id], (err, result) => {
-                if (err) {
-                    return res.status(500).json({ message: 'Database error while updating membership.' });
-                }
-                if (result.affectedRows > 0) {
-                    res.status(200).json({ message: 'Membership updated successfully!' });
-                } else {
-                    res.status(404).json({ message: 'Membership not found or no changes made.' });
-                }
-            });
+    db.query(updateQuery, [plan_name, description, price, duration, membership_id], (err, result) => {
+        if (err) {
+            return res.status(500).json({ message: 'Database error while updating membership.' });
+        }
+        if (result.affectedRows > 0) {
+            res.status(200).json({ message: 'Membership updated successfully!' });
+        } else {
+            res.status(404).json({ message: 'Membership not found or no changes made.' });
         }
     });
+
+
 });
 
 router.delete('/delete', async (req, res) => {
