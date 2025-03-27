@@ -236,7 +236,7 @@ export default function Memberships() {
                   <Trash
                     className={styles.icon}
                     size={20}
-                    onClick={() => handleDeleteClick(plan)}
+                    onClick={() => handleDeleteClick(plan.membership_id)}
                   />
                 </div>
                 
