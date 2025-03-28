@@ -402,10 +402,10 @@ const Announcements = () => {
                       </div>
 
                       <div className={styles.schedule}>
-                        <label>User ID</label>
+                        <label>User ID (optional)</label>
                         <input type="number" name="user_id" value={formData.user_id} onChange={handleChange} />
 
-                        <label>Class ID</label>
+                        <label>Class ID (optional)</label>
                         <input type="number" name="class_id" value={formData.class_id} onChange={handleChange} />
                       </div>
                     </div>
@@ -467,10 +467,10 @@ const Announcements = () => {
                   </div>
 
                   <div className={styles.schedule}>
-                    <label>User ID</label>
+                    <label>User ID (optional)</label>
                     <input type="number" name="user_id" value={selectedAnnouncement?.user_id || ""} onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, user_id: e.target.value })} />
 
-                    <label>Class ID</label>
+                    <label>Class ID (optional)</label>
                     <input type="number" name="class_id" value={selectedAnnouncement?.class_id || ""} onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, class_id: e.target.value })} />
                   </div>
                 </div>

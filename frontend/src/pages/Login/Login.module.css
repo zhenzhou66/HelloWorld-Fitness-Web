@@ -4,8 +4,12 @@
   height: 100vh;
   align-items: center;
   justify-content: center;
-  /* background-color: #464646; */
-  background: linear-gradient(to top left, #404b4a, #7d7c7c);
+  /* background: linear-gradient(to top left, #404b4a, #7d7c7c); */
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+      url('fitness_bg_3.webp');
+  background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   font-family: Arial, sans-serif;
   color: #c7c7c7;
 }
