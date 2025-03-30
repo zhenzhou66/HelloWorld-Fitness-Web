@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Mar 21, 2025 at 05:19 PM
+-- Generation Time: Mar 30, 2025 at 06:33 AM
 -- Server version: 10.1.25-MariaDB
 -- PHP Version: 5.6.31
 
@@ -140,14 +140,14 @@ CREATE TABLE `classes` (
 --
 
 INSERT INTO `classes` (`class_id`, `class_name`, `description`, `max_participants`, `schedule_date`, `start_time`, `end_time`, `trainer_id`, `class_image`) VALUES
-(1, 'Yoga Flow', 'A relaxing yoga session focused on flexibility and mindfulness.', 20, '2025-03-20', '08:00:00', '09:00:00', 1, 'class_image/1.jpg'),
-(2, 'Zumba Dance', 'High-energy dance workout to improve cardiovascular fitness.', 25, '2025-03-20', '10:00:00', '11:00:00', 5, 'class_image/2.jpeg'),
-(3, 'Strength Training', 'Build muscle strength through resistance training and weightlifting.', 15, '2025-03-21', '15:00:00', '16:30:00', 8, 'class_image/3.webp'),
-(4, 'Cardio Blast', 'A dynamic cardio session to burn calories and boost endurance.', 20, '2025-03-21', '18:00:00', '19:00:00', 5, 'class_image/4.jpg'),
-(5, 'Pilates Core', 'Focused on improving core strength, posture, and flexibility using Pilates.', 18, '2025-03-24', '07:30:00', '08:30:00', 8, 'class_image/5.jpg'),
-(6, 'Functional Fitness', 'Improve everyday movements through functional strength and agility exercises.', 15, '2025-03-24', '17:00:00', '18:30:00', 1, 'class_image/6.jpg'),
-(7, 'HIIT', 'High-Intensity Interval Training session for maximum calorie burn in less time.', 20, '2025-03-25', '06:00:00', '06:45:00', 1, 'class_image/7.jpg'),
-(8, 'Boxing Basics', 'A beginner-friendly boxing class focusing on technique and fitness.', 12, '2025-03-25', '19:00:00', '20:00:00', 1, 'class_image/8.webp');
+(1, 'Yoga Flow', 'A relaxing yoga session focused on flexibility and mindfulness.', 20, '2025-04-01', '08:00:00', '09:00:00', 1, 'class_image/1.jpg'),
+(2, 'Zumba Dance', 'High-energy dance workout to improve cardiovascular fitness.', 25, '2025-04-02', '10:00:00', '11:00:00', 5, 'class_image/2.jpeg'),
+(3, 'Strength Training', 'Build muscle strength through resistance training and weightlifting.', 15, '2025-04-02', '15:00:00', '16:30:00', 8, 'class_image/3.webp'),
+(4, 'Cardio Blast', 'A dynamic cardio session to burn calories and boost endurance.', 20, '2025-04-03', '18:00:00', '19:00:00', 5, 'class_image/4.jpg'),
+(5, 'Pilates Core', 'Focused on improving core strength, posture, and flexibility using Pilates.', 18, '2025-04-04', '07:30:00', '08:30:00', 8, 'class_image/5.jpg'),
+(6, 'Functional Fitness', 'Improve everyday movements through functional strength and agility exercises.', 15, '2025-04-07', '17:00:00', '18:30:00', 1, 'class_image/6.jpg'),
+(7, 'HIIT', 'High-Intensity Interval Training session for maximum calorie burn in less time.', 20, '2025-04-07', '06:00:00', '06:45:00', 1, 'class_image/7.jpg'),
+(8, 'Boxing Basics', 'A beginner-friendly boxing class focusing on technique and fitness.', 12, '2025-04-08', '19:00:00', '20:00:00', 1, 'class_image/8.webp');
 
 -- --------------------------------------------------------
 
@@ -344,9 +344,9 @@ CREATE TABLE `notifications` (
 --
 
 INSERT INTO `notifications` (`notification_id`, `title`, `message`, `type`, `send_date`, `target`, `user_id`, `class_id`, `end_date`) VALUES
-(1, 'Class Schedule Update', 'The Zumba class on Friday has been rescheduled to 5:00 PM.', 'Announcement', '2025-01-14 10:00:00', 'General', NULL, 8, '2025-03-12'),
+(1, 'Class Schedule Update', 'The Zumba class on Friday has been rescheduled to Wednesday 10:00 PM.', 'Announcement', '2025-03-31 00:00:00', 'General', NULL, 8, '2025-04-02'),
 (2, 'Membership Renewal Reminder', 'Your membership is set to expire soon. Renew now to avoid interruptions.', 'Reminder', '2025-01-10 08:00:00', 'Member', NULL, NULL, NULL),
-(3, 'Class Reminder', 'Don’t forget your Yoga class tomorrow at 8:00 AM.', 'Reminder', '2025-01-12 18:00:00', 'General', NULL, 1, NULL);
+(3, 'Class Reminder', 'Don’t forget your Yoga class tomorrow at 8:00 AM.', 'Reminder', '2025-03-31 00:00:00', 'General', NULL, 1, '2025-04-01');
 
 -- --------------------------------------------------------
 
@@ -579,7 +579,7 @@ CREATE TABLE `user_membership` (
 --
 
 INSERT INTO `user_membership` (`user_membership_id`, `membership_id`, `user_id`, `start_date`, `end_date`, `status`) VALUES
-(1, 2, 2, '2025-01-18', '2025-02-19', 'Active'),
+(1, 2, 2, '2025-03-04', '2025-04-04', 'Active'),
 (2, 4, 4, '2025-01-18', '2026-01-18', 'Active'),
 (3, 1, 7, '2025-01-21', '2025-02-22', 'Active'),
 (4, 3, 9, '2024-12-01', '2025-12-01', 'Active'),
